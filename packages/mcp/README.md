@@ -12,6 +12,8 @@ This project demonstrates the **progressive disclosure** pattern — letting age
 - Testing MCP servers with Vitest
 - Integrating with Claude Desktop
 
+![Screenshot](screenshot.png)
+
 ## Features
 
 - **Resources**: Browse and read specs via `spec://` and `changes://` URIs
