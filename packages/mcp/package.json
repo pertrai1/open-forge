@@ -1,7 +1,7 @@
 {
   "name": "openspec-mcp",
   "version": "0.1.0",
-  "description": "MCP server exposing OpenSpec archives as resources and tools",
+  "description": "MCP server exposing OpenSpec archives as resources and tools for AI assistants",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,12 +22,26 @@
   },
   "keywords": [
     "mcp",
+    "model-context-protocol",
     "openspec",
     "specifications",
-    "model-context-protocol"
+    "ai",
+    "llm",
+    "claude",
+    "anthropic",
+    "documentation",
+    "progressive-disclosure"
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ohmyopencode/openspec-mcp.git"
+  },
+  "homepage": "https://github.com/ohmyopencode/openspec-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/ohmyopencode/openspec-mcp/issues"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0"
   },

@@ -328,12 +328,12 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 9.1 Update `package.json` with complete metadata [deps: 1.5] [deliverable: name, version, description, bin, keywords]
-- [ ] 9.2 Create `README.md` with installation instructions [deps: 9.1] [deliverable: `README.md`]
-- [ ] 9.3 Add Claude Desktop configuration example [deps: 9.2] [deliverable: config snippet in README]
-- [ ] 9.4 Document all resources, tools, and prompts [deps: 9.2] [deliverable: API documentation in README]
-- [ ] 9.5 Add path configuration documentation [deps: 9.2] [deliverable: configuration section in README]
-- [ ] 9.6 Verify installation in Claude Desktop [deps: 9.3] [deliverable: manual test confirmation]
+- [x] 9.1 Update `package.json` with complete metadata [deps: 1.5] [deliverable: name, version, description, bin, keywords]
+- [x] 9.2 Create `README.md` with installation instructions [deps: 9.1] [deliverable: `README.md`]
+- [x] 9.3 Add Claude Desktop configuration example [deps: 9.2] [deliverable: config snippet in README]
+- [x] 9.4 Document all resources, tools, and prompts [deps: 9.2] [deliverable: API documentation in README]
+- [x] 9.5 Add path configuration documentation [deps: 9.2] [deliverable: configuration section in README]
+- [x] 9.6 Verify installation in Claude Desktop [deps: 9.3] [deliverable: manual test confirmation]
 
 **Parallel Groups**:
 
