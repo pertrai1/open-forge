@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026-03-30] Phase 6: Tool - Get Scenarios
+
+- Completed 5 task(s) in phase 6
+
 ## [2026-03-30] Phase 5: Tool - Get Requirements
 
 - Completed 5 task(s) in phase 5

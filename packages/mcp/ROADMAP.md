@@ -220,11 +220,11 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 6.1 Define tool schema [deps: 0.4] [deliverable: `src/tools/get-scenarios/schema.ts`]
-- [ ] 6.2 Create scenarios extractor [deps: 3.2] [deliverable: `src/specs/extractors/scenarios.ts` - parses `#### Scenario:` entries]
-- [ ] 6.3 Implement `get_scenarios` tool handler [deps: 6.1, 6.2] [deliverable: `src/tools/get-scenarios/handler.ts`]
-- [ ] 6.4 Register tool with server [deps: 6.3] [deliverable: tool registration in `src/server.ts`]
-- [ ] 6.5 Write tests for get_scenarios [deps: 6.4] [deliverable: `tests/tools/get-scenarios.test.ts`]
+- [x] 6.1 Define tool schema [deps: 0.4] [deliverable: `src/tools/get-scenarios/schema.ts`]
+- [x] 6.2 Create scenarios extractor [deps: 3.2] [deliverable: `src/specs/extractors/scenarios.ts` - parses `#### Scenario:` entries]
+- [x] 6.3 Implement `get_scenarios` tool handler [deps: 6.1, 6.2] [deliverable: `src/tools/get-scenarios/handler.ts`]
+- [x] 6.4 Register tool with server [deps: 6.3] [deliverable: tool registration in `src/server.ts`]
+- [x] 6.5 Write tests for get_scenarios [deps: 6.4] [deliverable: `tests/tools/get-scenarios.test.ts`]
 
 **Parallel Groups**:
 
