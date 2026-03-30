@@ -28,6 +28,16 @@ set -euo pipefail
 #   update-docs        Update CHANGELOG.md and README.md for a completed task
 #   status             Show per-phase and overall progress summary
 #   change-name        Generate an openspec change name for a single task (legacy)
+#
+# Subcommands (session handoff):
+#   init-handoff       Create HANDOFF.md if it doesn't exist
+#   update-handoff     Update HANDOFF.md after phase completion
+#   show-handoff       Display current handoff summary
+#
+# Subcommands (drift detection):
+#   write-drift-sentinel <phase> <reason>  Signal that agent is stuck on a phase
+#   clear-drift-sentinel <phase>           Clear the sentinel when a phase advances
+#   check-drift-sentinel <phase>           Check if a sentinel exists; exits 0=stuck, 1=clear
 # ---------------------------------------------------------------------------
 
 readonly ROADMAP_FILE="${ROADMAP_FILE:-ROADMAP.md}"
@@ -636,6 +646,352 @@ cmd_change_name() {
 }
 
 # ---------------------------------------------------------------------------
+# Subcommand: init-handoff
+#
+# Creates HANDOFF.md if it doesn't exist, with the current project state.
+# ---------------------------------------------------------------------------
+
+cmd_init_handoff() {
+  local handoff_file="HANDOFF.md"
+
+  if [[ -f "$handoff_file" ]]; then
+    log "HANDOFF.md already exists"
+    return 0
+  fi
+
+  local date_stamp
+  date_stamp="$(date +%Y-%m-%d)"
+
+  cat > "$handoff_file" <<'EOF'
+# Session Handoff
+
+This file enables session continuity for the autonomous `opsx-loop`. Each session reads this file at startup and updates it after completing a phase.
+
+---
+
+## Current State
+
+| Field | Value |
+|-------|-------|
+| **Last Completed Phase** | (none) |
+| **Last Session** | INITIALIZING |
+| **Overall Progress** | 0/? tasks |
+| **ROADMAP Status** | ○ Starting |
+
+---
+
+## Completed Phases
+
+| Phase | Title | Key Artifacts |
+|-------|-------|---------------|
+| (none yet) | | |
+
+---
+
+## Key Decisions (ADR Summary)
+
+_Decisions will be documented here as phases are completed._
+
+---
+
+## Project Patterns
+
+_To be documented as patterns emerge during implementation._
+
+---
+
+## Known Issues & Gotchas
+
+_To be documented as issues are encountered._
+
+---
+
+## Lessons Learned
+
+_To be documented as the project progresses._
+
+---
+
+## Next Phase Context
+
+### Target Phase
+Phase 0: Project Foundation
+
+### Phase Goal
+Establish the development environment, project structure, and testing infrastructure.
+
+---
+
+## Session Resumption Instructions
+
+When starting a new session to continue the ROADMAP:
+
+1. Read this file: `cat HANDOFF.md`
+2. Check status: `bash scripts/roadmap-helper.sh status`
+3. Invoke loop: `/opsx-loop`
+4. After completion: This file updates automatically
+
+---
+
+## Changelog
+
+| Date | Phase | Session | Notes |
+|------|-------|---------|-------|
+EOF
+
+  echo "| ${date_stamp} | — | Initialization | Created HANDOFF.md |" >> "$handoff_file"
+
+  log "Created ${handoff_file}"
+}
+
+# ---------------------------------------------------------------------------
+# Subcommand: update-handoff <phase> <phase_title> [completed_count] [total_count]
+#
+# Updates HANDOFF.md with the latest phase completion info.
+# Extracts key information from the phase artifacts.
+# ---------------------------------------------------------------------------
+
+cmd_update_handoff() {
+  local phase="${1:-}"
+  local phase_title="${2:-}"
+  local completed="${3:-0}"
+  local total="${4:-0}"
+
+  [[ -n "$phase" ]] || fail "Usage: roadmap-helper.sh update-handoff <phase> <phase_title> [completed] [total]"
+
+  local handoff_file="HANDOFF.md"
+  [[ -f "$handoff_file" ]] || cmd_init_handoff
+
+  local date_stamp
+  date_stamp="$(date +%Y-%m-%d)"
+
+  local change_name="roadmap-phase-${phase}"
+  local change_dir="openspec/changes/${change_name}"
+
+  local status_icon="◐ in progress"
+  if [[ "$completed" == "$total" && "$total" -gt 0 ]]; then
+    status_icon="✓ complete"
+  fi
+
+  HANDOFF="$handoff_file" PHASE="$phase" TITLE="$phase_title" COMPLETED="$completed" \
+  TOTAL="$total" DATE="$date_stamp" CHANGE_DIR="$change_dir" STATUS="$status_icon" \
+    python3 <<'PY'
+import os, re
+from datetime import datetime
+
+handoff_path = os.environ["HANDOFF"]
+phase = os.environ["PHASE"]
+title = os.environ.get("TITLE", f"Phase {phase}")
+completed = int(os.environ.get("COMPLETED", "0"))
+total = int(os.environ.get("TOTAL", "0"))
+date_stamp = os.environ["DATE"]
+change_dir = os.environ.get("CHANGE_DIR", "")
+status = os.environ.get("STATUS", "in progress")
+
+with open(handoff_path, "r", encoding="utf-8") as f:
+    content = f.read()
+
+# Update Current State section
+state_pattern = r'(## Current State\s*\n\s*\| Field \| Value \|\s*\n\s*\|-+\|-+\|\s*\n)(.*?)(\n\s*---)'
+state_match = re.search(state_pattern, content, re.DOTALL)
+
+if state_match:
+    total_done_pattern = r'Overall Progress.*?(\d+)/(\d+)'
+    all_tasks = re.findall(total_done_pattern, content)
+    if all_tasks:
+        done_sum = sum(int(t[0]) for t in all_tasks)
+        total_sum = sum(int(t[1]) for t in all_tasks)
+        done_sum += completed
+        total_sum = max(total_sum, total)
+    else:
+        done_sum = completed
+        total_sum = total
+
+    pct = (done_sum / total_sum * 100) if total_sum > 0 else 0
+    road_status = "✅ COMPLETE" if done_sum >= total_sum and total_sum > 0 else status
+
+    new_state = f"""| Field | Value |
+|-------|-------|
+| **Last Completed Phase** | {phase} |
+| **Last Session** | {date_stamp} |
+| **Overall Progress** | {done_sum}/{total_sum} tasks ({int(pct)}%) |
+| **ROADMAP Status** | {road_status} |"""
+
+    content = content[:state_match.start(2)] + new_state + content[state_match.end(2):]
+
+# Update Completed Phases table
+phases_pattern = r'(## Completed Phases\s*\n\s*\| Phase \| Title \| Key Artifacts \|\s*\n\s*\|-+\|-+\|-+\|\s*\n)((?:\|.*\|\s*\n)*)(\s*---)'
+phases_match = re.search(phases_pattern, content, re.DOTALL)
+
+if phases_match:
+    existing_phases = phases_match.group(2)
+    phase_entry_pattern = rf'\| {phase} \|'
+    if not re.search(phase_entry_pattern, existing_phases):
+        new_entry = f"| {phase} | {title} | `openspec/changes/{change_dir}/` |\n"
+        existing_phases = existing_phases.rstrip() + "\n" + new_entry
+        content = content[:phases_match.start(2)] + existing_phases + content[phases_match.end(2):]
+
+# Add changelog entry
+changelog_pattern = r'(## Changelog\s*\n\s*\| Date \| Phase \| Session \| Notes \|\s*\n\s*\|-+\|-+\|-+\|-+\|\s*\n)((?:\|.*\|\s*\n)*)(\s*$)'
+changelog_match = re.search(changelog_pattern, content, re.DOTALL)
+
+if changelog_match:
+    existing_entries = changelog_match.group(2)
+    entry_pattern = rf'\| {date_stamp} \| {phase} \|'
+    if not re.search(entry_pattern, existing_entries):
+        new_entry = f"| {date_stamp} | {phase} | Continuation | Completed {completed} task(s) |\n"
+        content = content[:changelog_match.start(2)] + existing_entries + new_entry + content[changelog_match.end(2):]
+
+with open(handoff_path, "w", encoding="utf-8") as f:
+    f.write(content)
+
+print(f"[roadmap-helper] Updated HANDOFF.md with phase {phase} completion")
+PY
+}
+
+# ---------------------------------------------------------------------------
+# Subcommand: write-drift-sentinel <phase> <reason>
+#
+# Writes a sentinel file signalling the agent is stuck on <phase>.
+# The orchestrator reads this to distinguish stuck agents from slow progress.
+#
+# File written: .pipeline-drift-sentinel
+# ---------------------------------------------------------------------------
+
+cmd_write_drift_sentinel() {
+  local phase="${1:-}"
+  shift
+  local reason="$*"
+  [[ -n "$phase" ]] || fail "Usage: roadmap-helper.sh write-drift-sentinel <phase> <reason>"
+
+  local sentinel_file=".pipeline-drift-sentinel"
+  local date_stamp
+  date_stamp="$(date '+%Y-%m-%d %H:%M:%S')"
+
+  cat > "$sentinel_file" <<EOF
+phase=${phase}
+reason=${reason}
+timestamp=${date_stamp}
+EOF
+
+  log "Drift sentinel written for phase ${phase}: ${reason}"
+}
+
+# ---------------------------------------------------------------------------
+# Subcommand: clear-drift-sentinel <phase>
+#
+# Removes the drift sentinel if it matches <phase>, signalling the agent
+# has made progress and the stuck condition is resolved.
+# ---------------------------------------------------------------------------
+
+cmd_clear_drift_sentinel() {
+  local phase="${1:-}"
+  [[ -n "$phase" ]] || fail "Usage: roadmap-helper.sh clear-drift-sentinel <phase>"
+
+  local sentinel_file=".pipeline-drift-sentinel"
+
+  if [[ ! -f "$sentinel_file" ]]; then
+    log "No drift sentinel present — nothing to clear"
+    return 0
+  fi
+
+  local sentinel_phase
+  sentinel_phase="$(grep '^phase=' "$sentinel_file" | cut -d= -f2)"
+
+  if [[ "$sentinel_phase" == "$phase" ]]; then
+    rm "$sentinel_file"
+    log "Drift sentinel cleared for phase ${phase}"
+  else
+    log "Drift sentinel is for phase ${sentinel_phase}, not ${phase} — leaving unchanged"
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# Subcommand: check-drift-sentinel <phase>
+#
+# Checks whether a drift sentinel exists for <phase>.
+# Exits 0 if stuck (sentinel present for this phase), 1 if clear.
+# Prints a human-readable summary either way.
+# ---------------------------------------------------------------------------
+
+cmd_check_drift_sentinel() {
+  local phase="${1:-}"
+  [[ -n "$phase" ]] || fail "Usage: roadmap-helper.sh check-drift-sentinel <phase>"
+
+  local sentinel_file=".pipeline-drift-sentinel"
+
+  if [[ ! -f "$sentinel_file" ]]; then
+    log "No drift sentinel — phase ${phase} is clear"
+    return 1
+  fi
+
+  local sentinel_phase sentinel_reason sentinel_ts
+  sentinel_phase="$(grep '^phase=' "$sentinel_file" | cut -d= -f2)"
+  sentinel_reason="$(grep '^reason=' "$sentinel_file" | cut -d= -f2-)"
+  sentinel_ts="$(grep '^timestamp=' "$sentinel_file" | cut -d= -f2-)"
+
+  if [[ "$sentinel_phase" == "$phase" ]]; then
+    log "DRIFT DETECTED — phase ${phase} is stuck"
+    log "  Reason:    ${sentinel_reason}"
+    log "  Timestamp: ${sentinel_ts}"
+    return 0
+  else
+    log "Drift sentinel is for phase ${sentinel_phase}, not ${phase} — phase ${phase} is clear"
+    return 1
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# Subcommand: show-handoff
+#
+# Displays a summary of the current handoff state.
+# ---------------------------------------------------------------------------
+
+cmd_show_handoff() {
+  local handoff_file="HANDOFF.md"
+
+  if [[ ! -f "$handoff_file" ]]; then
+    log "No HANDOFF.md found. Run 'init-handoff' to create one."
+    return 1
+  fi
+
+  HANDOFF="$handoff_file" python3 <<'PY'
+import os, re
+
+handoff_path = os.environ["HANDOFF"]
+
+with open(handoff_path, "r", encoding="utf-8") as f:
+    content = f.read()
+
+# Extract Current State
+state_match = re.search(r'## Current State(.*?)---', content, re.DOTALL)
+if state_match:
+    print("═══════════════════════════════════════════════════════")
+    print("  SESSION HANDOFF STATE")
+    print("═══════════════════════════════════════════════════════")
+    print(state_match.group(1).strip())
+    print()
+
+# Extract Next Phase Context
+next_match = re.search(r'## Next Phase Context(.*?)(?=##|$)', content, re.DOTALL)
+if next_match:
+    print("───────────────────────────────────────────────────────")
+    print("  NEXT PHASE")
+    print("───────────────────────────────────────────────────────")
+    next_content = next_match.group(1).strip()
+    # Just show first few lines
+    lines = [l for l in next_content.split('\n') if l.strip() and not l.startswith('|')][:5]
+    for line in lines:
+        print(line)
+    print()
+
+print("───────────────────────────────────────────────────────")
+print(f"Full handoff: cat {handoff_path}")
+print("═══════════════════════════════════════════════════════")
+PY
+}
+
+# ---------------------------------------------------------------------------
 # Dispatch
 # ---------------------------------------------------------------------------
 
@@ -653,6 +1009,16 @@ Phase-level subcommands (one openspec change per phase):
 Task-level subcommands (used within a phase):
   next-task [--phase N]                     Print next pending task (phase|id|desc)
   mark-done <task-id>                       Mark task complete in ROADMAP.md
+
+Session handoff subcommands:
+  init-handoff                              Create HANDOFF.md if it doesn't exist
+  update-handoff <phase> <title> [done] [total]  Update HANDOFF.md after phase
+  show-handoff                              Display current handoff summary
+
+Drift detection subcommands:
+  write-drift-sentinel <phase> <reason>     Signal agent is stuck on phase
+  clear-drift-sentinel <phase>              Clear sentinel when phase advances
+  check-drift-sentinel <phase>              Check sentinel; exits 0=stuck, 1=clear
 
 General subcommands:
   check                                     Run quality checks (lint, typecheck, test, build)
@@ -680,6 +1046,12 @@ main() {
     phase-update-docs)  cmd_phase_update_docs "$@" ;;
     next-task)          cmd_next_task "$@" ;;
     mark-done)          cmd_mark_done "$@" ;;
+    init-handoff)       cmd_init_handoff "$@" ;;
+    update-handoff)     cmd_update_handoff "$@" ;;
+    show-handoff)       cmd_show_handoff "$@" ;;
+    write-drift-sentinel) cmd_write_drift_sentinel "$@" ;;
+    clear-drift-sentinel) cmd_clear_drift_sentinel "$@" ;;
+    check-drift-sentinel) cmd_check_drift_sentinel "$@" ;;
     check)              cmd_check "$@" ;;
     commit)             cmd_commit "$@" ;;
     update-docs)        cmd_update_docs "$@" ;;

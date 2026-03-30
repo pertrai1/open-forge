@@ -6,6 +6,7 @@ Drive the full ROADMAP automation loop — iterate through every phase, creating
 
 **Input**: Optional arguments after `/opsx-loop`:
 
+- `single-phase` — process exactly **one** phase and exit. Used by the external orchestrator (`scripts/orchestrate.sh`) to drive the loop across sessions without context exhaustion. Each invocation reads `HANDOFF.md`, completes one phase, writes `HANDOFF.md`, and stops.
 - A phase number (e.g., `/opsx-loop 2`) to process only that phase
 - A phase range (e.g., `/opsx-loop 3-5`) to process phases 3 through 5
 - No argument to process all phases 0–9
@@ -27,6 +28,33 @@ bash scripts/roadmap-helper.sh status
 
 If any prerequisite fails, inform the user and stop.
 
+**Session Handoff**
+
+This loop is designed to run across multiple sessions. Each session starts fresh with a full context budget by reading `HANDOFF.md` instead of relying on previous conversation history.
+
+At the start of every session:
+
+```bash
+# Check for an existing handoff
+cat HANDOFF.md 2>/dev/null || bash scripts/roadmap-helper.sh init-handoff
+```
+
+If `HANDOFF.md` exists, read it fully before doing anything else. It contains:
+
+- The last completed phase and overall progress
+- Key architectural decisions already made (do not re-litigate these)
+- Project patterns to follow (naming conventions, import style, error handling)
+- Known gotchas to avoid
+- Context required to pick up exactly where the previous session ended
+
+If `HANDOFF.md` does not exist, create it:
+
+```bash
+bash scripts/roadmap-helper.sh init-handoff
+```
+
+Then proceed normally — the handoff will be populated as phases complete.
+
 ---
 
 **Steps**
@@ -46,6 +74,8 @@ Display the progress table. Then announce:
 ## 2. Enter the phase loop
 
 This is the outer loop. Repeat until the helper reports `ROADMAP_COMPLETE`:
+
+**If invoked as `single-phase`**: process exactly ONE phase, then go directly to **step 3** (do not loop back). The external orchestrator (`scripts/orchestrate.sh`) will re-invoke for the next phase.
 
 ---
 
@@ -178,15 +208,21 @@ Show: `"✓ Created N test(s) across M file(s) for phase <phase>"`
 
 Follow the `/opsx-apply` workflow **inline** (do NOT literally invoke `/opsx-apply`).
 
-**i. Get apply instructions:**
+**i. Clear any prior drift sentinel for this phase** (in case a previous session got stuck here and was manually retried):
+
+```bash
+bash scripts/roadmap-helper.sh clear-drift-sentinel <phase>
+```
+
+**ii. Get apply instructions:**
 
 ```bash
 openspec instructions apply --change "<change_name>" --json
 ```
 
-**ii. Read all context files** listed in `contextFiles` from the output.
+**iii. Read all context files** listed in `contextFiles` from the output.
 
-**iii. Iterate through ROADMAP tasks in order.** For each pending task (from the list gathered in step 2b):
+**iv. Iterate through ROADMAP tasks in order.** For each pending task (from the list gathered in step 2b):
 
 Announce: `"── Task <task_id>: <description> ──"`
 
@@ -198,7 +234,7 @@ Announce: `"── Task <task_id>: <description> ──"`
 
 Show: `"✓ Task <task_id> implemented"`
 
-**iv. After implementing the task, mark it done in the ROADMAP:**
+**v. After implementing the task, mark it done in the ROADMAP:**
 
 ```bash
 bash scripts/roadmap-helper.sh mark-done <task_id>
@@ -206,24 +242,28 @@ bash scripts/roadmap-helper.sh mark-done <task_id>
 
 Verify the output is `updated`. If `missing`, warn but continue.
 
-**v. After ALL tasks in the phase are implemented, run quality checks:**
+**vi. After ALL tasks in the phase are implemented, run quality checks:**
 
 ```bash
 bash scripts/roadmap-helper.sh check
 ```
 
-**vi. If quality checks fail:**
+**vii. If quality checks fail:**
 
 - Read the error output carefully
 - Fix the issues (lint errors, type errors, failing tests, build errors)
 - Re-run `bash scripts/roadmap-helper.sh check`
 - Repeat up to 3 fix-and-recheck cycles
 - If still failing after 3 cycles:
-  1. **STOP and document in `PIPELINE-ISSUES.md`** — fill out the Active Issues template with exact errors, context, and what you tried
-  2. Report the remaining errors to the user
-  3. **Continue to the next step anyway** — don't get stuck
+  1. **Write the drift sentinel** so the orchestrator knows the agent is stuck:
+     ```bash
+     bash scripts/roadmap-helper.sh write-drift-sentinel <phase> "quality checks failed after 3 fix cycles"
+     ```
+  2. **STOP and document in `PIPELINE-ISSUES.md`** — fill out the Active Issues template with exact errors, context, and what you tried
+  3. Report the remaining errors to the user
+  4. **Continue to the next step anyway** — don't get stuck
 
-**vii. If quality checks pass:** Show `"✓ Quality checks passed for phase <phase>"`
+**viii. If quality checks pass:** Show `"✓ Quality checks passed for phase <phase>"`
 
 ---
 
@@ -263,9 +303,10 @@ Show: `"✓ Archived <change_name>"`
 
 ---
 
-### 2j. Document phase execution
+### 2j. Document phase execution and write session handoff
 
 Fill out the phase section in `PIPELINE-LOG.md`:
+
 - Timestamps (started/completed)
 - Duration
 - Check off completed tasks
@@ -273,7 +314,25 @@ Fill out the phase section in `PIPELINE-LOG.md`:
 - Challenges encountered (friction points, confusion, failures)
 - Fix attempts count (how many times quality checks were re-run)
 
-This data is critical for improving the autonomous pipeline.
+Then update `HANDOFF.md` with this phase's completion:
+
+```bash
+bash scripts/roadmap-helper.sh update-handoff <phase> "<phase_title>" <completed_count> <total_count>
+```
+
+After updating, **append any new key decisions made during this phase** to the `Key Decisions (ADR Summary)` section of `HANDOFF.md`. For each significant decision, add an entry:
+
+```markdown
+### N. Decision Title
+
+- **Decision**: What was decided
+- **Rationale**: Why this approach was chosen
+- **Impact**: How this affects future phases
+```
+
+Only document decisions that future phases must respect — architectural choices, naming conventions, library selections, or patterns established. Skip routine implementation details.
+
+This data is critical for improving the autonomous pipeline and enabling seamless session resumption.
 
 ---
 
@@ -290,7 +349,9 @@ Show a brief summary:
   Overall: N/M total tasks (X%)
 ```
 
-**Go back to step 2a** to process the next phase.
+**If invoked as `single-phase`**: stop here. Do NOT loop back. The orchestrator will re-invoke for the next phase.
+
+**Otherwise**: go back to step 2a to process the next phase.
 
 ---
 
@@ -316,6 +377,14 @@ Overall progress: M/T tasks (Z%)
 All pending phases have been processed.
 ```
 
+Update `HANDOFF.md` to reflect completion and set a clear `Next Phase Context` for any future work:
+
+```bash
+bash scripts/roadmap-helper.sh show-handoff
+```
+
+If the ROADMAP is fully complete, update the `Next Phase Context` section of `HANDOFF.md` to note what extensions or follow-on work is available (e.g., Phase 10 optional extensions).
+
 ---
 
 ## 4. Final documentation
@@ -323,6 +392,7 @@ All pending phases have been processed.
 Fill out the **Summary Metrics** and **Pipeline Insights** sections in `PIPELINE-LOG.md`:
 
 **Metrics to capture**:
+
 - Total duration (start to end)
 - Phases completed (X/10)
 - Tasks completed (X/54)
@@ -355,7 +425,13 @@ This documentation is the primary research output — it captures what worked an
 
 ## Guardrails
 
+- **Read HANDOFF.md at session start.** Every session must begin by reading `HANDOFF.md`. Decisions recorded there are final — do not re-explore or re-litigate them. If `HANDOFF.md` doesn't exist, create it with `init-handoff` before proceeding.
+
+- **Write HANDOFF.md at phase end.** Every phase completion must call `update-handoff` and append new key decisions. This is what allows the next session to resume without context loss. Skipping this step defeats the entire handoff mechanism.
+
 - **Use `PIPELINE-ISSUES.md` for blockers.** When you encounter issues that block progress for more than 5 minutes or after 3 fix attempts, STOP and fill out the Active Issues template in that file. Be specific about what you need from humans.
+
+- **Write the drift sentinel on unresolvable failures.** If quality checks still fail after 3 fix-and-recheck cycles, call `bash scripts/roadmap-helper.sh write-drift-sentinel <phase> "<reason>"` before documenting in `PIPELINE-ISSUES.md`. This signals the external orchestrator (`orchestrate.sh`) to halt immediately rather than retrying the phase and wasting more context budget. Clear the sentinel (`clear-drift-sentinel`) at the start of step 2f so successful retries don't carry stale state.
 
 - **One change per phase.** Do NOT create separate openspec changes for individual tasks. The proposal, specs, design, and tasks artifacts must describe the phase holistically.
 
@@ -363,7 +439,7 @@ This documentation is the primary research output — it captures what worked an
   - A phase goal is critically ambiguous and you genuinely cannot determine what to implement
   - The same quality check failure persists after 3 fix attempts across 2 consecutive phases (suggests a systemic issue)
   - A fundamental tool is broken (openspec CLI errors, git errors, missing node_modules)
-  
+
   When blocked, **document in `PIPELINE-ISSUES.md`** with exact error, context, attempted solutions, and specific need from human.
 
 - **Do NOT use placeholder content.** Every artifact, test, and implementation must contain real, functional code. Read existing source files to understand project patterns before writing new code.
