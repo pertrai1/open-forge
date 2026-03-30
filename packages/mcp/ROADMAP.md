@@ -64,12 +64,12 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 2.1 Create config module for openspec path resolution [deps: 0.4] [deliverable: `src/config.ts` - resolves `./openspec/` path]
-- [ ] 2.2 Create spec directory reader utility [deps: 2.1] [deliverable: `src/specs/reader.ts` - reads `openspec/specs/` directory]
-- [ ] 2.3 Create purpose extractor utility [deps: 2.2] [deliverable: `src/specs/purpose-extractor.ts` - extracts first paragraph from Purpose section]
-- [ ] 2.4 Implement `resources/list` handler [deps: 2.2, 2.3] [deliverable: `src/handlers/resources-list.ts`]
-- [ ] 2.5 Wire handler to server [deps: 2.4, 1.3] [deliverable: handler registration in `src/server.ts`]
-- [ ] 2.6 Write tests for resources/list [deps: 2.5] [deliverable: `tests/resources-list.test.ts`]
+- [x] 2.1 Create config module for openspec path resolution [deps: 0.4] [deliverable: `src/config.ts` - resolves `./openspec/` path]
+- [x] 2.2 Create spec directory reader utility [deps: 2.1] [deliverable: `src/specs/reader.ts` - reads `openspec/specs/` directory]
+- [x] 2.3 Create purpose extractor utility [deps: 2.2] [deliverable: `src/specs/purpose-extractor.ts` - extracts first paragraph from Purpose section]
+- [x] 2.4 Implement `resources/list` handler [deps: 2.2, 2.3] [deliverable: `src/handlers/resources-list.ts`]
+- [x] 2.5 Wire handler to server [deps: 2.4, 1.3] [deliverable: handler registration in `src/server.ts`]
+- [x] 2.6 Write tests for resources/list [deps: 2.5] [deliverable: `tests/resources-list.test.ts`]
 
 **Parallel Groups**:
 
