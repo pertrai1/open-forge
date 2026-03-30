@@ -1,7 +1,7 @@
 {
   "name": "openspec-mcp",
   "version": "0.1.0",
-  "description": "MCP server exposing OpenSpec archives as resources and tools for AI assistants",
+  "description": "A learning project demonstrating MCP server implementation for OpenSpec archives",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

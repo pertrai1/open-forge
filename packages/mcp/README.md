@@ -1,30 +1,30 @@
 # OpenSpec MCP Server
 
-An MCP (Model Context Protocol) server that exposes OpenSpec specification archives as resources, tools, and prompts for AI assistants. This server enables progressive disclosure of specifications — letting agents discover, search, and read specs without loading everything into context upfront.
+A learning project demonstrating how to build an MCP (Model Context Protocol) server that exposes OpenSpec specification archives as resources, tools, and prompts for AI assistants.
+
+This project demonstrates the **progressive disclosure** pattern — letting agents discover, search, and read specs without loading everything into context upfront. Use this as a reference for building your own MCP servers.
+
+## What You'll Learn
+
+- How to structure an MCP server with TypeScript
+- Implementing resources, tools, and prompts
+- Working with stdio transport
+- Testing MCP servers with Vitest
+- Integrating with Claude Desktop
 
 ## Features
 
 - **Resources**: Browse and read specs via `spec://` and `changes://` URIs
 - **Tools**: Search specs, extract requirements, and get scenarios
 - **Prompts**: Pre-built prompts for understanding and comparing specs
-- **Progressive Disclosure**: Load only what you need, when you need it
 
-## Installation
-
-### From npm (when published)
-
-```bash
-npm install -g openspec-mcp
-```
-
-### From source
+## Setup
 
 ```bash
 git clone https://github.com/ohmyopencode/openspec-mcp.git
 cd openspec-mcp
 npm install
 npm run build
-npm link  # Makes 'openspec-mcp' available globally
 ```
 
 ## Configuration
@@ -43,18 +43,6 @@ Add the server to your Claude Desktop configuration file:
     "openspec": {
       "command": "node",
       "args": ["/path/to/openspec-mcp/dist/index.js"]
-    }
-  }
-}
-```
-
-If installed globally via npm:
-
-```json
-{
-  "mcpServers": {
-    "openspec": {
-      "command": "openspec-mcp"
     }
   }
 }
@@ -323,6 +311,8 @@ src/
 
 MIT
 
-## Progress
+## Further Reading
 
-See [ROADMAP.md](ROADMAP.md) for implementation status.
+- [MCP Documentation](https://modelcontextprotocol.io/)
+- [TypeScript MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk)
+- [Anthropic's Code Execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp) — explains why progressive disclosure matters
