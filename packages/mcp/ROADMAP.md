@@ -100,12 +100,12 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 3.1 Create URI parser utility [deps: 0.4] [deliverable: `src/specs/uri-parser.ts` - parses `spec://name` format]
-- [ ] 3.2 Create spec file reader [deps: 2.1] [deliverable: `src/specs/file-reader.ts` - reads `openspec/specs/{name}/spec.md`]
-- [ ] 3.3 Implement `resources/read` handler [deps: 3.1, 3.2] [deliverable: `src/handlers/resources-read.ts`]
-- [ ] 3.4 Add error handling for missing specs [deps: 3.3] [deliverable: error response in `src/handlers/resources-read.ts`]
-- [ ] 3.5 Wire handler to server [deps: 3.4, 2.5] [deliverable: handler registration in `src/server.ts`]
-- [ ] 3.6 Write tests for resources/read [deps: 3.5] [deliverable: `tests/resources-read.test.ts`]
+- [x] 3.1 Create URI parser utility [deps: 0.4] [deliverable: `src/specs/uri-parser.ts` - parses `spec://name` format]
+- [x] 3.2 Create spec file reader [deps: 2.1] [deliverable: `src/specs/file-reader.ts` - reads `openspec/specs/{name}/spec.md`]
+- [x] 3.3 Implement `resources/read` handler [deps: 3.1, 3.2] [deliverable: `src/handlers/resources-read.ts`]
+- [x] 3.4 Add error handling for missing specs [deps: 3.3] [deliverable: error response in `src/handlers/resources-read.ts`]
+- [x] 3.5 Wire handler to server [deps: 3.4, 2.5] [deliverable: handler registration in `src/server.ts`]
+- [x] 3.6 Write tests for resources/read [deps: 3.5] [deliverable: `tests/resources-read.test.ts`]
 
 **Parallel Groups**:
 

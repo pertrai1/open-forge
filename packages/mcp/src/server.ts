@@ -1,6 +1,7 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { ListResourcesRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import { ListResourcesRequestSchema, ReadResourceRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { createResourcesListHandler } from './handlers/resources-list.js';
+import { createResourcesReadHandler } from './handlers/resources-read.js';
 
 export function createServer(): Server {
   const server = new Server(
@@ -16,6 +17,7 @@ export function createServer(): Server {
   );
 
   server.setRequestHandler(ListResourcesRequestSchema, createResourcesListHandler());
+  server.setRequestHandler(ReadResourceRequestSchema, createResourcesReadHandler());
 
   return server;
 }

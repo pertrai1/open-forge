@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026-03-30] Phase 3: Resources - Read Spec
+
+- Completed 6 task(s) in phase 3
+
 ## [2026-03-30] Phase 2: Resources - List Specs
 
 - Completed 6 task(s) in phase 2
