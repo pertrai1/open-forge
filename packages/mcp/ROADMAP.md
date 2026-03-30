@@ -185,11 +185,11 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 5.1 Define tool schema [deps: 0.4] [deliverable: `src/tools/get-requirements/schema.ts`]
-- [ ] 5.2 Create requirements extractor [deps: 3.2] [deliverable: `src/specs/extractors/requirements.ts` - parses `## Requirements` section]
-- [ ] 5.3 Implement `get_requirements` tool handler [deps: 5.1, 5.2] [deliverable: `src/tools/get-requirements/handler.ts`]
-- [ ] 5.4 Register tool with server [deps: 5.3] [deliverable: tool registration in `src/server.ts`]
-- [ ] 5.5 Write tests for get_requirements [deps: 5.4] [deliverable: `tests/tools/get-requirements.test.ts`]
+- [x] 5.1 Define tool schema [deps: 0.4] [deliverable: `src/tools/get-requirements/schema.ts`]
+- [x] 5.2 Create requirements extractor [deps: 3.2] [deliverable: `src/specs/extractors/requirements.ts` - parses `## Requirements` section]
+- [x] 5.3 Implement `get_requirements` tool handler [deps: 5.1, 5.2] [deliverable: `src/tools/get-requirements/handler.ts`]
+- [x] 5.4 Register tool with server [deps: 5.3] [deliverable: tool registration in `src/server.ts`]
+- [x] 5.5 Write tests for get_requirements [deps: 5.4] [deliverable: `tests/tools/get-requirements.test.ts`]
 
 **Parallel Groups**:
 
