@@ -263,7 +263,21 @@ Show: `"✓ Archived <change_name>"`
 
 ---
 
-### 2j. Show phase summary and loop back
+### 2j. Document phase execution
+
+Fill out the phase section in `PIPELINE-LOG.md`:
+- Timestamps (started/completed)
+- Duration
+- Check off completed tasks
+- What went well (successful patterns, smooth execution)
+- Challenges encountered (friction points, confusion, failures)
+- Fix attempts count (how many times quality checks were re-run)
+
+This data is critical for improving the autonomous pipeline.
+
+---
+
+### 2k. Show phase summary and loop back
 
 ```bash
 bash scripts/roadmap-helper.sh status
@@ -301,6 +315,41 @@ Overall progress: M/T tasks (Z%)
 
 All pending phases have been processed.
 ```
+
+---
+
+## 4. Final documentation
+
+Fill out the **Summary Metrics** and **Pipeline Insights** sections in `PIPELINE-LOG.md`:
+
+**Metrics to capture**:
+- Total duration (start to end)
+- Phases completed (X/10)
+- Tasks completed (X/54)
+- Total fix attempts across all phases
+- Issues logged in PIPELINE-ISSUES.md
+- Human interventions required
+
+**Insights to document**:
+
+1. **What Worked Well** (3-5 bullet points)
+   - Patterns that succeeded
+   - Approaches that were efficient
+   - Surprising successes
+
+2. **What Needs Improvement** (3-5 bullet points)
+   - Friction points
+   - Ambiguities in requirements
+   - Tool failures or gaps
+   - Missing context
+
+3. **Suggestions for Next Project** (3-5 actionable items)
+   - Concrete improvements to ROADMAP structure
+   - AGENTS.md enhancements
+   - Tool/script improvements
+   - Workflow changes
+
+This documentation is the primary research output — it captures what worked and what didn't for future pipeline improvements.
 
 ---
 

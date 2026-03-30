@@ -60,6 +60,11 @@ If stuck for >5 minutes or after 3 failed fix attempts:
 2. Fill out `PIPELINE-ISSUES.md` with exact errors, context, and what you need
 3. Wait for human resolution before proceeding
 
+### Documentation During Execution
+- **Per-phase**: Fill out phase section in `PIPELINE-LOG.md` (timestamps, what worked, challenges, fix attempts)
+- **At completion**: Fill out Summary Metrics and Pipeline Insights in `PIPELINE-LOG.md`
+- This data is critical for improving the autonomous pipeline
+
 ## Patterns
 
 ### Path Resolution
