@@ -22,12 +22,12 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 0.1 Initialize NodeJS project with `package.json` [deps: None] [deliverable: `package.json` with TypeScript, MCP SDK, testing deps]
-- [ ] 0.2 Configure TypeScript (`tsconfig.json`) [deps: None] [deliverable: `tsconfig.json` with strict mode, ESM support]
-- [ ] 0.3 Set up testing framework (Vitest) [deps: 0.1] [deliverable: `vitest.config.ts` + sample passing test]
-- [ ] 0.4 Create project directory structure [deps: None] [deliverable: `src/`, `tests/` directories]
-- [ ] 0.5 Add linter/formatter (ESLint + Prettier) [deps: None] [deliverable: `.eslintrc.js`, `.prettierrc`]
-- [ ] 0.6 Install MCP TypeScript SDK [deps: 0.1] [deliverable: `@modelcontextprotocol/sdk` in dependencies]
+- [x] 0.1 Initialize NodeJS project with `package.json` [deps: None] [deliverable: `package.json` with TypeScript, MCP SDK, testing deps]
+- [x] 0.2 Configure TypeScript (`tsconfig.json`) [deps: None] [deliverable: `tsconfig.json` with strict mode, ESM support]
+- [x] 0.3 Set up testing framework (Vitest) [deps: 0.1] [deliverable: `vitest.config.ts` + sample passing test]
+- [x] 0.4 Create project directory structure [deps: None] [deliverable: `src/`, `tests/` directories]
+- [x] 0.5 Add linter/formatter (ESLint + Prettier) [deps: None] [deliverable: `.eslintrc.js`, `.prettierrc`]
+- [x] 0.6 Install MCP TypeScript SDK [deps: 0.1] [deliverable: `@modelcontextprotocol/sdk` in dependencies]
 
 **Parallel Groups**:
 
