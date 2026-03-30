@@ -256,11 +256,11 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 7.1 Create changes directory reader [deps: 2.1] [deliverable: `src/changes/reader.ts`]
-- [ ] 7.2 Implement `changes://list` resource handler [deps: 7.1] [deliverable: `src/handlers/changes-list.ts`]
-- [ ] 7.3 Implement `changes://{name}` resource handler (optional) [deps: 7.1] [deliverable: `src/handlers/changes-read.ts`]
-- [ ] 7.4 Wire handlers to server [deps: 7.2, 7.3] [deliverable: handler registrations in `src/server.ts`]
-- [ ] 7.5 Write tests for changes resources [deps: 7.4] [deliverable: `tests/changes.test.ts`]
+- [x] 7.1 Create changes directory reader [deps: 2.1] [deliverable: `src/changes/reader.ts`]
+- [x] 7.2 Implement `changes://list` resource handler [deps: 7.1] [deliverable: `src/handlers/changes-list.ts`]
+- [x] 7.3 Implement `changes://{name}` resource handler (optional) [deps: 7.1] [deliverable: `src/handlers/changes-read.ts`]
+- [x] 7.4 Wire handlers to server [deps: 7.2, 7.3] [deliverable: handler registrations in `src/server.ts`]
+- [x] 7.5 Write tests for changes resources [deps: 7.4] [deliverable: `tests/changes.test.ts`]
 
 **Parallel Groups**:
 
