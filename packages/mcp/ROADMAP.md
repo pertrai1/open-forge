@@ -148,11 +148,11 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 4.1 Define tool schema [deps: 0.4] [deliverable: `src/tools/search-specs/schema.ts` - input/output types]
-- [ ] 4.2 Create search utility [deps: 2.2] [deliverable: `src/specs/searcher.ts` - searches names and purpose sections]
-- [ ] 4.3 Implement `search_specs` tool handler [deps: 4.1, 4.2] [deliverable: `src/tools/search-specs/handler.ts`]
-- [ ] 4.4 Register tool with server [deps: 4.3, 1.3] [deliverable: tool registration in `src/server.ts`]
-- [ ] 4.5 Write tests for search_specs [deps: 4.4] [deliverable: `tests/tools/search-specs.test.ts`]
+- [x] 4.1 Define tool schema [deps: 0.4] [deliverable: `src/tools/search-specs/schema.ts` - input/output types]
+- [x] 4.2 Create search utility [deps: 2.2] [deliverable: `src/specs/searcher.ts` - searches names and purpose sections]
+- [x] 4.3 Implement `search_specs` tool handler [deps: 4.1, 4.2] [deliverable: `src/tools/search-specs/handler.ts`]
+- [x] 4.4 Register tool with server [deps: 4.3, 1.3] [deliverable: tool registration in `src/server.ts`]
+- [x] 4.5 Write tests for search_specs [deps: 4.4] [deliverable: `tests/tools/search-specs.test.ts`]
 
 **Parallel Groups**:
 
