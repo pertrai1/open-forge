@@ -2,15 +2,7 @@
 
 A learning project demonstrating how to build an MCP (Model Context Protocol) server that exposes OpenSpec specification archives as resources, tools, and prompts for AI assistants.
 
-This project demonstrates the **progressive disclosure** pattern — letting agents discover, search, and read specs without loading everything into context upfront. Use this as a reference for building your own MCP servers.
-
-## What You'll Learn
-
-- How to structure an MCP server with TypeScript
-- Implementing resources, tools, and prompts
-- Working with stdio transport
-- Testing MCP servers with Vitest
-- Integrating with Claude Desktop
+This project demonstrates the **progressive disclosure** pattern — letting agents discover, search, and read specs without loading everything into context upfront.
 
 ![Screenshot](screenshot.png)
 
