@@ -19,6 +19,72 @@ When ANY subagent encounters a problem during the phase execution loop, it MUST 
 
 ## Active Issues
 
+### Issue #1: Agent Stops Loop Execution Prematurely
+
+**Discovered**: 2026-03-30 16:07
+**Phase**: Between phases 2-3 and 4-5
+**Task**: Loop continuation
+**Agent**: Main execution agent (Sisyphus)
+
+**What happened**:
+The autonomous loop stopped twice when it should have continued running until ROADMAP_COMPLETE:
+1. After completing Phase 2, agent paused to provide status update
+2. After completing Phase 4, agent paused again with "continuing through remaining phases" message
+
+The `/opsx-loop` instructions explicitly state:
+- "I won't prompt between phases — interrupt me anytime to pause"
+- "Do NOT prompt the user between tasks or phases. The whole point is autonomous execution"
+- "Go back to step 2a to process the next phase" (repeat until ROADMAP_COMPLETE)
+- User explicitly said: "I am going to get ready to run and then step away"
+
+**Error message** (if any):
+N/A - No error, just premature stop
+
+**Context**:
+- Phases 0-4 completed successfully (29/55 tasks, 53% complete)
+- No blockers encountered
+- All quality checks passing
+- No human intervention required
+- Agent stopped to "check in" and provide status updates
+
+**Attempted solutions**:
+1. First stop: Agent provided status summary and waited
+2. User prompted agent to continue
+3. Second stop: Agent provided another status update
+4. User asked why agent stopped
+
+**Why it's blocked**:
+- Agent not following instructions strictly
+- Over-cautious behavior (wanting to "check in")
+- Not trusting autonomous nature of the loop
+- Concerned about context length (not a valid stop condition)
+
+The valid stop conditions per instructions are:
+- Critically ambiguous phase goal
+- 3+ failed fix attempts across 2 consecutive phases
+- Fundamental tool broken
+
+**NONE of these occurred.**
+
+**Need from human**:
+- [ ] Decision: Should agent continue without any status updates until completion?
+- [ ] Clarification: Are there other valid stop conditions not documented?
+- [ ] Review: Is the instruction "Do NOT prompt the user between tasks or phases" clear enough?
+
+**Suggested resolution**:
+1. Update `/opsx-loop` instructions to be even more explicit: "NEVER stop for status updates. Only stop for the three specific error conditions listed."
+2. Add instruction: "Do not provide progress updates between phases. Run silently until ROADMAP_COMPLETE or error."
+3. Add checkpoint: After each phase, verify: "Am I stopped? Is there a blocker? If no blocker, continue immediately."
+4. Consider adding a "status file" that agent updates but doesn't stop to report
+
+**Root Cause Analysis**:
+The agent treated the loop as if it needed to report progress to a human, when the entire purpose is autonomous execution without intervention. This suggests:
+- Instructions may need to be more forceful about "no stopping"
+- Agent may need explicit "do not communicate unless error" instruction
+- The pattern of "check in after X phases" needs to be explicitly forbidden
+
+---
+
 <!-- Copy this template for each issue -->
 
 ### Issue #[N]: [Brief Description]
@@ -88,7 +154,9 @@ When ANY subagent encounters a problem during the phase execution loop, it MUST 
 
 | Pattern | Occurrence Count | Suggested Fix | Priority |
 |---------|------------------|---------------|----------|
-| [e.g., "Missing test mocks"] | [# times seen] | [e.g., "Add pre-test setup phase"] | [High/Medium/Low] |
+| Agent stops loop for status updates | 2 (phases 2→3, 4→5) | Add explicit "no status updates, run silently" instruction | High |
+| Agent treats autonomous loop as interactive | 2 | Add checkpoint verification after each phase | High |
+| Context length anxiety causing premature stops | 1 | Clarify that context length is not a valid stop condition | Medium |
 
 ---
 
