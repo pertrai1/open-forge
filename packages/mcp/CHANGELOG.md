@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026-03-30] Phase 8: Prompts
+
+- Completed 5 task(s) in phase 8
+
 ## [2026-03-30] Phase 7: Resources - Changes
 
 - Completed 5 task(s) in phase 7

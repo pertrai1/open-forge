@@ -292,11 +292,11 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 8.1 Define prompt schemas [deps: 0.4] [deliverable: `src/prompts/schemas.ts`]
-- [ ] 8.2 Implement `understand_spec` prompt [deps: 8.1, 3.2] [deliverable: `src/prompts/understand-spec.ts`]
-- [ ] 8.3 Implement `compare_specs` prompt [deps: 8.1, 3.2] [deliverable: `src/prompts/compare-specs.ts`]
-- [ ] 8.4 Register prompts with server [deps: 8.2, 8.3] [deliverable: prompt registrations in `src/server.ts`]
-- [ ] 8.5 Write tests for prompts [deps: 8.4] [deliverable: `tests/prompts.test.ts`]
+- [x] 8.1 Define prompt schemas [deps: 0.4] [deliverable: `src/prompts/schemas.ts`]
+- [x] 8.2 Implement `understand_spec` prompt [deps: 8.1, 3.2] [deliverable: `src/prompts/understand-spec.ts`]
+- [x] 8.3 Implement `compare_specs` prompt [deps: 8.1, 3.2] [deliverable: `src/prompts/compare-specs.ts`]
+- [x] 8.4 Register prompts with server [deps: 8.2, 8.3] [deliverable: prompt registrations in `src/server.ts`]
+- [x] 8.5 Write tests for prompts [deps: 8.4] [deliverable: `tests/prompts.test.ts`]
 
 **Parallel Groups**:
 
