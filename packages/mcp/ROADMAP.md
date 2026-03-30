@@ -42,12 +42,12 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 1.1 Create server entry point [deps: 0.6] [deliverable: `src/index.ts`]
-- [ ] 1.2 Create MCP server instance with name `specdex` and version `0.1.0` [deps: 1.1] [deliverable: `src/server.ts`]
-- [ ] 1.3 Register `resources` capability [deps: 1.2] [deliverable: capability registration in `src/server.ts`]
-- [ ] 1.4 Configure stdio transport [deps: 1.3] [deliverable: stdio transport setup in `src/index.ts`]
-- [ ] 1.5 Add npm `bin` entry for CLI execution [deps: 1.4] [deliverable: `bin` field in `package.json`]
-- [ ] 1.6 Write tests for server initialization [deps: 1.4] [deliverable: `tests/server.test.ts`]
+- [x] 1.1 Create server entry point [deps: 0.6] [deliverable: `src/index.ts`]
+- [x] 1.2 Create MCP server instance with name `specdex` and version `0.1.0` [deps: 1.1] [deliverable: `src/server.ts`]
+- [x] 1.3 Register `resources` capability [deps: 1.2] [deliverable: capability registration in `src/server.ts`]
+- [x] 1.4 Configure stdio transport [deps: 1.3] [deliverable: stdio transport setup in `src/index.ts`]
+- [x] 1.5 Add npm `bin` entry for CLI execution [deps: 1.4] [deliverable: `bin` field in `package.json`]
+- [x] 1.6 Write tests for server initialization [deps: 1.4] [deliverable: `tests/server.test.ts`]
 
 **Parallel Groups**:
 
