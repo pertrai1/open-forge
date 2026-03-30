@@ -110,6 +110,80 @@ phase_drift_detected() {
 }
 
 # ---------------------------------------------------------------------------
+# Return the most recent OpenCode session ID, or empty string if unavailable.
+# ---------------------------------------------------------------------------
+
+get_latest_session_id() {
+  opencode session list 2>/dev/null | grep '^ses_' | head -1 | awk '{print $1}'
+}
+
+# ---------------------------------------------------------------------------
+# Extract per-phase token metrics from an OpenCode session export.
+# Output (pipe-delimited): model|input|output|cache_read|total
+# Falls back to "—" values if the session ID is empty or export fails.
+# ---------------------------------------------------------------------------
+
+extract_phase_metrics() {
+  local session_id="${1:-}"
+
+  if [[ -z "$session_id" ]]; then
+    echo "—|—|—|—|—"
+    return 0
+  fi
+
+  SESSION_ID="$session_id" python3 <<'PY'
+import os, sys, json, re, subprocess
+
+session_id = os.environ["SESSION_ID"]
+
+try:
+    result = subprocess.run(
+        ["opencode", "export", session_id],
+        capture_output=True, text=True, timeout=30
+    )
+    raw = result.stdout
+except Exception:
+    print("—|—|—|—|—")
+    sys.exit(0)
+
+lines = raw.splitlines()
+json_lines = [l for l in lines if not l.startswith("Exporting session:")]
+json_text = "\n".join(json_lines)
+
+try:
+    data = json.loads(json_text)
+    messages = data.get("messages", [])
+
+    total_input = total_output = total_cache = total_all = 0
+    model_id = "—"
+
+    for msg in messages:
+        info = msg.get("info", {})
+        if info.get("role") != "assistant":
+            continue
+        tokens = info.get("tokens", {})
+        model_info = info.get("model", {})
+        if model_info.get("modelID"):
+            model_id = model_info["modelID"]
+        total_input  += tokens.get("input", 0)
+        total_output += tokens.get("output", 0)
+        total_cache  += tokens.get("cache", {}).get("read", 0) if isinstance(tokens.get("cache"), dict) else 0
+        total_all    += tokens.get("total", 0)
+
+    print(f"{model_id}|{total_input}|{total_output}|{total_cache}|{total_all}")
+
+except (json.JSONDecodeError, KeyError):
+    # Fallback: regex on raw text to find token numbers
+    numbers = re.findall(r'"total"\s*:\s*(\d+)', raw)
+    if numbers:
+        total = sum(int(n) for n in numbers[::2])  # avoid parts duplication
+        print(f"—|—|—|—|{total}")
+    else:
+        print("—|—|—|—|—")
+PY
+}
+
+# ---------------------------------------------------------------------------
 # Run one phase via OpenCode non-interactively.
 # Returns opencode's exit code.
 # ---------------------------------------------------------------------------
@@ -243,8 +317,18 @@ main() {
 
     log_section "Phase ${phase}: ${phase_title} (${pending}/${total} tasks pending, attempt ${attempts}/${MAX_ATTEMPTS_PER_PHASE})"
 
+    bash "$HELPER" phase-log-start "$phase" "$phase_title"
+
     local exit_code=0
     run_one_phase || exit_code=$?
+
+    local session_id
+    session_id="$(get_latest_session_id)"
+    local metrics
+    metrics="$(extract_phase_metrics "$session_id")"
+    local pm_model pm_input pm_output pm_cache pm_total
+    IFS='|' read -r pm_model pm_input pm_output pm_cache pm_total <<< "$metrics"
+    bash "$HELPER" phase-log-complete "$phase" "$pm_model" "$pm_input" "$pm_output" "$pm_cache" "$pm_total"
 
     if (( exit_code != 0 )); then
       warn "OpenCode exited with code ${exit_code} on phase ${phase}"

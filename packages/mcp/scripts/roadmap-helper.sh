@@ -38,6 +38,11 @@ set -euo pipefail
 #   write-drift-sentinel <phase> <reason>  Signal that agent is stuck on a phase
 #   clear-drift-sentinel <phase>           Clear the sentinel when a phase advances
 #   check-drift-sentinel <phase>           Check if a sentinel exists; exits 0=stuck, 1=clear
+#
+# Subcommands (pipeline metrics):
+#   phase-log-start <phase> <title>        Record phase start in PIPELINE-METRICS.md
+#   phase-log-complete <phase> <model> \   Record phase completion with token counts
+#     <input> <output> <cache_read> <total>
 # ---------------------------------------------------------------------------
 
 readonly ROADMAP_FILE="${ROADMAP_FILE:-ROADMAP.md}"
@@ -942,6 +947,144 @@ cmd_check_drift_sentinel() {
 }
 
 # ---------------------------------------------------------------------------
+# Subcommand: phase-log-start <phase> <title>
+#
+# Records the start of a phase in PIPELINE-METRICS.md.
+# Creates the file with headers if it doesn't exist.
+# Appends a row with the start timestamp and placeholder values for fields
+# that will be filled in by phase-log-complete.
+# ---------------------------------------------------------------------------
+
+cmd_phase_log_start() {
+  local phase="${1:-}"
+  shift
+  local title="${*:-Phase $phase}"
+  [[ -n "$phase" ]] || fail "Usage: roadmap-helper.sh phase-log-start <phase> <title>"
+
+  local metrics_file="PIPELINE-METRICS.md"
+  local started
+  started="$(date '+%Y-%m-%d %H:%M:%S')"
+
+  if [[ ! -f "$metrics_file" ]]; then
+    cat > "$metrics_file" <<'EOF'
+# Pipeline Metrics
+
+Automatically captured per phase by `scripts/orchestrate.sh`.
+
+| Phase | Title | Started | Completed | Duration | Model | Input Tokens | Output Tokens | Cache Read | Total Tokens |
+|-------|-------|---------|-----------|----------|-------|-------------|---------------|------------|-------------|
+EOF
+    log "Created ${metrics_file}"
+  fi
+
+  METRICS="$metrics_file" PHASE="$phase" TITLE="$title" STARTED="$started" python3 <<'PY'
+import os
+
+metrics_path = os.environ["METRICS"]
+phase = os.environ["PHASE"]
+title = os.environ["TITLE"]
+started = os.environ["STARTED"]
+
+with open(metrics_path, "r", encoding="utf-8") as f:
+    content = f.read()
+
+row = f"| {phase} | {title} | {started} | — | — | — | — | — | — | — |\n"
+
+with open(metrics_path, "a", encoding="utf-8") as f:
+    f.write(row)
+
+print(f"[roadmap-helper] Logged phase {phase} start in {metrics_path}")
+PY
+}
+
+# ---------------------------------------------------------------------------
+# Subcommand: phase-log-complete <phase> <model> <input> <output> <cache_read> <total>
+#
+# Fills in completion data for the most recent matching phase row in
+# PIPELINE-METRICS.md.  Calculates duration from the recorded start time.
+# ---------------------------------------------------------------------------
+
+cmd_phase_log_complete() {
+  local phase="${1:-}"
+  local model="${2:----}"
+  local input_tokens="${3:----}"
+  local output_tokens="${4:----}"
+  local cache_read="${5:----}"
+  local total_tokens="${6:----}"
+
+  [[ -n "$phase" ]] || fail "Usage: roadmap-helper.sh phase-log-complete <phase> <model> <input> <output> <cache_read> <total>"
+
+  local metrics_file="PIPELINE-METRICS.md"
+  [[ -f "$metrics_file" ]] || fail "PIPELINE-METRICS.md not found — run phase-log-start first"
+
+  local completed
+  completed="$(date '+%Y-%m-%d %H:%M:%S')"
+
+  METRICS="$metrics_file" PHASE="$phase" MODEL="$model" \
+  INPUT_TOKENS="$input_tokens" OUTPUT_TOKENS="$output_tokens" \
+  CACHE_READ="$cache_read" TOTAL_TOKENS="$total_tokens" \
+  COMPLETED="$completed" python3 <<'PY'
+import os, re
+from datetime import datetime
+
+metrics_path = os.environ["METRICS"]
+phase = os.environ["PHASE"]
+model = os.environ["MODEL"]
+input_tokens = os.environ["INPUT_TOKENS"]
+output_tokens = os.environ["OUTPUT_TOKENS"]
+cache_read = os.environ["CACHE_READ"]
+total_tokens = os.environ["TOTAL_TOKENS"]
+completed = os.environ["COMPLETED"]
+
+with open(metrics_path, "r", encoding="utf-8") as f:
+    lines = f.readlines()
+
+row_re = re.compile(
+    r'^\|\s*' + re.escape(phase) + r'\s*\|'
+    r'(?P<title>[^|]*)\|'
+    r'(?P<started>[^|]*)\|'
+    r'\s*—\s*\|'  # Completed placeholder
+    r'\s*—\s*\|'  # Duration placeholder
+)
+
+updated = False
+for idx in range(len(lines) - 1, -1, -1):
+    m = row_re.match(lines[idx])
+    if not m:
+        continue
+
+    started_raw = m.group("started").strip()
+    title_raw = m.group("title").strip()
+
+    try:
+        started_dt = datetime.strptime(started_raw, "%Y-%m-%d %H:%M:%S")
+        completed_dt = datetime.strptime(completed, "%Y-%m-%d %H:%M:%S")
+        elapsed = int((completed_dt - started_dt).total_seconds())
+        duration = f"{elapsed // 60}m {elapsed % 60}s"
+    except ValueError:
+        duration = "—"
+
+    lines[idx] = (
+        f"| {phase} | {title_raw} | {started_raw} | {completed} | {duration} "
+        f"| {model} | {input_tokens} | {output_tokens} | {cache_read} | {total_tokens} |\n"
+    )
+    updated = True
+    break
+
+if not updated:
+    lines.append(
+        f"| {phase} | — | — | {completed} | — "
+        f"| {model} | {input_tokens} | {output_tokens} | {cache_read} | {total_tokens} |\n"
+    )
+
+with open(metrics_path, "w", encoding="utf-8") as f:
+    f.writelines(lines)
+
+print(f"[roadmap-helper] Updated phase {phase} completion in {metrics_path}")
+PY
+}
+
+# ---------------------------------------------------------------------------
 # Subcommand: show-handoff
 #
 # Displays a summary of the current handoff state.
@@ -1020,6 +1163,11 @@ Drift detection subcommands:
   clear-drift-sentinel <phase>              Clear sentinel when phase advances
   check-drift-sentinel <phase>              Check sentinel; exits 0=stuck, 1=clear
 
+Pipeline metrics subcommands:
+  phase-log-start <phase> <title>           Record phase start in PIPELINE-METRICS.md
+  phase-log-complete <phase> <model> \      Record phase completion with token counts
+    <input> <output> <cache_read> <total>
+
 General subcommands:
   check                                     Run quality checks (lint, typecheck, test, build)
   commit <task-id> <description...>         Stage and commit for a single task
@@ -1052,6 +1200,8 @@ main() {
     write-drift-sentinel) cmd_write_drift_sentinel "$@" ;;
     clear-drift-sentinel) cmd_clear_drift_sentinel "$@" ;;
     check-drift-sentinel) cmd_check_drift_sentinel "$@" ;;
+    phase-log-start)      cmd_phase_log_start "$@" ;;
+    phase-log-complete)   cmd_phase_log_complete "$@" ;;
     check)              cmd_check "$@" ;;
     commit)             cmd_commit "$@" ;;
     update-docs)        cmd_update_docs "$@" ;;
