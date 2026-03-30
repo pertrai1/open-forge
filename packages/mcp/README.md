@@ -21,7 +21,7 @@ This project demonstrates the **progressive disclosure** pattern — letting age
 ## Setup
 
 ```bash
-git clone https://github.com/ohmyopencode/openspec-mcp.git
+git clone https://github.com/pertrai1/openspec-mcp.git
 cd openspec-mcp
 npm install
 npm run build
@@ -77,9 +77,11 @@ Brief description of what this spec is about.
 ## Requirements
 
 ### Requirement: Feature name
+
 The system SHALL...
 
 #### Scenario: Scenario name
+
 - **WHEN** condition
 - **THEN** expected outcome
 ```
@@ -93,6 +95,7 @@ The system SHALL...
 List all available specifications.
 
 **Returns**:
+
 ```json
 {
   "resources": [
@@ -111,9 +114,11 @@ List all available specifications.
 Read the full content of a specification.
 
 **Parameters**:
+
 - `uri`: `spec://bash-tool`
 
 **Returns**:
+
 ```json
 {
   "contents": [
@@ -131,6 +136,7 @@ Read the full content of a specification.
 List all change records.
 
 **Returns**:
+
 ```json
 {
   "changes": [
@@ -156,9 +162,11 @@ Read a specific change record.
 Search across spec names and purpose sections.
 
 **Parameters**:
+
 - `query` (string, required): Search term
 
 **Returns**:
+
 ```json
 {
   "results": [
@@ -179,9 +187,11 @@ Search across spec names and purpose sections.
 Extract just the Requirements section from a spec.
 
 **Parameters**:
+
 - `spec_name` (string, required): Name of the spec (e.g., "bash-tool")
 
 **Returns**:
+
 ```json
 {
   "specName": "bash-tool",
@@ -201,9 +211,11 @@ Extract just the Requirements section from a spec.
 Extract scenarios from a spec.
 
 **Parameters**:
+
 - `spec_name` (string, required): Name of the spec
 
 **Returns**:
+
 ```json
 {
   "specName": "bash-tool",
@@ -226,6 +238,7 @@ Extract scenarios from a spec.
 Generate a prompt for understanding a specification.
 
 **Arguments**:
+
 - `spec_name` (string, required): Name of the spec to understand
 
 **Returns**: A prompt asking the AI to explain the spec, its requirements, and how to test it.
@@ -235,6 +248,7 @@ Generate a prompt for understanding a specification.
 Generate a prompt for comparing two specifications.
 
 **Arguments**:
+
 - `spec_a` (string, required): First spec to compare
 - `spec_b` (string, required): Second spec to compare
 
