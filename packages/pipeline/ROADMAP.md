@@ -17,12 +17,12 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 0.1 Initialize Node.js project with `package.json` [deps: None] [deliverable: `package.json` with TypeScript, Vitest, Zod, commander deps]
-- [ ] 0.2 Configure TypeScript (`tsconfig.json`) [deps: None] [deliverable: `tsconfig.json` with strict mode, Node 18+ target]
-- [ ] 0.3 Set up testing framework (Vitest) [deps: 0.1] [deliverable: `vitest.config.ts` + sample passing test]
-- [ ] 0.4 Create project directory structure [deps: None] [deliverable: Full `src/` structure per Package Structure section]
-- [ ] 0.5 Add linter/formatter (ESLint + Prettier) [deps: None] [deliverable: `.eslintrc.js`, `.prettierrc`]
-- [ ] 0.6 Create template files [deps: 0.4] [deliverable: `templates/ROADMAP.template.md`, `templates/HANDOFF.template.md`, `templates/forge.config.template.json`]
+- [x] 0.1 Initialize Node.js project with `package.json` [deps: None] [deliverable: `package.json` with TypeScript, Vitest, Zod, commander deps]
+- [x] 0.2 Configure TypeScript (`tsconfig.json`) [deps: None] [deliverable: `tsconfig.json` with strict mode, Node 18+ target]
+- [x] 0.3 Set up testing framework (Vitest) [deps: 0.1] [deliverable: `vitest.config.ts` + sample passing test]
+- [x] 0.4 Create project directory structure [deps: None] [deliverable: Full `src/` structure per Package Structure section]
+- [x] 0.5 Add linter/formatter (ESLint + Prettier) [deps: None] [deliverable: `.eslintrc.js`, `.prettierrc`]
+- [x] 0.6 Create template files [deps: 0.4] [deliverable: `templates/ROADMAP.template.md`, `templates/HANDOFF.template.md`, `templates/forge.config.template.json`]
 
 **Parallel Groups**:
 
