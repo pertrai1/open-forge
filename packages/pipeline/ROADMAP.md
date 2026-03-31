@@ -488,28 +488,6 @@ open-forge-pipeline/
 
 ---
 
-## Estimated Effort
-
-| Phase | Tasks | Complexity | Estimated Time |
-| ----- | ----- | ---------- | -------------- |
-| 0     | 6     | Low        | 2-3 hours      |
-| 1     | 8     | Medium     | 3-4 hours      |
-| 2     | 6     | Medium     | 4-5 hours      |
-| 3     | 6     | Medium     | 3-4 hours      |
-| 4     | 6     | High       | 5-6 hours      |
-| 5     | 6     | High       | 4-5 hours      |
-| 6     | 12    | High       | 8-10 hours     |
-| 7     | 7     | Medium     | 3-4 hours      |
-| 8     | 7     | Medium     | 3-4 hours      |
-| 9     | 5     | Medium     | 3-4 hours      |
-| 10    | 10    | High       | 6-8 hours      |
-| 11    | 9     | Medium     | 4-5 hours      |
-| 12    | 6     | Low        | 3-4 hours      |
-
-**Total Estimated Time**: 51-66 hours (core phases 0-11)
-
----
-
 ## Notes for Subagents
 
 1. **Each task is atomic** - A single subagent can complete it independently
