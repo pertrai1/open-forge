@@ -1,6 +1,6 @@
 # OpenForge Pipeline
 
-> **Status: Pre-development** — The design is documented in [REQUIREMENTS.md](./REQUIREMENTS.md), but no code has been written yet. Now is the best time to influence the architecture, challenge assumptions, and shape the direction of the project.
+> **Status: Early development** — Phase 0 (project foundation) and Phase 1 (core types & interfaces) are complete. The type contracts for ROADMAP, HANDOFF, pipeline state, quality gates, metrics, orchestrator, and configuration are defined with 41 passing tests. See [ROADMAP.md](./ROADMAP.md) for progress.
 
 An OpenCode plugin that turns natural language requirements into a fully built application — autonomously, with minimal human intervention.
 
@@ -117,11 +117,11 @@ Project-specific settings are defined in `forge.config.json`, including language
 
 ## Contributing
 
-This project is in the design phase — contributions at every level are welcome:
+Contributions at every level are welcome:
 
 - **Challenge the design** — Read [REQUIREMENTS.md](./REQUIREMENTS.md) and open an issue if something doesn't make sense or could be improved
 - **Tackle an open challenge** — The [Known Risks & Open Challenges](#known-risks--open-challenges) section lists areas where the design needs real-world validation
-- **Help build it** — Once implementation begins, the ROADMAP will have tasks tagged with complexity levels and dependency info
+- **Help build it** — Check [ROADMAP.md](./ROADMAP.md) for tasks tagged with complexity levels and dependency info
 
 ### Getting Started
 
