@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12-12/schema",
+  "title": "OpenForge Pipeline Configuration",
+  "description": "Configuration schema for the OpenForge Pipeline",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Project name"
+        },
+        "language": {
+          "type": "string",
+          "enum": ["typescript", "javascript", "python"],
+          "default": "typescript",
+          "description": "Primary programming language"
+        },
+        "framework": {
+          "type": "string",
+          "description": "Framework being used (optional)"
+        },
+        "testFramework": {
+          "type": "string",
+          "enum": ["vitest", "jest", "mocha", "pytest"],
+          "default": "vitest",
+          "description": "Testing framework"
+        }
+      },
+      "required": ["name"]
+    },
+    "pipeline": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["single-phase", "continuous", "range"],
+          "default": "continuous",
+          "description": "Execution mode"
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Specific phases to run (optional)"
+        },
+        "parallel": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable parallel execution where possible"
+        },
+        "qualityGates": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run quality gates after each phase"
+        }
+      }
+    },
+    "agents": {
+      "type": "object",
+      "properties": {
+        "testAuthor": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "timeout": {
+              "type": "number",
+              "default": 300000
+            }
+          }
+        },
+        "implementer": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "timeout": {
+              "type": "number",
+              "default": 600000
+            }
+          }
+        },
+        "gateAgent": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "timeout": {
+              "type": "number",
+              "default": 300000
+            }
+          }
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "properties": {
+        "lint": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run linter as quality gate"
+        },
+        "typecheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run type checker as quality gate"
+        },
+        "test": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run tests as quality gate"
+        },
+        "build": {
+          "type": "boolean",
+          "default": false,
+          "description": "Run build as quality gate"
+        }
+      }
+    },
+    "logging": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["debug", "info", "warn", "error"],
+          "default": "info"
+        },
+        "metrics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable metrics logging"
+        }
+      }
+    }
+  },
+  "required": ["project"]
+}

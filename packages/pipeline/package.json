@@ -1,0 +1,67 @@
+{
+  "name": "open-forge-pipeline",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "An OpenCode plugin that turns natural language requirements into a fully built application — autonomously, with minimal human intervention.",
+  "main": "dist/cli.js",
+  "types": "dist/types.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/types.d.ts",
+      "cli": "./dist/cli.js"
+    }
+  },
+  "bin": {
+    "forge": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src tests",
+    "lint:fix": "eslint src tests --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm run test",
+    "pretest": "npm run typecheck && npm run lint && npm run format:check"
+  },
+  "keywords": [
+    "openforge",
+    "pipeline",
+    "autonomous",
+    "agent",
+    "ai",
+    "cli",
+    "opencode"
+  ],
+  "author": "Rob Simpson <rsimpson2@me.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pertrai1/open-forge-pipeline"
+  },
+  "bugs": {
+    "url": "https://github.com/pertrai1/open-forge-pipeline/issues"
+  },
+  "homepage": "",
+  "engines": {
+    "node": ">= 20.0.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.2",
+    "@vitest/ui": "^4.1.2",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.0",
+    "vitest": "^4.1.2"
+  },
+  "dependencies": {
+    "commander": "^14.0.3",
+    "zod": "^4.3.6"
+  }
+}
