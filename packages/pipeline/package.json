@@ -25,6 +25,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
     "typecheck": "tsc --noEmit",
+    "verify": "npm run typecheck && npm run lint && npm run format:check && npm run build && vitest run",
     "prepublishOnly": "npm run build && npm run test",
     "pretest": "npm run typecheck && npm run lint && npm run format:check",
     "prepare": "husky"
