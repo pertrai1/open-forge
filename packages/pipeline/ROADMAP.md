@@ -38,14 +38,14 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 1.1 Define ROADMAP types [deps: 0.4] [deliverable: `src/lib/roadmap/types.ts` - Phase, Task, ROADMAP interfaces]
-- [ ] 1.2 Define HANDOFF types [deps: 0.4] [deliverable: `src/lib/handoff/types.ts` - HandoffState, TaskLog, Convention interfaces]
-- [ ] 1.3 Define pipeline state types [deps: 0.4] [deliverable: `src/types.ts` - PipelineState, PhaseState, ExecutionMode types]
-- [ ] 1.4 Define quality gate types [deps: 0.4] [deliverable: `src/lib/quality/types.ts` - GateResult, CheckResult interfaces]
-- [ ] 1.5 Define metrics types [deps: 0.4] [deliverable: `src/lib/metrics/types.ts` - InvocationMetrics, CostManifest interfaces]
-- [ ] 1.6 Define orchestrator types [deps: 0.4] [deliverable: `src/lib/orchestrator/types.ts` - Intent, Strategy, SessionState interfaces]
-- [ ] 1.7 Create Zod schemas for configuration [deps: 0.1] [deliverable: `src/lib/config/schema.ts` - ForgeConfigSchema with all fields]
-- [ ] 1.8 Write tests for types [deps: 1.1-1.7] [deliverable: `tests/types.test.ts`]
+- [x] 1.1 Define ROADMAP types [deps: 0.4] [deliverable: `src/lib/roadmap/types.ts` - Phase, Task, ROADMAP interfaces]
+- [x] 1.2 Define HANDOFF types [deps: 0.4] [deliverable: `src/lib/handoff/types.ts` - HandoffState, TaskLog, Convention interfaces]
+- [x] 1.3 Define pipeline state types [deps: 0.4] [deliverable: `src/types.ts` - PipelineState, PhaseState, ExecutionMode types]
+- [x] 1.4 Define quality gate types [deps: 0.4] [deliverable: `src/lib/quality/types.ts` - GateResult, CheckResult interfaces]
+- [x] 1.5 Define metrics types [deps: 0.4] [deliverable: `src/lib/metrics/types.ts` - InvocationMetrics, CostManifest interfaces]
+- [x] 1.6 Define orchestrator types [deps: 0.4] [deliverable: `src/lib/orchestrator/types.ts` - Intent, Strategy, SessionState interfaces]
+- [x] 1.7 Create Zod schemas for configuration [deps: 0.1] [deliverable: `src/lib/config/schema.ts` - ForgeConfigSchema with all fields]
+- [x] 1.8 Write tests for types [deps: 1.1-1.7] [deliverable: `tests/types.test.ts`]
 
 **Parallel Groups**:
 
