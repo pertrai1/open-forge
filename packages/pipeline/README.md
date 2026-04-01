@@ -1,6 +1,6 @@
 # OpenForge Pipeline
 
-> **Status: Early development** — Phase 0 (project foundation) and Phase 1 (core types & interfaces) are complete. The type contracts for ROADMAP, HANDOFF, pipeline state, quality gates, metrics, orchestrator, and configuration are defined with 41 passing tests. See [ROADMAP.md](./ROADMAP.md) for progress.
+> **Status: Early development** — see [ROADMAP.md](./ROADMAP.md) for progress.
 
 An OpenCode plugin that turns natural language requirements into a fully built application — autonomously, with minimal human intervention.
 
