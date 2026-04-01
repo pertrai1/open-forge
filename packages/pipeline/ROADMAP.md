@@ -87,13 +87,15 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 - [ ] 3.3 Implement metrics logger [deps: 1.5] [deliverable: `src/lib/metrics/logger.ts` - logInvocation(), getCostManifest()]
 - [ ] 3.4 Implement metrics helper [deps: 3.3] [deliverable: `src/lib/helper/metrics.ts` - recordToolResult(), calculateTotals()]
 - [ ] 3.5 Implement drift sentinel manager [deps: 0.4] [deliverable: `src/lib/helper/drift.ts` - writeDriftSentinel(), clearDriftSentinel(), checkDriftSentinel()]
-- [ ] 3.6 Write tests for HANDOFF module [deps: 3.1-3.5] [deliverable: `tests/handoff-manager.test.ts`, `tests/helper.test.ts`]
+- [ ] 3.6 Implement checkpoint manager [deps: 0.4] [deliverable: `src/lib/helper/checkpoint.ts` - createCheckpoint(), rollbackToCheckpoint(), deleteCheckpoints(), listCheckpoints(), getCheckpointDiff()]
+- [ ] 3.7 Implement memory injection scanner [deps: 0.4] [deliverable: `src/lib/helper/scanner.ts` - scanForInjection(), sanitizeUnicode()]
+- [ ] 3.8 Write tests for HANDOFF module [deps: 3.1-3.7] [deliverable: `tests/handoff-manager.test.ts`, `tests/helper.test.ts`]
 
 **Parallel Groups**:
 
-- Group A: 3.1, 3.3, 3.5 (all independent)
+- Group A: 3.1, 3.3, 3.5, 3.6, 3.7 (all independent)
 - Group B: 3.2 (requires 3.1), 3.4 (requires 3.3)
-- Group C: 3.6 (requires all previous)
+- Group C: 3.8 (requires all previous)
 
 ---
 
@@ -104,19 +106,20 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 ### Tasks
 
 - [ ] 4.1 Implement session manager [deps: 1.3] [deliverable: `src/lib/orchestrator/session.ts` - createSession(), endSession(), getSessionState()]
-- [ ] 4.2 Implement intent router [deps: 1.6] [deliverable: `src/lib/orchestrator/router.ts` - classifyIntent(), selectStrategy()]
+- [ ] 4.2 Implement intent & model router [deps: 1.6] [deliverable: `src/lib/orchestrator/router.ts` - classifyIntent(), selectStrategy(), routeModelByComplexity()]
 - [ ] 4.3 Implement phase executor [deps: 2.4, 3.1] [deliverable: `src/lib/orchestrator/executor.ts` - executePhase(), handlePhaseFailure()]
-- [ ] 4.4 Implement orchestrator main loop [deps: 4.1, 4.2, 4.3] [deliverable: `src/lib/orchestrator/index.ts` - runPipeline(), runContinuous(), runSinglePhase()]
-- [ ] 4.5 Implement execution mode handler [deps: 4.4] [deliverable: `src/lib/orchestrator/modes.ts` - single-phase, continuous, range modes]
-- [ ] 4.6 Write tests for orchestrator [deps: 4.1-4.5] [deliverable: `tests/orchestrator.test.ts`]
+- [ ] 4.4 Implement context compressor [deps: 4.1] [deliverable: `src/lib/orchestrator/compressor.ts` - compressSession(), extractMiddleContext()]
+- [ ] 4.5 Implement orchestrator main loop [deps: 4.1, 4.2, 4.3, 4.4] [deliverable: `src/lib/orchestrator/index.ts` - runPipeline(), runContinuous(), runSinglePhase()]
+- [ ] 4.6 Implement execution mode handler [deps: 4.5] [deliverable: `src/lib/orchestrator/modes.ts` - single-phase, continuous, range modes]
+- [ ] 4.7 Write tests for orchestrator [deps: 4.1-4.6] [deliverable: `tests/orchestrator.test.ts`]
 
 **Parallel Groups**:
 
 - Group A: 4.1, 4.2 (independent)
-- Group B: 4.3 (requires 2.4, 3.1)
-- Group C: 4.4 (requires 4.1, 4.2, 4.3)
-- Group D: 4.5 (requires 4.4)
-- Group E: 4.6 (requires all previous)
+- Group B: 4.3 (requires 2.4, 3.1), 4.4 (requires 4.1)
+- Group C: 4.5 (requires 4.1, 4.2, 4.3, 4.4)
+- Group D: 4.6 (requires 4.5)
+- Group E: 4.7 (requires all previous)
 
 ---
 
@@ -129,7 +132,7 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 - [ ] 5.1 Implement execution engine [deps: 1.3, 2.4, 3.1] [deliverable: `src/lib/execution/engine.ts` - runPerPhaseWorkflow()]
 - [ ] 5.2 Implement quality checker [deps: 1.4] [deliverable: `src/lib/quality/checker.ts` - runLint(), runTypeCheck(), runTests(), runBuild()]
 - [ ] 5.3 Implement quality gate runner [deps: 5.2] [deliverable: `src/lib/helper/quality.ts` - runQualityGates(), checkAllGates()]
-- [ ] 5.4 Implement gate retry loop [deps: 5.3] [deliverable: `src/lib/quality/retry.ts` - runWithRetry(), handleGateFailure()]
+- [ ] 5.4 Implement gate retry loop [deps: 5.3, 3.6] [deliverable: `src/lib/quality/retry.ts` - runWithRetry(), handleGateFailure(), rollbackAndRetry()]
 - [ ] 5.5 Implement PIPELINE-ISSUES writer [deps: 0.4] [deliverable: `src/lib/helper/issues.ts` - documentBlocker(), formatIssue()]
 - [ ] 5.6 Write tests for execution engine [deps: 5.1-5.5] [deliverable: `tests/execution-engine.test.ts`, `tests/quality-checker.test.ts`]
 
@@ -149,25 +152,27 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 ### Tasks
 
 - [ ] 6.1 Implement context firewall [deps: 1.3] [deliverable: `src/lib/firewall/context.ts` - filterContextForRole(), enforceFirewall()]
-- [ ] 6.2 Implement role definitions [deps: 1.3] [deliverable: `src/lib/firewall/roles.ts` - TestAuthor, Implementer, GateAgent roles]
-- [ ] 6.3 Implement disagreement protocol [deps: 6.1] [deliverable: `src/lib/firewall/disagreement.ts` - handleDisagreement(), routeToOrchestrator()]
-- [ ] 6.4 Implement Verify gate [deps: 5.3] [deliverable: `src/lib/gates/verify.ts` - runVerifyGate()]
-- [ ] 6.5 Implement QA Testing gate [deps: 5.3] [deliverable: `src/lib/gates/qa.ts` - runQAGate()]
-- [ ] 6.6 Implement Security Audit gate [deps: 5.3] [deliverable: `src/lib/gates/security.ts` - runSecurityGate()]
-- [ ] 6.7 Implement Architect Review gate [deps: 5.3] [deliverable: `src/lib/gates/architect.ts` - runArchitectGate()]
-- [ ] 6.8 Implement Code Review gate [deps: 5.3] [deliverable: `src/lib/gates/code-review.ts` - runCodeReviewGate()]
-- [ ] 6.9 Implement Integration Testing gate [deps: 5.3] [deliverable: `src/lib/gates/integration.ts` - runIntegrationGate()]
-- [ ] 6.10 Implement gate sequencer [deps: 6.4-6.9] [deliverable: `src/lib/gates/sequencer.ts` - runGateSequence()]
-- [ ] 6.11 Implement intent verification [deps: 6.7] [deliverable: `src/lib/gates/intent-verification.ts` - verifyIntent()]
-- [ ] 6.12 Write tests for gates [deps: 6.1-6.11] [deliverable: `tests/gates.test.ts`, `tests/firewall.test.ts`]
+- [ ] 6.2 Implement role definitions [deps: 1.3] [deliverable: `src/lib/firewall/roles.ts` - TestAuthor, Implementer, GateAgent, CleanupAgent role restrictions with blocked read/write patterns]
+- [ ] 6.3 Implement tool interceptor [deps: 6.1, 6.2] [deliverable: `src/lib/firewall/interceptor.ts` - createFirewallInterceptor(), matchesRestriction(), buildBlockedResponse(), logViolation()]
+- [ ] 6.4 Implement disagreement protocol [deps: 6.1] [deliverable: `src/lib/firewall/disagreement.ts` - handleDisagreement(), routeToOrchestrator()]
+- [ ] 6.5 Implement Verify gate [deps: 5.3] [deliverable: `src/lib/gates/verify.ts` - runVerifyGate()]
+- [ ] 6.6 Implement QA Testing gate [deps: 5.3] [deliverable: `src/lib/gates/qa.ts` - runQAGate()]
+- [ ] 6.7 Implement Security Audit gate [deps: 5.3] [deliverable: `src/lib/gates/security.ts` - runSecurityGate()]
+- [ ] 6.8 Implement Architect Review gate [deps: 5.3] [deliverable: `src/lib/gates/architect.ts` - runArchitectGate()]
+- [ ] 6.9 Implement Code Review gate [deps: 5.3] [deliverable: `src/lib/gates/code-review.ts` - runCodeReviewGate()]
+- [ ] 6.10 Implement Integration Testing gate [deps: 5.3] [deliverable: `src/lib/gates/integration.ts` - runIntegrationGate()]
+- [ ] 6.11 Implement gate sequencer [deps: 6.5-6.10] [deliverable: `src/lib/gates/sequencer.ts` - runGateSequence()]
+- [ ] 6.12 Implement intent verification [deps: 6.8] [deliverable: `src/lib/gates/intent-verification.ts` - verifyIntent()]
+- [ ] 6.13 Write tests for gates & firewalls [deps: 6.1-6.12] [deliverable: `tests/gates.test.ts`, `tests/firewall.test.ts`]
 
 **Parallel Groups**:
 
-- Group A: 6.1, 6.2, 6.3 (independent)
-- Group B: 6.4, 6.5, 6.6, 6.7, 6.8, 6.9 (all independent, all require 5.3)
-- Group C: 6.10 (requires all of Group B)
-- Group D: 6.11 (requires 6.7)
-- Group E: 6.12 (requires all previous)
+- Group A: 6.1, 6.2 (independent)
+- Group B: 6.3 (requires 6.1, 6.2), 6.4 (requires 6.1)
+- Group C: 6.5, 6.6, 6.7, 6.8, 6.9, 6.10 (all independent, all require 5.3)
+- Group D: 6.11 (requires all of Group C)
+- Group E: 6.12 (requires 6.8)
+- Group F: 6.13 (requires all previous)
 
 ---
 
@@ -243,12 +248,12 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 - [ ] 10.1 Implement plugin entry point [deps: All previous] [deliverable: `src/index.ts` - OpenForgePipelinePlugin()]
 - [ ] 10.2 Implement config handler [deps: 1.7] [deliverable: `src/lib/config/handler.ts` - configHandler(), mergeConfigs()]
 - [ ] 10.3 Implement layered config loader [deps: 10.2] [deliverable: `src/lib/config/loader.ts` - loadPluginDefaults(), loadGlobalConfig(), loadProjectConfig()]
-- [ ] 10.4 Implement CLI entry point [deps: 4.4] [deliverable: `src/cli.ts` - CLI using commander]
+- [ ] 10.4 Implement CLI entry point [deps: 4.5] [deliverable: `src/cli.ts` - CLI using commander]
 - [ ] 10.5 Implement init command [deps: 10.4] [deliverable: `src/commands/init.ts`]
 - [ ] 10.6 Implement plan command [deps: 10.4, 2.2] [deliverable: `src/commands/plan.ts`]
-- [ ] 10.7 Implement run command [deps: 10.4, 4.4] [deliverable: `src/commands/run.ts`]
+- [ ] 10.7 Implement run command [deps: 10.4, 4.5] [deliverable: `src/commands/run.ts`]
 - [ ] 10.8 Implement status command [deps: 10.4] [deliverable: `src/commands/status.ts`]
-- [ ] 10.9 Implement resume command [deps: 10.4, 4.4] [deliverable: `src/commands/resume.ts`]
+- [ ] 10.9 Implement resume command [deps: 10.4, 4.5] [deliverable: `src/commands/resume.ts`]
 - [ ] 10.10 Write tests for CLI [deps: 10.4-10.9] [deliverable: `tests/cli.test.ts`]
 
 **Parallel Groups**:
@@ -335,21 +340,21 @@ Phase 0 (Foundation)
 
 ### Maximum Parallelization Opportunities
 
-| Phase | Max Parallel Agents | Tasks for Parallel Execution                    |
-| ----- | ------------------- | ----------------------------------------------- |
-| 0     | 4                   | 0.1, 0.2, 0.4, 0.5                              |
-| 1     | 6                   | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6                    |
-| 2     | 3                   | 2.1, 2.2, 2.3                                   |
-| 3     | 3                   | 3.1, 3.3, 3.5                                   |
-| 4     | 2                   | 4.1, 4.2                                        |
-| 5     | 3                   | 5.1, 5.2, 5.5                                   |
-| 6     | 9                   | 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9    |
-| 7     | 2                   | 7.1, 7.4                                        |
-| 8     | 3                   | 8.1, 8.3, 8.5                                   |
-| 9     | 1                   | Sequential                                      |
-| 10    | 3                   | 10.2, 10.3, 10.4                                |
-| 11    | 7                   | 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7       |
-| 12    | 5                   | 12.1, 12.2, 12.3, 12.4, 12.5                    |
+| Phase | Max Parallel Agents | Tasks for Parallel Execution             |
+| ----- | ------------------- | ---------------------------------------- |
+| 0     | 4                   | 0.1, 0.2, 0.4, 0.5                       |
+| 1     | 6                   | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6             |
+| 2     | 3                   | 2.1, 2.2, 2.3                            |
+| 3     | 5                   | 3.1, 3.3, 3.5, 3.6, 3.7                  |
+| 4     | 2                   | 4.1, 4.2                                 |
+| 5     | 3                   | 5.1, 5.2, 5.5                            |
+| 6     | 6                   | 6.5, 6.6, 6.7, 6.8, 6.9, 6.10            |
+| 7     | 2                   | 7.1, 7.4                                 |
+| 8     | 3                   | 8.1, 8.3, 8.5                            |
+| 9     | 1                   | Sequential                               |
+| 10    | 3                   | 10.2, 10.3, 10.4                         |
+| 11    | 7                   | 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7 |
+| 12    | 5                   | 12.1, 12.2, 12.3, 12.4, 12.5             |
 
 ---
 
@@ -393,12 +398,15 @@ open-forge-pipeline/
 │       │   ├── handoff.ts          # HANDOFF read/write
 │       │   ├── metrics.ts          # PIPELINE-METRICS token tracking
 │       │   ├── drift.ts            # Sentinel file management
+│       │   ├── checkpoint.ts       # Shadow git checkpoint operations
+│       │   ├── scanner.ts          # Memory injection protection
 │       │   ├── quality.ts          # Quality gate runner
 │       │   └── issues.ts           # PIPELINE-ISSUES writer
 │       ├── orchestrator/
 │       │   ├── session.ts          # Session management
 │       │   ├── router.ts           # Intent classification
 │       │   ├── executor.ts         # Phase execution logic
+│       │   ├── compressor.ts       # Active context compression logic
 │       │   ├── modes.ts            # Execution modes
 │       │   ├── types.ts            # Orchestrator types
 │       │   └── index.ts            # Main orchestrator
@@ -410,7 +418,8 @@ open-forge-pipeline/
 │       │   └── types.ts            # Check result types
 │       ├── firewall/
 │       │   ├── context.ts          # Context filtering
-│       │   ├── roles.ts            # Role definitions
+│       │   ├── roles.ts            # Role definitions & restriction patterns
+│       │   ├── interceptor.ts      # Runtime tool.execute.before hook
 │       │   └── disagreement.ts     # Disagreement protocol
 │       ├── gates/
 │       │   ├── verify.ts           # Verify gate

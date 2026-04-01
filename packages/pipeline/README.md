@@ -20,7 +20,7 @@ Most "chat with your codebase" tools focus on single-task execution. OpenForge P
 
 - **Context firewalls are a novel approach to agent reliability.** By deliberately isolating the test author from the implementer, we prevent a subtle but real failure mode: hallucination reinforcement. If one agent hallucinates a behavior while writing tests, it will hallucinate the same thing during implementation — the tests pass, but the code is wrong. Separating the two with information barriers breaks that cycle. This is something most agent orchestration tools ignore entirely.
 
-- **Drift detection saves real money.** Rather than letting agents burn tokens in infinite retry loops, the sentinel file pattern gives you a hard stop with structured documentation of *why* it stopped and *what* the human needs to do. This is the kind of design born from painful experience with runaway agent costs.
+- **Drift detection saves real money.** Rather than letting agents burn tokens in infinite retry loops, the sentinel file pattern gives you a hard stop with structured documentation of _why_ it stopped and _what_ the human needs to do. This is the kind of design born from painful experience with runaway agent costs.
 
 - **The system actually learns within a project.** Most agent pipelines treat every run as independent. The lessons feedback loop captures recurring mistake patterns from quality gate failures and feeds them back into future agent invocations, so the same class of bug doesn't keep slipping through phase after phase.
 
@@ -34,7 +34,7 @@ These are areas where the design may need to evolve based on real-world usage. I
 
 - **Plan selection via critic agent may produce convergent results.** The design calls for generating 3-5 implementation approaches and selecting the best via a critic agent. In practice, LLM-generated plans tend to converge toward similar solutions. Getting meaningfully different approaches will require very specific, divergent prompting — and that prompting strategy will need iteration.
 
-- **Context firewalls are enforced by instructions, not code.** The separation between test author and implementer is enforced via skill file instructions, not programmatic access control. This is a pragmatic choice (programmatic enforcement would be far more complex), but agents can and do ignore instructions. Whether this matters depends on how critical the isolation is in practice — and that's something we'll only learn through usage.
+- **Context firewalls are enforced by instructions and code.** The separation between test author and implementer is enforced via skill file instructions (advisory) and runtime tool interception (programmatic). If the OpenCode plugin environment changes or restricts the `tool.execute.before` hook, the firewalls degrade to advisory-only mode. Ensuring the runtime interception remains robust across different environments will be an ongoing challenge.
 
 ## Key Design Principles
 
@@ -82,14 +82,14 @@ Requirements (text)
 
 **Key files the pipeline generates in your project:**
 
-| File | Purpose |
-|------|---------|
-| `ROADMAP.md` | Phased execution plan with task dependencies |
-| `HANDOFF.md` | Session context bridge (survives restarts) |
-| `LESSONS.md` | Recurring mistake patterns from gate failures |
-| `PIPELINE-METRICS.md` | Token usage, cost tracking, agent efficiency |
-| `PIPELINE-ISSUES.md` | Blockers requiring human intervention |
-| `forge.config.json` | Project-specific pipeline configuration |
+| File                  | Purpose                                       |
+| --------------------- | --------------------------------------------- |
+| `ROADMAP.md`          | Phased execution plan with task dependencies  |
+| `HANDOFF.md`          | Session context bridge (survives restarts)    |
+| `LESSONS.md`          | Recurring mistake patterns from gate failures |
+| `PIPELINE-METRICS.md` | Token usage, cost tracking, agent efficiency  |
+| `PIPELINE-ISSUES.md`  | Blockers requiring human intervention         |
+| `forge.config.json`   | Project-specific pipeline configuration       |
 
 For the full design — including context firewall rules, gate sequences, handoff structure, and guardrails — see [REQUIREMENTS.md](./REQUIREMENTS.md).
 
@@ -103,13 +103,13 @@ Detailed installation and setup instructions will be added once the first releas
 
 The pipeline is controlled through CLI commands and OpenCode slash commands:
 
-| Command | Description |
-|---------|-------------|
-| `init` | Initialize a new project from a requirements file |
-| `plan` | Generate a ROADMAP without executing it |
-| `run` | Execute the ROADMAP (all phases, a single phase, or a range) |
-| `status` | Show current pipeline progress |
-| `resume` | Resume from the last checkpoint after an interruption |
+| Command  | Description                                                  |
+| -------- | ------------------------------------------------------------ |
+| `init`   | Initialize a new project from a requirements file            |
+| `plan`   | Generate a ROADMAP without executing it                      |
+| `run`    | Execute the ROADMAP (all phases, a single phase, or a range) |
+| `status` | Show current pipeline progress                               |
+| `resume` | Resume from the last checkpoint after an interruption        |
 
 ## Configuration
 

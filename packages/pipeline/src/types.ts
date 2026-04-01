@@ -21,8 +21,23 @@ export type AgentRole =
   | 'gate-agent'
   | 'cleanup-agent';
 
+/** Tool restriction rule for context firewalls. */
+export interface ToolRestriction {
+  /** Agent role this restriction applies to. */
+  readonly role: AgentRole;
+  /** Tool names that are blocked entirely for this role. */
+  readonly blockedTools: readonly string[];
+  /** File path patterns that this role cannot read. */
+  readonly blockedReadPatterns: readonly string[];
+  /** File path patterns that this role cannot write/edit. */
+  readonly blockedWritePatterns: readonly string[];
+}
+
 /** Supported programming languages. */
 export type Language = 'typescript' | 'javascript' | 'python' | 'go';
+
+/** Model tiers for smart routing based on task complexity. */
+export type ModelTier = 'cheap' | 'capable' | 'reasoning';
 
 /** Log level for observability. */
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
@@ -73,6 +88,10 @@ export interface DriftSentinel {
   readonly reason: string;
   /** ISO 8601 timestamp. */
   readonly timestamp: string;
+  /** Checkpoint label that was rolled back to (null if checkpointing unavailable). */
+  readonly rolledBackTo: string | null;
+  /** Shadow git hashes for each failed attempt (enables diff extraction). */
+  readonly attemptHashes: readonly string[];
 }
 
 /** Blocker documented in PIPELINE-ISSUES.md. */
