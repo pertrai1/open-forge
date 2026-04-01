@@ -61,12 +61,12 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 2.1 Implement ROADMAP parser [deps: 1.1] [deliverable: `src/lib/roadmap/parser.ts` - parseROADMAP(), parsePhase(), parseTask()]
-- [ ] 2.2 Implement ROADMAP generator [deps: 1.1] [deliverable: `src/lib/roadmap/generator.ts` - generateROADMAP()]
-- [ ] 2.3 Implement task complexity classifier [deps: 1.1] [deliverable: `src/lib/roadmap/classifier.ts` - classifyTask()]
-- [ ] 2.4 Implement ROADMAP task marker [deps: 2.1] [deliverable: `src/lib/helper/roadmap.ts` - markTaskDone(), getNextTask()]
-- [ ] 2.5 Implement parallel group detector [deps: 2.1] [deliverable: `src/lib/roadmap/parallel.ts` - detectParallelGroups()]
-- [ ] 2.6 Write tests for ROADMAP module [deps: 2.1-2.5] [deliverable: `tests/roadmap-parser.test.ts`, `tests/roadmap-generator.test.ts`]
+- [x] 2.1 Implement ROADMAP parser [deps: 1.1] [deliverable: `src/lib/roadmap/parser.ts` - parseROADMAP(), parsePhase(), parseTask()]
+- [x] 2.2 Implement ROADMAP generator [deps: 1.1] [deliverable: `src/lib/roadmap/generator.ts` - generateROADMAP()]
+- [x] 2.3 Implement task complexity classifier [deps: 1.1] [deliverable: `src/lib/roadmap/classifier.ts` - classifyTask()]
+- [x] 2.4 Implement ROADMAP task marker [deps: 2.1] [deliverable: `src/lib/helper/roadmap.ts` - markTaskDone(), getNextTask()]
+- [x] 2.5 Implement parallel group detector [deps: 2.1] [deliverable: `src/lib/roadmap/parallel.ts` - detectParallelGroups()]
+- [x] 2.6 Write tests for ROADMAP module [deps: 2.1-2.5] [deliverable: `tests/roadmap-parser.test.ts`, `tests/roadmap-generator.test.ts`]
 
 **Parallel Groups**:
 
