@@ -1,0 +1,41 @@
+{
+  "name": "@open-forge/evaluations",
+  "version": "0.0.1",
+  "description": "Evaluation framework for measuring agent output quality, regression detection, and statistical analysis",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "open-forge": "./src/index.ts",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "keywords": [
+    "openforge",
+    "evaluations",
+    "agent",
+    "ai",
+    "quality",
+    "regression",
+    "statistics"
+  ],
+  "author": "Rob Simpson <rsimpson2@me.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pertrai1/open-forge",
+    "directory": "packages/evaluations"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}

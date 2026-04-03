@@ -4,11 +4,12 @@ A TypeScript monorepo for open-forge packages.
 
 ## Packages
 
-| Package                                       | Description                                                                                                                                |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`@open-forge/pipeline`](packages/pipeline)   | An OpenCode plugin that turns natural language requirements into a fully built application — autonomously, with minimal human intervention |
-| [`@open-forge/mcp`](packages/mcp)             | MCP server implementation for OpenSpec archives                                                                                            |
-| [`@open-forge/telemetry`](packages/telemetry) | Telemetry and constraint evaluation for open-forge pipeline stages                                                                         |
+| Package                                           | Description                                                                                                                                |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`@open-forge/pipeline`](packages/pipeline)       | An OpenCode plugin that turns natural language requirements into a fully built application — autonomously, with minimal human intervention |
+| [`@open-forge/mcp`](packages/mcp)                 | MCP server implementation for OpenSpec archives                                                                                            |
+| [`@open-forge/telemetry`](packages/telemetry)     | Telemetry and constraint evaluation for open-forge pipeline stages                                                                         |
+| [`@open-forge/evaluations`](packages/evaluations) | Evaluation framework for measuring agent output quality, regression detection, and statistical analysis                                    |
 
 ## Architecture Overview
 
@@ -54,6 +55,19 @@ Requirements (text)
        │
        ▼
   ROADMAP_COMPLETE (or PIPELINE-ISSUES.md for blockers)
+       │
+       ▼
+┌──────────────────────────────────────────────────┐
+│ 📊 Evaluations (@open-forge/evaluations)         │
+│                                                   │
+│  • Runs datasets against agent outputs            │
+│  • Deterministic, LLM-judge, and custom evals    │
+│  • Statistical analysis (confidence intervals,    │
+│    significance testing, regression detection)    │
+│  • Baseline vs candidate comparison reports       │
+│  • Consumes telemetry events + constraint results │
+│  • CLI and programmatic API                       │
+└──────────────────────────────────────────────────┘
 ```
 
 ### Key Design Principles
@@ -63,8 +77,9 @@ Requirements (text)
 - **Drift detection** — If an agent gets stuck in a loop, a sentinel file is written and execution halts rather than burning tokens
 - **Constraint enforcement** — Telemetry evaluates token budgets, retry limits, and duration caps after every stage, providing a hard stop before costs spiral
 - **Lessons feedback** — Recurring mistakes from gate failures are captured in `LESSONS.md` and fed to future agents
+- **Evaluation-driven quality** — Post-pipeline evaluation measures agent output quality with statistical rigor, enabling regression detection and data-driven decisions on model/prompt changes
 
-For the full design — including context firewall rules, gate sequences, and guardrails — see the [pipeline REQUIREMENTS.md](packages/pipeline/REQUIREMENTS.md). For telemetry constraint definitions, see the [telemetry requirements](docs/open-forge-telemetry-REQUIREMENTS.md).
+For the full design — including context firewall rules, gate sequences, and guardrails — see the [pipeline REQUIREMENTS.md](packages/pipeline/REQUIREMENTS.md). For telemetry constraint definitions, see the [telemetry requirements](docs/open-forge-telemetry-REQUIREMENTS.md). For evaluation framework details, see the [evaluations requirements](docs/open-forge-evaluations-REQUIREMENTS.md).
 
 ## Quick Start
 
