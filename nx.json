@@ -40,7 +40,7 @@
     { "plugin": "@nx/vitest", "options": { "testTargetName": "test" } }
   ],
   "release": {
-    "projects": ["!utils", "!@org/source"],
+    "projects": ["packages/*"],
     "version": { "preVersionCommand": "npx nx run-many -t build" }
   },
   "targetDefaults": { "test": { "dependsOn": ["^build"] } },

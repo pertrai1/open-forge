@@ -1,5 +1,5 @@
 {
-  "name": "@org/source",
+  "name": "open-forge",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {},
@@ -26,7 +26,6 @@
     "tslib": "^2.3.0",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.40.0",
-    "verdaccio": "^6.0.5",
     "vite": "^8.0.0",
     "vitest": "4.0.9"
   },
@@ -35,16 +34,7 @@
   ],
   "nx": {
     "includedScripts": [],
-    "targets": {
-      "local-registry": {
-        "executor": "@nx/js:verdaccio",
-        "options": {
-          "port": 4873,
-          "config": ".verdaccio/config.yml",
-          "storage": "tmp/local-registry/storage"
-        }
-      }
-    }
+    "targets": {}
   },
   "dependencies": {}
 }
