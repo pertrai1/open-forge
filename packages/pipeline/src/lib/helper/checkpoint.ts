@@ -128,6 +128,13 @@ export async function createCheckpoint(
     await git(['config', 'user.name', 'Forge Pipeline'], false);
   }
 
+  const MAX_CHECKPOINT_FILES = 50000;
+  const fileList = await git(['ls-files', '--others', '--cached']);
+  const fileCount = fileList ? fileList.split('\n').filter(Boolean).length : 0;
+  if (fileCount > MAX_CHECKPOINT_FILES) {
+    throw new CheckpointBudgetExceededError(fileCount);
+  }
+
   await git(['add', '--all']);
   await git(['commit', '--allow-empty', '-m', `checkpoint: ${label}`]);
   await git(['tag', '-f', label]);
@@ -164,6 +171,7 @@ export async function rollbackToCheckpoint(
   }
 
   await git(['checkout', label, '--', '.']);
+  await git(['clean', '-fd', '--exclude', '.forge']);
 
   for (const [name, content] of saved) {
     await writeFile(join(workDir, name), content, 'utf-8');

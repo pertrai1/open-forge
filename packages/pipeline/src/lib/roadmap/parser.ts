@@ -28,7 +28,7 @@ const DEPS_PATTERN = /\[deps: ([^\]]+)\]/;
 const DELIVERABLE_PATTERN = /\[deliverable: ([^\]]+)\]/;
 const PHASE_HEADER_PATTERN = /^## Phase (\d+): (.+)$/;
 const GOAL_PATTERN = /^\*\*Goal\*\*: (.+)$/;
-const PARALLEL_GROUP_PATTERN = /^- (Group [A-Z]): (.+)$/;
+const PARALLEL_GROUP_PATTERN = /^- (Group [A-Z\d]+): (.+)$/;
 
 /**
  * Parse a single ROADMAP task line into a RoadmapTask.

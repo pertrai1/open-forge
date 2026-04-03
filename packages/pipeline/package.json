@@ -3,17 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "description": "An OpenCode plugin that turns natural language requirements into a fully built application — autonomously, with minimal human intervention.",
-  "main": "dist/cli.js",
+  "main": "dist/index.js",
   "types": "dist/types.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "types": "./dist/types.d.ts",
-      "cli": "./dist/cli.js"
+      "types": "./dist/types.d.ts"
     }
-  },
-  "bin": {
-    "forge": "./dist/cli.js"
   },
   "keywords": [
     "openforge",
