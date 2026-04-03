@@ -95,7 +95,7 @@ For the full design — including context firewall rules, gate sequences, handof
 
 ## Installation
 
-Distributed as an npm package (`open-forge-pipeline`). Can be installed globally or run via `npx`. Also registers as an OpenCode plugin by adding it to your `opencode.json` config (global or project-level).
+Distributed as an npm package (`@open-forge/pipeline`). Can be installed globally or run via `npx`. Also registers as an OpenCode plugin by adding it to your `opencode.json` config (global or project-level).
 
 Detailed installation and setup instructions will be added once the first release is available.
 

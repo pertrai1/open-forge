@@ -12,7 +12,7 @@ Vitest testing framework setup with configuration file, test directory structure
 - **AC-passing-test**: **When tests run, the sample test must pass**
 - **AC-sample-test-content**: Test verifies that the is a placeholder that demonstrates basic functionality
 - **AC-coverage**: Test coverage reporting enabled
-- **AC-watch-mode**: Watch mode configured for development
+- **AC-watch-mode**: Watch mode configuration available but not required (see Out of Scope)
 - **AC-globals**: Global test setup/teardown configured if needed
 - **AC-matchers**: Default matchers configured for inline snapshots assertions
 - **AC-timeout**: Test timeout configured (5 seconds by default)

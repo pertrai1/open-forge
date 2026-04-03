@@ -92,11 +92,27 @@ export async function readHandoff(filePath: string): Promise<HandoffState> {
     );
   }
 
+  let parsed: unknown;
   try {
-    return JSON.parse(jsonStr) as HandoffState;
+    parsed = JSON.parse(jsonStr);
   } catch {
     throw new HandoffReadError(filePath, 'Malformed JSON in HANDOFF.md');
   }
+
+  if (
+    typeof parsed !== 'object' ||
+    parsed === null ||
+    !('sessionId' in parsed) ||
+    !('currentState' in parsed) ||
+    !('taskLog' in parsed)
+  ) {
+    throw new HandoffReadError(
+      filePath,
+      'Invalid HANDOFF structure: missing required fields (sessionId, currentState, taskLog)'
+    );
+  }
+
+  return parsed as HandoffState;
 }
 
 /**

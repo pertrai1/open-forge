@@ -86,14 +86,25 @@ function parseAttemptHashes(
   attemptsLogStr: string,
   filePath: string
 ): string[] {
+  let parsed: unknown;
   try {
-    return JSON.parse(attemptsLogStr) as string[];
+    parsed = JSON.parse(attemptsLogStr);
   } catch {
     throw new DriftSentinelError(
       filePath,
       `Invalid attempts_log JSON: ${attemptsLogStr}`
     );
   }
+  if (
+    !Array.isArray(parsed) ||
+    !parsed.every((item): item is string => typeof item === 'string')
+  ) {
+    throw new DriftSentinelError(
+      filePath,
+      `Invalid attempts_log: expected string array, got ${typeof parsed}`
+    );
+  }
+  return parsed;
 }
 
 function parse(content: string, filePath: string): DriftSentinel {
@@ -140,11 +151,18 @@ export async function readDriftSentinel(
   let content: string;
   try {
     content = await readFile(filePath, 'utf-8');
-  } catch {
-    throw new DriftSentinelError(
-      filePath,
-      `Drift sentinel file not found: ${filePath}`
-    );
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      'code' in err &&
+      (err as NodeJS.ErrnoException).code === 'ENOENT'
+    ) {
+      throw new DriftSentinelError(
+        filePath,
+        `Drift sentinel file not found: ${filePath}`
+      );
+    }
+    throw err;
   }
   return parse(content, filePath);
 }
@@ -156,8 +174,15 @@ export async function checkDriftSentinel(filePath: string): Promise<boolean> {
   try {
     await access(filePath);
     return true;
-  } catch {
-    return false;
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      'code' in err &&
+      (err as NodeJS.ErrnoException).code === 'ENOENT'
+    ) {
+      return false;
+    }
+    throw err;
   }
 }
 

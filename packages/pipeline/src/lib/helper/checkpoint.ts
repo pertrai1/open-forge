@@ -203,16 +203,12 @@ export async function listCheckpoints(
   }
 
   const gitDir = getShadowDir(workDir, phase);
-  try {
-    const output = await shadowGit({
-      workDir,
-      gitDir,
-      args: ['tag', '--list'],
-    });
-    return output ? output.split('\n').filter((line) => line.length > 0) : [];
-  } catch {
-    return [];
-  }
+  const output = await shadowGit({
+    workDir,
+    gitDir,
+    args: ['tag', '--list'],
+  });
+  return output ? output.split('\n').filter((line) => line.length > 0) : [];
 }
 
 /**

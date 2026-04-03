@@ -44,7 +44,7 @@ The system SHALL provide a `parsePhase(lines: string[], phaseNumber: number): Ro
 
 ### Requirement: Parse individual task lines
 
-The system SHALL provide a `parseTask(line: string): RoadmapTask` function that extracts all fields from a single ROADMAP task line.
+The system SHALL provide a `parseTask(line: string, lineNumber?: number): RoadmapTask` function that extracts all fields from a single ROADMAP task line. The optional `lineNumber` parameter enables diagnostic messages that reference the source location.
 
 #### Scenario: Parse completed task with dependencies
 

@@ -42,6 +42,6 @@
 
 ## 8. Final Verification
 
-- [x] 8.1 Run full typecheck (`npm run typecheck`) — zero errors
-- [x] 8.2 Run full lint (`npm run lint`) — zero errors
-- [x] 8.3 Run full test suite (`npx vitest run`) — all pass
+- [x] 8.1 Run full typecheck (`nx run @open-forge/pipeline:typecheck`) — zero errors
+- [x] 8.2 Run full lint (`nx run @open-forge/pipeline:lint`) — zero errors
+- [x] 8.3 Run full test suite (`nx run @open-forge/pipeline:test`) — all pass

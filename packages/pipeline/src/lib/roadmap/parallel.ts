@@ -43,8 +43,12 @@ export function detectParallelGroups(
     }
 
     if (groupTaskIds.length === 0) {
-      // Circular dependency or unreachable — break to avoid infinite loop
-      break;
+      const unassigned = tasks
+        .filter((t) => !assigned.has(t.id))
+        .map((t) => t.id);
+      throw new Error(
+        `Circular dependency detected: tasks [${unassigned.join(', ')}] have unsatisfiable dependencies`
+      );
     }
 
     // Generate note

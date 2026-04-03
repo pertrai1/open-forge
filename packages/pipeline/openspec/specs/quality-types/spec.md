@@ -6,7 +6,7 @@ Quality gate contracts — GateResult, CheckResult, GateVerdict, GateName, and s
 
 ### Requirement: GateName type
 
-The system SHALL define a `GateName` literal union type with exactly six values: `'verify'`, `'qa'`, `'security'`, `'architect'`, `'code-review'`, `'integration'`.
+The system SHALL define a `GateName` literal union type with exactly six values: `'verify'`, `'qa-testing'`, `'security-audit'`, `'architect-review'`, `'code-review'`, `'integration-testing'`.
 
 #### Scenario: Exhaustive gate matching
 
@@ -22,9 +22,21 @@ The system SHALL define a `GateVerdict` literal union type with values: `'pass'`
 - **WHEN** intent verification finds 2+ failed claims
 - **THEN** the verdict is `'request-changes'`
 
+### Requirement: CheckCategory type
+
+The system SHALL define a `CheckCategory` literal union type with values: `'lint'`, `'typecheck'`, `'test'`, `'build'`.
+
+### Requirement: FindingSeverity type
+
+The system SHALL define a `FindingSeverity` literal union type with values: `'must-fix'`, `'should-fix'`, `'suggestion'`.
+
+### Requirement: GateFinding interface
+
+The system SHALL define a `GateFinding` interface with: `severity` (`FindingSeverity`), `filePath` (string), `line` (number | null), `description` (string), and `remediation` (string).
+
 ### Requirement: CheckResult interface
 
-The system SHALL define a `CheckResult` interface with: `name` (string), `passed` (boolean), `message` (string), and `details` (optional string).
+The system SHALL define a `CheckResult` interface with: `category` (`CheckCategory`), `passed` (boolean), `exitCode` (number), `output` (string), and `durationMs` (number).
 
 #### Scenario: Passing type check
 
@@ -38,7 +50,7 @@ The system SHALL define a `CheckResult` interface with: `name` (string), `passed
 
 ### Requirement: GateResult interface
 
-The system SHALL define a `GateResult` interface with: `gate` (`GateName`), `verdict` (`GateVerdict`), `findings` (array of strings), `attempt` (number), and `maxAttempts` (number).
+The system SHALL define a `GateResult` interface with: `gate` (`GateName`), `verdict` (`GateVerdict`), `findings` (array of `GateFinding`), `mustFixCount` (number), `durationMs` (number), and `attempt` (number).
 
 #### Scenario: Gate passes on first attempt
 
@@ -50,11 +62,16 @@ The system SHALL define a `GateResult` interface with: `gate` (`GateName`), `ver
 - **WHEN** the security gate finds 2 issues
 - **THEN** `GateResult` has `verdict: 'fail'` and `findings` of length 2
 
-### Requirement: QualityGateSequence type
+### Requirement: GateSequenceResult interface
 
-The system SHALL define a `QualityGateSequence` as a readonly tuple type listing gates in their required execution order: verify → qa → security → architect → code-review → integration.
+The system SHALL define a `GateSequenceResult` interface with: `gateResults` (array of `GateResult`), `allPassed` (boolean), `firstFailedGate` (`GateName | null`), and `totalDurationMs` (number).
 
-#### Scenario: Gate order enforcement
+#### Scenario: Gate sequence all passed
 
-- **WHEN** the sequencer iterates the gate sequence
-- **THEN** gates execute in the exact order defined by `QualityGateSequence`
+- **WHEN** all gates in the sequence pass
+- **THEN** `GateSequenceResult` has `allPassed: true` and `firstFailedGate: null`
+
+#### Scenario: Gate sequence with failure
+
+- **WHEN** the security-audit gate fails
+- **THEN** `GateSequenceResult` has `allPassed: false` and `firstFailedGate: 'security-audit'`

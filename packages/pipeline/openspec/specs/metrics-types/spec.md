@@ -20,12 +20,17 @@ The system SHALL define an `InvocationMetrics` interface with: `invocationId` (n
 
 ### Requirement: InvocationOutcome type
 
-The system SHALL define an `InvocationOutcome` literal union type with values: `'pass'`, `'fail'`, `'retry'`, `'blocked'`.
+The system SHALL define an `InvocationOutcome` literal union type with values: `'pass'`, `'fail'`, `'error'`, `'timeout'`.
 
-#### Scenario: Blocked invocation
+#### Scenario: Error invocation
 
-- **WHEN** an agent hits a drift sentinel
-- **THEN** the outcome is `'blocked'`
+- **WHEN** an agent encounters an unrecoverable error
+- **THEN** the outcome is `'error'`
+
+#### Scenario: Timeout invocation
+
+- **WHEN** an agent exceeds its configured timeout
+- **THEN** the outcome is `'timeout'`
 
 ### Requirement: CostManifest interface
 

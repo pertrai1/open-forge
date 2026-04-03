@@ -12,6 +12,7 @@ The system SHALL provide a `writeDriftSentinel(filePath: string, sentinel: Drift
 
 - **WHEN** given a `DriftSentinel` with phase 3, reason "quality checks failed after 3 cycles", timestamp "2025-01-15T10:00:00Z", rolledBackTo "phase-3-pre-gates", and attemptHashes ["abc", "def", "ghi"]
 - **THEN** the file contains lines: `phase=3`, `reason=quality checks failed after 3 cycles`, `timestamp=2025-01-15T10:00:00Z`, `rolled_back_to=phase-3-pre-gates`, `attempts_log=["abc","def","ghi"]`
+- **NOTE** The key=value format splits on the first `=` only, so values may contain `=` characters. The `attempts_log` value is JSON-encoded (array of strings) to handle arbitrary content safely.
 
 #### Scenario: Write sentinel with null rollback
 

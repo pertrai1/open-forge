@@ -13,13 +13,13 @@ export const ProjectConfigSchema = z.object({
   buildCommand: z.string().optional(),
   testCommand: z.string().optional(),
   lintCommand: z.string().optional(),
-});
+}).strict();
 
 /** Schema for agent-specific configuration. */
 export const AgentConfigSchema = z.object({
   enabled: z.boolean().default(true),
   timeout: z.number().int().positive().default(300_000),
-});
+}).strict();
 
 /** Schema for pipeline execution configuration. */
 export const PipelineConfigSchema = z.object({
@@ -27,7 +27,7 @@ export const PipelineConfigSchema = z.object({
   phases: z.array(z.string()).optional(),
   parallel: z.boolean().default(true),
   qualityGates: z.boolean().default(true),
-});
+}).strict();
 
 /** Schema for all agents configuration. */
 export const AgentsConfigSchema = z.object({
@@ -36,17 +36,17 @@ export const AgentsConfigSchema = z.object({
   ),
   implementer: AgentConfigSchema.extend({
     timeout: z.number().int().positive().default(600_000),
-  })
+  }).strict()
     .optional()
     .transform((v) =>
       AgentConfigSchema.extend({
         timeout: z.number().int().positive().default(600_000),
-      }).parse(v ?? {})
+      }).strict().parse(v ?? {})
     ),
   gateAgent: AgentConfigSchema.optional().transform((v) =>
     AgentConfigSchema.parse(v ?? {})
   ),
-});
+}).strict();
 
 /** Schema for quality gate toggles. */
 export const QualityConfigSchema = z.object({
@@ -54,13 +54,13 @@ export const QualityConfigSchema = z.object({
   typecheck: z.boolean().default(true),
   test: z.boolean().default(true),
   build: z.boolean().default(false),
-});
+}).strict();
 
 /** Schema for logging configuration. */
 export const LoggingConfigSchema = z.object({
   level: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
   metrics: z.boolean().default(true),
-});
+}).strict();
 
 /** Top-level forge configuration schema. */
 export const ForgeConfigSchema = z.object({
@@ -77,7 +77,7 @@ export const ForgeConfigSchema = z.object({
   logging: LoggingConfigSchema.optional().transform((v) =>
     LoggingConfigSchema.parse(v ?? {})
   ),
-});
+}).strict();
 
 /** Inferred type from the ForgeConfig schema. */
 export type ForgeConfig = z.infer<typeof ForgeConfigSchema>;

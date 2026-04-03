@@ -22,8 +22,8 @@ The system SHALL provide a `createCheckpoint(workDir: string, phase: number, lab
 
 #### Scenario: Exclude configured directories
 
-- **WHEN** creating a checkpoint in a directory containing `node_modules/`, `dist/`, and `.env` files
-- **THEN** those paths are excluded from the checkpoint (via `.gitignore` in the shadow repo)
+- **WHEN** creating a checkpoint in a directory containing `node_modules/`, `dist/`, `build/`, `.env`, and `.forge/` directories
+- **THEN** those paths are excluded from the checkpoint (via exclude file in the shadow repo) to prevent recursive snapshot growth
 
 #### Scenario: Skip checkpointing for large projects
 

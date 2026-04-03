@@ -55,6 +55,11 @@ The system SHALL provide a `getNextTask(roadmap: Roadmap): RoadmapTask | null` f
 - **WHEN** given a roadmap where all tasks are pending and task "0.1" has no dependencies
 - **THEN** `getNextTask` returns task "0.1"
 
+#### Scenario: Multiple eligible tasks (tie-breaker)
+
+- **WHEN** given a roadmap where multiple pending tasks have all dependencies satisfied
+- **THEN** `getNextTask` returns the first eligible task in phase order, then task order within the phase (lowest phase number first, then lowest task ID first)
+
 #### Scenario: Task with satisfied dependencies
 
 - **WHEN** given a roadmap where tasks "1.1" and "1.2" are completed, and task "1.3" depends on ["1.1", "1.2"] and is pending

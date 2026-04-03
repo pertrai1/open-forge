@@ -11,7 +11,7 @@ ESLint and Prettier configuration for consistent code quality and formatting acr
 - **AC-formatting-rules**: Prettier rules enforce consistent code formatting
 - **AC-prettierignore**: Prettier configuration ignores specific patterns if they conflict with ESLint
 - **AC-integration**: ESLint and Prettier work together via eslint-config-prettier package
-- **AC-pre-commit-hook**: Pre-commit hooks run linting and formatting checks
+- **AC-pre-commit-hook**: Pre-commit hooks run linting and formatting checks (managed at monorepo root, not per-package)
 
 ### Out of Scope
 
@@ -23,5 +23,5 @@ None - this is foundational setup
 - eslint-config-prettier ^9.0.0
 - prettier ^3.0.0
 - typescript ^5.0.0
-- @typescript-eslint/parser ^6.0.0
+- @typescript-eslint/parser ^7.0.0
 - @typescript-eslint/eslint-plugin ^7.2.0

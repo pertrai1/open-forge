@@ -2,10 +2,10 @@
 
 ## Overview
 
-**open-forge-pipeline** is an OpenCode plugin distributed as an npm package. It transforms natural language requirements into a fully implemented application through an autonomous agent pipeline.
+**@open-forge/pipeline** is an OpenCode plugin distributed as an npm package. It transforms natural language requirements into a fully implemented application through an autonomous agent pipeline.
 
 **Tech Stack**: TypeScript / Node.js
-**Distribution**: npm package (`open-forge-pipeline`)
+**Distribution**: npm package (`@open-forge/pipeline`)
 **Interface**: CLI + OpenCode commands
 
 The plugin orchestrates the entire software development lifecycle:
@@ -842,22 +842,22 @@ Config files support comments and trailing commas for developer experience.
 
 ```bash
 # Initialize a new project from requirements
-npx open-forge-pipeline init --requirements ./REQUIREMENTS.md
+npx @open-forge/pipeline init --requirements ./REQUIREMENTS.md
 
 # Generate ROADMAP only (no execution)
-npx open-forge-pipeline plan --requirements ./REQUIREMENTS.md
+npx @open-forge/pipeline plan --requirements ./REQUIREMENTS.md
 
 # Execute existing ROADMAP
-npx open-forge-pipeline run
+npx @open-forge/pipeline run
 
 # Execute single phase
-npx open-forge-pipeline run --phase 2
+npx @open-forge/pipeline run --phase 2
 
 # Check status
-npx open-forge-pipeline status
+npx @open-forge/pipeline status
 
 # Resume from interruption
-npx open-forge-pipeline resume
+npx @open-forge/pipeline resume
 ```
 
 ### OpenCode Commands
@@ -873,7 +873,7 @@ npx open-forge-pipeline resume
 ## Package Structure
 
 ```
-open-forge-pipeline/
+@open-forge/pipeline/
 ├── package.json
 ├── tsconfig.json
 ├── src/
@@ -934,14 +934,14 @@ open-forge-pipeline/
 
 ## Distribution
 
-**npm Package:** `open-forge-pipeline`
+**npm Package:** `@open-forge/pipeline`
 
 ```bash
 # Install globally
-npm install -g open-forge-pipeline
+npm install -g @open-forge/pipeline
 
 # Or use with npx (no global install needed)
-npx open-forge-pipeline init --requirements ./REQUIREMENTS.md
+npx @open-forge/pipeline init --requirements ./REQUIREMENTS.md
 ```
 
 **OpenCode Plugin Registration:**
@@ -950,7 +950,7 @@ Add to `~/.config/opencode/opencode.json`:
 
 ```json
 {
-  "plugin": ["open-forge-pipeline"]
+  "plugin": ["@open-forge/pipeline"]
 }
 ```
 
@@ -958,7 +958,7 @@ Or add to project's `.opencode/opencode.json`:
 
 ```json
 {
-  "plugin": ["open-forge-pipeline"]
+  "plugin": ["@open-forge/pipeline"]
 }
 ```
 
@@ -1120,7 +1120,7 @@ project/
 
 **Language**: TypeScript
 **Runtime**: Node.js 18+
-**Distribution**: npm package (`open-forge-pipeline`)
+**Distribution**: npm package (`@open-forge/pipeline`)
 **Interface**: CLI + OpenCode Plugin
 
 ### Why TypeScript
