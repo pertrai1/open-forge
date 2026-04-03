@@ -1,0 +1,41 @@
+{
+  "name": "@open-forge/telemetry",
+  "version": "0.0.1",
+  "description": "Telemetry and constraint evaluation for open-forge pipeline stages",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "open-forge": "./src/index.ts",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "keywords": [
+    "openforge",
+    "telemetry",
+    "pipeline",
+    "constraints",
+    "observability",
+    "agent",
+    "ai"
+  ],
+  "author": "Rob Simpson <rsimpson2@me.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pertrai1/open-forge",
+    "directory": "packages/telemetry"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}

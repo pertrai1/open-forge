@@ -4,10 +4,11 @@ A TypeScript monorepo for open-forge packages.
 
 ## Packages
 
-| Package                                     | Description                                                                                                                                |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`@open-forge/pipeline`](packages/pipeline) | An OpenCode plugin that turns natural language requirements into a fully built application — autonomously, with minimal human intervention |
-| [`@open-forge/mcp`](packages/mcp)           | MCP server implementation for OpenSpec archives                                                                                            |
+| Package                                       | Description                                                                                                                                |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`@open-forge/pipeline`](packages/pipeline)   | An OpenCode plugin that turns natural language requirements into a fully built application — autonomously, with minimal human intervention |
+| [`@open-forge/mcp`](packages/mcp)             | MCP server implementation for OpenSpec archives                                                                                            |
+| [`@open-forge/telemetry`](packages/telemetry) | Telemetry and constraint evaluation for open-forge pipeline stages                                                                         |
 
 ## Quick Start
 
