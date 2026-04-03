@@ -2,18 +2,15 @@
 
 ## The Problem
 
-AI coding tools give every engineer the same productivity boost — write more code, faster. That's Level 1. It produces diminishing returns because the bottleneck was never typing speed.
+AI coding tools give every engineer the same productivity boost — write more code, faster. This produces diminishing returns because the bottleneck was never typing speed.
 
 The real bottleneck is everything around the code: translating requirements into tasks, enforcing quality across iterations, detecting regressions, deciding when to ship. Today, humans do all of that manually. AI writes a function, a human reviews it. AI fixes a bug, a human verifies it. The agent is fast, but the human is still the loop.
 
-**Level 3 is different.** The engineer specifies intent and constraints. The system orchestrates agents, verifies quality autonomously, and closes its own feedback loop. The engineer with better constraints and observability gets exponentially more from AI. Everyone else gets commoditized.
-
-Without infrastructure: _"Let me write this feature myself."_ Time: two days.
-With Level 3 infrastructure: _"Let me specify the constraint and intent."_ Agent implements it. Time: two hours.
+The shift that matters is moving from "AI writes code, humans verify" to "humans specify intent and constraints, the system handles the rest." The engineer who can define better constraints and build better observability gets exponentially more from AI. Everyone else is left competing on typing speed.
 
 ## What Open Forge Is
 
-Open Forge is the infrastructure for Level 3. An agent-first harness engineering system for fully autonomous software development — not a developer tool with AI features, but an autonomous system where agents are the primary actors.
+Open Forge is infrastructure for that shift. An agent-first harness engineering system for fully autonomous software development — not a developer tool with AI features, but an autonomous system where agents are the primary actors.
 
 You describe what you want built. The system plans, implements, tests, reviews, and ships working code. It self-corrects through quality gates, enforces cost and safety constraints via telemetry, and closes the feedback loop with statistical evaluation of agent outputs — enabling autonomous decisions about model changes, prompt tuning, and regression detection.
 
