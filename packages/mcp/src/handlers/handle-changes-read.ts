@@ -7,6 +7,13 @@ export async function handleChangesRead(
   | { contents: Array<{ uri: string; mimeType: string; text: string }> }
   | { isError: boolean; content: Array<{ type: string; text: string }> }
 > {
+  if (name.includes('..') || name.includes('/') || name.includes('\\')) {
+    return {
+      isError: true,
+      content: [{ type: 'text', text: `Invalid change name: ${name}` }],
+    };
+  }
+
   try {
     const filePath = `${CHANGES_PATH}/${name}/README.md`;
     const text = await readFile(filePath, 'utf-8');
