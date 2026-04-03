@@ -1,8 +1,23 @@
 # Open Forge
 
-An agent-first harness engineering system for fully autonomous software development. Open Forge is not a developer tool with AI features — it is an autonomous system where agents are the primary actors. You describe what you want built, and the system plans, implements, tests, reviews, and ships working code with no human in the loop.
+## The Problem
 
-The system self-corrects through quality gates, enforces cost and safety constraints via telemetry, and closes the feedback loop with statistical evaluation of agent outputs — enabling autonomous decisions about model changes, prompt tuning, and regression detection.
+AI coding tools give every engineer the same productivity boost — write more code, faster. That's Level 1. It produces diminishing returns because the bottleneck was never typing speed.
+
+The real bottleneck is everything around the code: translating requirements into tasks, enforcing quality across iterations, detecting regressions, deciding when to ship. Today, humans do all of that manually. AI writes a function, a human reviews it. AI fixes a bug, a human verifies it. The agent is fast, but the human is still the loop.
+
+**Level 3 is different.** The engineer specifies intent and constraints. The system orchestrates agents, verifies quality autonomously, and closes its own feedback loop. The engineer with better constraints and observability gets exponentially more from AI. Everyone else gets commoditized.
+
+Without infrastructure: _"Let me write this feature myself."_ Time: two days.
+With Level 3 infrastructure: _"Let me specify the constraint and intent."_ Agent implements it. Time: two hours.
+
+## What Open Forge Is
+
+Open Forge is the infrastructure for Level 3. An agent-first harness engineering system for fully autonomous software development — not a developer tool with AI features, but an autonomous system where agents are the primary actors.
+
+You describe what you want built. The system plans, implements, tests, reviews, and ships working code. It self-corrects through quality gates, enforces cost and safety constraints via telemetry, and closes the feedback loop with statistical evaluation of agent outputs — enabling autonomous decisions about model changes, prompt tuning, and regression detection.
+
+The differentiator is not the agents. It's the harness: constraints that prevent waste, observability that makes agent behavior measurable, and evaluation that makes output quality a data-driven decision instead of a human judgment call.
 
 ## Current Status
 
