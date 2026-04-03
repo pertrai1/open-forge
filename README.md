@@ -4,6 +4,17 @@ An agent-first harness engineering system for fully autonomous software developm
 
 The system self-corrects through quality gates, enforces cost and safety constraints via telemetry, and closes the feedback loop with statistical evaluation of agent outputs — enabling autonomous decisions about model changes, prompt tuning, and regression detection.
 
+## Current Status
+
+> **Early development.** The architecture is defined and core packages are scaffolded, but most implementations are in progress. Contributions and feedback are welcome — expect breaking changes.
+
+| Package                   | Status                                                                                                          |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `@open-forge/pipeline`    | Core types, roadmap generation, handoff management, and helper utilities implemented. Orchestrator in progress. |
+| `@open-forge/mcp`         | Functional — MCP server with spec tools, prompts, and change tracking.                                          |
+| `@open-forge/telemetry`   | Type definitions exported. Implementations (event emitting, constraint evaluation) not yet started.             |
+| `@open-forge/evaluations` | Type definitions exported. Implementations planned — blocked on telemetry for §3.6/§3.7 integration.            |
+
 ## Packages
 
 | Package                                           | Description                                                                                                                                |
