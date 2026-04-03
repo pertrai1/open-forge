@@ -1,68 +1,82 @@
-import { classifyTask } from '../src/lib/roadmap/classifier.js';
+import { classifyTask } from '../src/lib/roadmap/classifyTask.js';
 
 describe('classifyTask', () => {
   it('should classify trivial task — no dependencies, single simple deliverable', () => {
-    expect(classifyTask('Rename config file', [], 'tsconfig.json')).toBe(
-      'trivial'
-    );
+    expect(
+      classifyTask({ description: 'Rename config file', dependencies: [] })
+    ).toBe('trivial');
   });
 
   it('should classify simple task — few dependencies', () => {
     expect(
-      classifyTask('Add logging utility', ['0.1'], 'src/lib/logger.ts')
+      classifyTask({
+        description: 'Add logging utility',
+        dependencies: ['0.1'],
+      })
     ).toBe('simple');
   });
 
   it('should classify medium task — moderate dependencies', () => {
     expect(
-      classifyTask(
-        'Implement authentication middleware',
-        ['1.1', '1.2', '1.3'],
-        'src/lib/auth/middleware.ts - validateToken(), refreshSession()'
-      )
+      classifyTask({
+        description: 'Implement authentication middleware',
+        dependencies: ['1.1', '1.2', '1.3'],
+      })
     ).toBe('medium');
   });
 
   it('should classify complex task — many dependencies', () => {
     expect(
-      classifyTask(
-        'Implement orchestrator main loop',
-        ['4.1', '4.2', '4.3', '4.4', '4.5'],
-        'src/lib/orchestrator/index.ts'
-      )
+      classifyTask({
+        description: 'Implement orchestrator main loop',
+        dependencies: ['4.1', '4.2', '4.3', '4.4', '4.5'],
+      })
     ).toBe('complex');
   });
 
   it('should return same result for identical inputs (deterministic)', () => {
-    const result1 = classifyTask('Add feature', ['1.1'], 'src/feature.ts');
-    const result2 = classifyTask('Add feature', ['1.1'], 'src/feature.ts');
+    const result1 = classifyTask({
+      description: 'Add feature',
+      dependencies: ['1.1'],
+    });
+    const result2 = classifyTask({
+      description: 'Add feature',
+      dependencies: ['1.1'],
+    });
     expect(result1).toBe(result2);
   });
 
   it('should classify zero dependencies as trivial', () => {
-    expect(classifyTask('Simple task', [], 'file.ts')).toBe('trivial');
+    expect(classifyTask({ description: 'Simple task', dependencies: [] })).toBe(
+      'trivial'
+    );
   });
 
   it('should classify five or more dependencies as complex', () => {
-    expect(classifyTask('Task', ['1', '2', '3', '4', '5'], 'file.ts')).toBe(
-      'complex'
-    );
+    expect(
+      classifyTask({
+        description: 'Task',
+        dependencies: ['1', '2', '3', '4', '5'],
+      })
+    ).toBe('complex');
   });
 
   it('should elevate classification for architectural keywords', () => {
     expect(
-      classifyTask(
-        'Architect the system redesign',
-        ['1.1', '1.2'],
-        'src/arch.ts'
-      )
+      classifyTask({
+        description: 'Architect the system redesign',
+        dependencies: ['1.1', '1.2'],
+      })
     ).toBe('complex');
   });
 
   it('should never lower classification based on keywords', () => {
     // "Simple" in description should not lower from medium (4 deps → medium)
     expect(
-      classifyTask('Simple config rename', ['1', '2', '3', '4'], 'file.ts')
+      classifyTask({
+        description: 'Simple config rename',
+        dependencies: ['1', '2', '3', '4'],
+      })
     ).toBe('medium');
   });
 });

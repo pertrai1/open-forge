@@ -136,8 +136,8 @@ export {
   parseTask,
   RoadmapParseError,
 } from './lib/roadmap/parser.js';
-export { generateRoadmap } from './lib/roadmap/generator.js';
-export { detectParallelGroups } from './lib/roadmap/parallel.js';
+export { generateRoadmap } from './lib/roadmap/generateRoadmap.js';
+export { detectParallelGroups } from './lib/roadmap/detectParallelGroups.js';
 export type {
   RoadmapTask,
   RoadmapPhase,

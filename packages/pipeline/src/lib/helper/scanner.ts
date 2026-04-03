@@ -37,9 +37,22 @@ const INSTRUCTION_OVERRIDE_PATTERNS: readonly RegExp[] = [
   /from\s+now\s+on\s*,?\s+(?:you|always|never)/i,
 ];
 
-/** Invisible Unicode characters used for prompt smuggling. */
-const INVISIBLE_UNICODE_PATTERN =
-  /[\u200B\u200C\u200D\u200E\u200F\u2060\u2061\u2062\u2063\u2064\uFEFF]/g;
+/** Invisible Unicode code points used for prompt smuggling. */
+const INVISIBLE_UNICODE_CODEPOINTS = [
+  0x200b, 0x200c, 0x200d, 0x200e, 0x200f, 0x2060, 0x2061, 0x2062, 0x2063,
+  0x2064, 0xfeff,
+];
+
+function codePointToEscape(cp: number): string {
+  const HEX_RADIX = 16;
+  const UNICODE_ESCAPE_WIDTH = 4;
+  return `\\u${cp.toString(HEX_RADIX).padStart(UNICODE_ESCAPE_WIDTH, '0')}`;
+}
+
+const INVISIBLE_UNICODE_PATTERN = new RegExp(
+  `[${INVISIBLE_UNICODE_CODEPOINTS.map(codePointToEscape).join('')}]`,
+  'gu'
+);
 
 /** URL pattern for exfiltration detection. */
 const URL_PATTERN = /https?:\/\/[^\s"'<>]+/gi;

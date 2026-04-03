@@ -5,6 +5,8 @@
 
 import type { TaskComplexity } from './types.js';
 
+const MEDIUM_DEP_THRESHOLD = 4;
+
 const COMPLEX_KEYWORDS = [
   'architect',
   'redesign',
@@ -26,11 +28,11 @@ const COMPLEX_KEYWORDS = [
  *
  * Keywords can elevate but never lower the classification.
  */
-export function classifyTask(
-  description: string,
-  dependencies: readonly string[],
-  _deliverable: string
-): TaskComplexity {
+export function classifyTask(task: {
+  description: string;
+  dependencies: readonly string[];
+}): TaskComplexity {
+  const { description, dependencies } = task;
   const depCount = dependencies.length;
 
   let base: TaskComplexity;
@@ -38,7 +40,7 @@ export function classifyTask(
     base = 'trivial';
   } else if (depCount <= 2) {
     base = 'simple';
-  } else if (depCount <= 4) {
+  } else if (depCount <= MEDIUM_DEP_THRESHOLD) {
     base = 'medium';
   } else {
     base = 'complex';

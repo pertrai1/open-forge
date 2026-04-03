@@ -155,7 +155,10 @@ export function appendTaskLog(
   let newHistory = [...state.compressedHistory];
 
   if (newLog.length > MAX_TASK_LOG) {
-    const evicted = newLog.shift()!;
+    const evicted = newLog.shift();
+    if (!evicted) {
+      return { ...state, taskLog: newLog, compressedHistory: newHistory };
+    }
     const compressed: CompressedHistoryEntry = {
       taskRange: evicted.taskId,
       summary: evicted.description,

@@ -4,6 +4,12 @@
 
 import { z } from 'zod';
 
+/** Default agent timeout in milliseconds (5 minutes). */
+const DEFAULT_AGENT_TIMEOUT_MS = 300_000;
+
+/** Default implementer timeout in milliseconds (10 minutes). */
+const DEFAULT_IMPLEMENTER_TIMEOUT_MS = 600_000;
+
 /** Schema for project-level configuration. */
 export const ProjectConfigSchema = z
   .object({
@@ -21,7 +27,7 @@ export const ProjectConfigSchema = z
 export const AgentConfigSchema = z
   .object({
     enabled: z.boolean().default(true),
-    timeout: z.number().int().positive().default(300_000),
+    timeout: z.number().int().positive().default(DEFAULT_AGENT_TIMEOUT_MS),
   })
   .strict();
 
@@ -42,13 +48,21 @@ export const AgentsConfigSchema = z
       AgentConfigSchema.parse(v ?? {})
     ),
     implementer: AgentConfigSchema.extend({
-      timeout: z.number().int().positive().default(600_000),
+      timeout: z
+        .number()
+        .int()
+        .positive()
+        .default(DEFAULT_IMPLEMENTER_TIMEOUT_MS),
     })
       .strict()
       .optional()
       .transform((v) =>
         AgentConfigSchema.extend({
-          timeout: z.number().int().positive().default(600_000),
+          timeout: z
+            .number()
+            .int()
+            .positive()
+            .default(DEFAULT_IMPLEMENTER_TIMEOUT_MS),
         })
           .strict()
           .parse(v ?? {})

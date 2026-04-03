@@ -236,6 +236,8 @@ describe('Pipeline state types', () => {
       phase: 2,
       reason: 'quality checks failed after 3 cycles',
       timestamp: '2026-03-31T12:00:00Z',
+      rolledBackTo: null,
+      attemptHashes: [],
     };
     expect(sentinel.phase).toBe(2);
   });

@@ -15,7 +15,7 @@ export class RoadmapParseError extends Error {
   readonly line: number;
   readonly context: string;
 
-  constructor(line: number, message: string, context: string = '') {
+  constructor(line: number, message: string, context = '') {
     super(`Line ${line}: ${message}`);
     this.name = 'RoadmapParseError';
     this.line = line;
@@ -26,6 +26,7 @@ export class RoadmapParseError extends Error {
 const TASK_PATTERN = /^- \[([ x])\] (\d+\.\d+) (.+)$/;
 const DEPS_PATTERN = /\[deps: ([^\]]+)\]/;
 const DELIVERABLE_PATTERN = /\[deliverable: ([^\]]+)\]/;
+const RADIX_DECIMAL = 10;
 const PHASE_HEADER_PATTERN = /^## Phase (\d+): (.+)$/;
 const GOAL_PATTERN = /^\*\*Goal\*\*: (.+)$/;
 const PARALLEL_GROUP_PATTERN = /^- (Group [A-Z\d]+): (.+)$/;
@@ -34,7 +35,7 @@ const PARALLEL_GROUP_PATTERN = /^- (Group [A-Z\d]+): (.+)$/;
  * Parse a single ROADMAP task line into a RoadmapTask.
  * Throws RoadmapParseError if the line is malformed.
  */
-export function parseTask(line: string, lineNumber: number = 0): RoadmapTask {
+export function parseTask(line: string, lineNumber = 0): RoadmapTask {
   const taskMatch = TASK_PATTERN.exec(line);
   if (!taskMatch) {
     throw new RoadmapParseError(lineNumber, 'Invalid task line format', line);
@@ -179,76 +180,83 @@ export function parsePhase(lines: string[], phaseNumber: number): RoadmapPhase {
   };
 }
 
+function findTitle(lines: string[]): { title: string; lineIndex: number } {
+  for (let i = 0; i < lines.length; i++) {
+    const match = /^# (.+)$/.exec(lines[i]);
+    if (match) {
+      return { title: match[1], lineIndex: i };
+    }
+  }
+  throw new RoadmapParseError(0, 'ROADMAP title (# header) is missing');
+}
+
+function extractOverview(
+  lines: string[],
+  range: { startAfter: number; firstPhaseIndex: number }
+): string {
+  let overviewStart = -1;
+
+  for (let i = range.startAfter + 1; i < lines.length; i++) {
+    if (/^## Overview/.test(lines[i])) {
+      overviewStart = i + 1;
+    }
+    if (PHASE_HEADER_PATTERN.test(lines[i])) {
+      break;
+    }
+  }
+
+  if (overviewStart < 0) {
+    return '';
+  }
+
+  const end = range.firstPhaseIndex >= 0 ? range.firstPhaseIndex : lines.length;
+  return lines
+    .slice(overviewStart, end)
+    .join('\n')
+    .replace(/^---\s*$/m, '')
+    .trim();
+}
+
+function splitPhaseBlocks(
+  lines: string[],
+  firstPhaseIndex: number
+): RoadmapPhase[] {
+  const phaseStarts: number[] = [];
+  for (let i = firstPhaseIndex; i < lines.length; i++) {
+    if (PHASE_HEADER_PATTERN.test(lines[i])) {
+      phaseStarts.push(i);
+    }
+  }
+
+  return phaseStarts.map((start, p) => {
+    const end = p + 1 < phaseStarts.length ? phaseStarts[p + 1] : lines.length;
+    const phaseLines = lines.slice(start, end);
+    const headerMatch = PHASE_HEADER_PATTERN.exec(phaseLines[0]);
+    const phaseNumber = headerMatch
+      ? parseInt(headerMatch[1], RADIX_DECIMAL)
+      : p;
+    return parsePhase(phaseLines, phaseNumber);
+  });
+}
+
 /**
  * Parse a complete ROADMAP.md markdown string into a Roadmap.
  * Throws RoadmapParseError if the title is missing.
  */
 export function parseRoadmap(markdown: string): Roadmap {
   const lines = markdown.split('\n');
+  const { title, lineIndex: titleLineIndex } = findTitle(lines);
 
-  // Find title (first # header)
-  let title = '';
-  let titleLineIndex = -1;
-  for (let i = 0; i < lines.length; i++) {
-    const match = /^# (.+)$/.exec(lines[i]);
-    if (match) {
-      title = match[1];
-      titleLineIndex = i;
-      break;
-    }
-  }
+  const firstPhaseIndex = lines.findIndex(
+    (line, i) => i > titleLineIndex && PHASE_HEADER_PATTERN.test(line)
+  );
 
-  if (titleLineIndex === -1) {
-    throw new RoadmapParseError(0, 'ROADMAP title (# header) is missing');
-  }
-
-  // Extract overview: text between ## Overview and first ## Phase
-  let overview = '';
-  let overviewStart = -1;
-  let firstPhaseIndex = -1;
-
-  for (let i = titleLineIndex + 1; i < lines.length; i++) {
-    if (/^## Overview/.test(lines[i])) {
-      overviewStart = i + 1;
-    }
-    if (PHASE_HEADER_PATTERN.test(lines[i])) {
-      firstPhaseIndex = i;
-      break;
-    }
-  }
-
-  if (overviewStart >= 0) {
-    const end = firstPhaseIndex >= 0 ? firstPhaseIndex : lines.length;
-    overview = lines
-      .slice(overviewStart, end)
-      .join('\n')
-      .replace(/^---\s*$/m, '')
-      .trim();
-  }
-
-  // Split into phase blocks
-  const phases: RoadmapPhase[] = [];
-  if (firstPhaseIndex >= 0) {
-    const phaseStarts: number[] = [];
-    for (let i = firstPhaseIndex; i < lines.length; i++) {
-      if (PHASE_HEADER_PATTERN.test(lines[i])) {
-        phaseStarts.push(i);
-      }
-    }
-
-    for (let p = 0; p < phaseStarts.length; p++) {
-      const start = phaseStarts[p];
-      const end =
-        p + 1 < phaseStarts.length ? phaseStarts[p + 1] : lines.length;
-      const phaseLines = lines.slice(start, end);
-
-      // Extract phase number from header
-      const headerMatch = PHASE_HEADER_PATTERN.exec(phaseLines[0]);
-      const phaseNumber = headerMatch ? parseInt(headerMatch[1], 10) : p;
-
-      phases.push(parsePhase(phaseLines, phaseNumber));
-    }
-  }
+  const overview = extractOverview(lines, {
+    startAfter: titleLineIndex,
+    firstPhaseIndex,
+  });
+  const phases =
+    firstPhaseIndex >= 0 ? splitPhaseBlocks(lines, firstPhaseIndex) : [];
 
   return { title, overview, phases };
 }

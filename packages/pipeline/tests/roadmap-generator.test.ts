@@ -1,4 +1,4 @@
-import { generateRoadmap } from '../src/lib/roadmap/generator.js';
+import { generateRoadmap } from '../src/lib/roadmap/generateRoadmap.js';
 import type { Roadmap, RoadmapPhase } from '../src/lib/roadmap/types.js';
 
 function makePhase(overrides: Partial<RoadmapPhase> = {}): RoadmapPhase {
