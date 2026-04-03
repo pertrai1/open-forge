@@ -10,6 +10,62 @@ A TypeScript monorepo for open-forge packages.
 | [`@open-forge/mcp`](packages/mcp)             | MCP server implementation for OpenSpec archives                                                                                            |
 | [`@open-forge/telemetry`](packages/telemetry) | Telemetry and constraint evaluation for open-forge pipeline stages                                                                         |
 
+## Architecture Overview
+
+Open Forge is an autonomous software development pipeline. You give it a description of what you want built, and it runs a multi-phase agent workflow to produce working code with quality enforcement at every step.
+
+```
+Requirements (text)
+       │
+       ▼
+┌─────────────┐
+│ Intent Router│ ── Classifies: new-project / feature / bug-fix / refactor / migration
+└──────┬──────┘
+       │
+       ▼
+┌──────────────┐
+│ ROADMAP Gen  │ ── Produces phased, dependency-ordered task plan
+└──────┬───────┘
+       │
+       ▼
+┌──────────────────────────────────────────────────┐
+│ Pipeline Orchestrator (per phase)                 │
+│                                                   │
+│  1. Read HANDOFF.md (restore context)             │
+│  2. Generate & select plan (critic agent)         │
+│  3. Write tests (test author — firewalled)        │
+│  4. Implement (implementer — firewalled)          │
+│  5. Quality gates (verify → QA → security →       │
+│     architect → code review → integration)        │
+│  6. Cleanup agent (entropy management)            │
+│  7. Update HANDOFF.md (persist context)           │
+│                                                   │
+│  On failure: retry up to 3x → drift sentinel     │
+│  On success: advance to next phase                │
+├──────────────────────────────────────────────────┤
+│ ⚡ Telemetry (@open-forge/telemetry)              │
+│                                                   │
+│  • Captures structured events from every stage    │
+│  • Evaluates constraints (token budget, retries,  │
+│    duration limits) after each stage              │
+│  • Halts pipeline on constraint violations        │
+│  • Generates audit trails for human review        │
+└──────────────────────────────────────────────────┘
+       │
+       ▼
+  ROADMAP_COMPLETE (or PIPELINE-ISSUES.md for blockers)
+```
+
+### Key Design Principles
+
+- **Context firewalls** — The test-writing agent and the implementing agent are deliberately isolated from each other to prevent hallucination reinforcement
+- **Self-correction loops** — When quality gates fail, the system retries up to 3x before escalating to a human via `PIPELINE-ISSUES.md`
+- **Drift detection** — If an agent gets stuck in a loop, a sentinel file is written and execution halts rather than burning tokens
+- **Constraint enforcement** — Telemetry evaluates token budgets, retry limits, and duration caps after every stage, providing a hard stop before costs spiral
+- **Lessons feedback** — Recurring mistakes from gate failures are captured in `LESSONS.md` and fed to future agents
+
+For the full design — including context firewall rules, gate sequences, and guardrails — see the [pipeline REQUIREMENTS.md](packages/pipeline/REQUIREMENTS.md). For telemetry constraint definitions, see the [telemetry requirements](docs/open-forge-telemetry-REQUIREMENTS.md).
+
 ## Quick Start
 
 ```bash
