@@ -19,6 +19,7 @@
     "@vitest/coverage-v8": "4.0.9",
     "@vitest/ui": "4.0.9",
     "eslint": "~8.57.0",
+    "eslint-plugin-llm-core": "^0.6.0",
     "jiti": "2.4.2",
     "jsonc-eslint-parser": "^2.1.0",
     "nx": "22.6.2",
@@ -35,6 +36,5 @@
   "nx": {
     "includedScripts": [],
     "targets": {}
-  },
-  "dependencies": {}
+  }
 }

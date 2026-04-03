@@ -1,9 +1,14 @@
+import { createRequire } from 'node:module';
 import nx from '@nx/eslint-plugin';
+
+const require = createRequire(import.meta.url);
+const llmCore = require('eslint-plugin-llm-core');
 
 export default [
   ...nx.configs['flat/base'],
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
+  ...llmCore.configs.recommended,
   {
     ignores: [
       '**/dist',
@@ -40,18 +45,8 @@ export default [
           ],
         },
       ],
+      'no-nested-ternary': 'error',
+      complexity: ['error', 10],
     },
-  },
-  {
-    files: [
-      '**/*.ts',
-      '**/*.cts',
-      '**/*.mts',
-      '**/*.js',
-      '**/*.cjs',
-      '**/*.mjs',
-    ],
-    // Override or add rules here
-    rules: {},
   },
 ];
