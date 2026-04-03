@@ -1,6 +1,12 @@
-import { readSpecFile } from '../specs/file-reader.js';
+import { readSpecFile } from '../specs/read-spec-file.js';
 
-export async function listPrompts(): Promise<{ prompts: Array<{ name: string; description: string; arguments?: Array<{ name: string; description: string; required: boolean }> }> }> {
+export async function listPrompts(): Promise<{
+  prompts: Array<{
+    name: string;
+    description: string;
+    arguments?: Array<{ name: string; description: string; required: boolean }>;
+  }>;
+}> {
   return {
     prompts: [
       {
@@ -34,7 +40,12 @@ export async function listPrompts(): Promise<{ prompts: Array<{ name: string; de
   };
 }
 
-export async function getPrompt(name: string, args: Record<string, string>): Promise<{ messages: Array<{ role: string; content: { type: string; text: string } }> }> {
+export async function getPrompt(
+  name: string,
+  args: Record<string, string>
+): Promise<{
+  messages: Array<{ role: string; content: { type: string; text: string } }>;
+}> {
   if (name === 'understand_spec') {
     const specName = args.spec_name;
     if (!specName) {

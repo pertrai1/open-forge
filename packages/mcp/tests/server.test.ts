@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { createServer } from '../src/server.js';
+import { createServer } from '../src/create-server.js';
 
 describe('MCP Server', () => {
   describe('createServer', () => {
@@ -14,7 +14,9 @@ describe('MCP Server', () => {
   describe('server configuration', () => {
     it('should have resources capability', () => {
       const server = createServer();
-      const capabilities = server._capabilities;
+      const capabilities = (
+        server as unknown as { _capabilities: { resources?: unknown } }
+      )._capabilities;
       expect(capabilities.resources).toBeDefined();
     });
   });
@@ -24,7 +26,7 @@ describe('MCP Server', () => {
       const server = createServer();
       const transport = new StdioServerTransport();
 
-        await expect(server.connect(transport)).resolves.toBeUndefined();
+      await expect(server.connect(transport)).resolves.toBeUndefined();
     });
   });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractPurpose } from '../../src/specs/purpose-extractor.js';
+import { extractPurpose } from '../../src/specs/extract-purpose.js';
 
 describe('Purpose Extractor', () => {
   describe('extractPurpose', () => {
@@ -17,7 +17,9 @@ This is the second paragraph.
 Some requirements here.`;
 
       const result = extractPurpose(markdown);
-      expect(result).toBe('This is the first paragraph of the purpose section.');
+      expect(result).toBe(
+        'This is the first paragraph of the purpose section.'
+      );
     });
 
     it('should return null if Purpose section not found', () => {

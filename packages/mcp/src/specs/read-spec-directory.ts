@@ -9,7 +9,7 @@ export async function readSpecDirectory(): Promise<string[]> {
       .map((entry) => entry.name);
 
     return directories;
-  } catch (error) {
+  } catch {
     return [];
   }
 }

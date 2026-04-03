@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { handleChangesList } from '../../src/handlers/changes-list.js';
+import { handleChangesList } from '../../src/handlers/handle-changes-list.js';
 
 describe('Changes List Handler', () => {
   it('should return changes array', async () => {

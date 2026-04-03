@@ -1,22 +1,22 @@
 import { describe, it, expect } from 'vitest';
-import { parseSpecURI } from '../../src/specs/uri-parser.js';
+import { parseSpecUri } from '../../src/specs/parse-spec-uri.js';
 
 describe('URI Parser', () => {
-  describe('parseSpecURI', () => {
+  describe('parseSpecUri', () => {
     it('should extract name from valid spec:// URI', () => {
-      expect(parseSpecURI('spec://bash-tool')).toBe('bash-tool');
-      expect(parseSpecURI('spec://read-file-tool')).toBe('read-file-tool');
+      expect(parseSpecUri('spec://bash-tool')).toBe('bash-tool');
+      expect(parseSpecUri('spec://read-file-tool')).toBe('read-file-tool');
     });
 
     it('should return null for invalid URIs', () => {
-      expect(parseSpecURI('invalid-uri')).toBeNull();
-      expect(parseSpecURI('http://example.com')).toBeNull();
-      expect(parseSpecURI('')).toBeNull();
+      expect(parseSpecUri('invalid-uri')).toBeNull();
+      expect(parseSpecUri('http://example.com')).toBeNull();
+      expect(parseSpecUri('')).toBeNull();
     });
 
     it('should reject path traversal attempts', () => {
-      expect(parseSpecURI('spec://../etc/passwd')).toBeNull();
-      expect(parseSpecURI('spec://foo/../../../etc/passwd')).toBeNull();
+      expect(parseSpecUri('spec://../etc/passwd')).toBeNull();
+      expect(parseSpecUri('spec://foo/../../../etc/passwd')).toBeNull();
     });
   });
 });

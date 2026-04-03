@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readSpecFile } from '../../src/specs/file-reader.js';
+import { readSpecFile } from '../../src/specs/read-spec-file.js';
 
 describe('File Reader', () => {
   describe('readSpecFile', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readChangesDirectory } from '../../src/changes/reader.js';
+import { readChangesDirectory } from '../../src/changes/read-changes-directory.js';
 
 describe('Changes Reader', () => {
   describe('readChangesDirectory', () => {
@@ -10,7 +10,7 @@ describe('Changes Reader', () => {
 
     it('should exclude archive directory', async () => {
       const changes = await readChangesDirectory();
-      const archiveEntries = changes.filter(c => c.includes('archive'));
+      const archiveEntries = changes.filter((c) => c.includes('archive'));
       expect(archiveEntries).toHaveLength(0);
     });
   });

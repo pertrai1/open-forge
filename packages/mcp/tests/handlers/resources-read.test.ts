@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { createResourcesReadHandler } from '../../src/handlers/resources-read.js';
+import { createResourcesReadHandler } from '../../src/handlers/create-resources-read-handler.js';
 
 describe('Resources Read Handler', () => {
   describe('handler', () => {
     it('should return content for valid spec URI', async () => {
       const handler = createResourcesReadHandler();
-      const result = await handler({ params: { uri: 'spec://project-foundation' } });
+      const result = await handler({
+        params: { uri: 'spec://project-foundation' },
+      });
 
       expect(result).toHaveProperty('contents');
       expect(Array.isArray(result.contents)).toBe(true);

@@ -4,35 +4,22 @@ import { join } from 'path';
 
 describe('Project Foundation', () => {
   describe('TypeScript compilation', () => {
-    it('should have tsconfig.json with strict mode enabled', () => {
+    it('should have tsconfig.json extending workspace base', () => {
       const tsconfigPath = join(process.cwd(), 'tsconfig.json');
       expect(existsSync(tsconfigPath)).toBe(true);
-      
+
       const tsconfig = JSON.parse(readFileSync(tsconfigPath, 'utf-8'));
-      expect(tsconfig.compilerOptions.strict).toBe(true);
-      expect(tsconfig.compilerOptions.module).toBe('NodeNext');
-      expect(tsconfig.compilerOptions.target).toMatch(/ES2022|ESNext/);
+      expect(tsconfig.extends).toBe('../../tsconfig.base.json');
+    });
+
+    it('should have tsconfig.lib.json for builds', () => {
+      const tsconfigLibPath = join(process.cwd(), 'tsconfig.lib.json');
+      expect(existsSync(tsconfigLibPath)).toBe(true);
     });
   });
 
-  describe('Build command', () => {
-    it('should have build script in package.json', () => {
-      const packagePath = join(process.cwd(), 'package.json');
-      const pkg = JSON.parse(readFileSync(packagePath, 'utf-8'));
-      
-      expect(pkg.scripts.build).toBeDefined();
-    });
-  });
-
-  describe('Test command', () => {
-    it('should have test script in package.json', () => {
-      const packagePath = join(process.cwd(), 'package.json');
-      const pkg = JSON.parse(readFileSync(packagePath, 'utf-8'));
-      
-      expect(pkg.scripts.test).toBeDefined();
-    });
-
-    it('should have vitest.config.ts', () => {
+  describe('Nx targets', () => {
+    it('should have vitest.config.ts for test target', () => {
       const vitestPath = join(process.cwd(), 'vitest.config.ts');
       expect(existsSync(vitestPath)).toBe(true);
     });
@@ -42,7 +29,7 @@ describe('Project Foundation', () => {
     it('should have @modelcontextprotocol/sdk in dependencies', () => {
       const packagePath = join(process.cwd(), 'package.json');
       const pkg = JSON.parse(readFileSync(packagePath, 'utf-8'));
-      
+
       expect(pkg.dependencies['@modelcontextprotocol/sdk']).toBeDefined();
     });
   });

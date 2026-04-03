@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readSpecDirectory } from '../../src/specs/reader.js';
+import { readSpecDirectory } from '../../src/specs/read-spec-directory.js';
 
 describe('Spec Reader', () => {
   describe('readSpecDirectory', () => {

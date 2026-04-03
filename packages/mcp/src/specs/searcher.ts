@@ -1,13 +1,24 @@
-import { readSpecDirectory } from './reader.js';
+import { readSpecDirectory } from './read-spec-directory.js';
 import { readFile } from 'fs/promises';
 import { SPECS_PATH } from '../config.js';
-import { extractPurpose } from './purpose-extractor.js';
+import { extractPurpose } from './extract-purpose.js';
 
 export interface SearchResult {
   uri: string;
   name: string;
   description: string;
   matchType: 'name' | 'description';
+}
+
+async function readPurpose(name: string): Promise<string | null> {
+  try {
+    const specPath = `${SPECS_PATH}/${name}/spec.md`;
+    const content = await readFile(specPath, 'utf-8');
+    return extractPurpose(content);
+  } catch {
+    console.error('Failed to read spec', { name });
+    return null;
+  }
 }
 
 export async function searchSpecs(query: string): Promise<SearchResult[]> {
@@ -19,42 +30,24 @@ export async function searchSpecs(query: string): Promise<SearchResult[]> {
     const nameMatch = name.toLowerCase().includes(normalizedQuery);
 
     if (nameMatch) {
-      let description = 'No description available';
-      try {
-        const specPath = `${SPECS_PATH}/${name}/spec.md`;
-        const content = await readFile(specPath, 'utf-8');
-        const purpose = extractPurpose(content);
-        if (purpose) {
-          description = purpose;
-        }
-      } catch (error) {
-        console.error(`Failed to read spec ${name}:`, error);
-      }
-
+      const purpose = await readPurpose(name);
       results.push({
         uri: `spec://${name}`,
         name,
-        description,
+        description: purpose ?? 'No description available',
         matchType: 'name',
       });
       continue;
     }
 
-    try {
-      const specPath = `${SPECS_PATH}/${name}/spec.md`;
-      const content = await readFile(specPath, 'utf-8');
-      const purpose = extractPurpose(content);
-
-      if (purpose && purpose.toLowerCase().includes(normalizedQuery)) {
-        results.push({
-          uri: `spec://${name}`,
-          name,
-          description: purpose,
-          matchType: 'description',
-        });
-      }
-    } catch (error) {
-      console.error(`Failed to read spec ${name}:`, error);
+    const purpose = await readPurpose(name);
+    if (purpose && purpose.toLowerCase().includes(normalizedQuery)) {
+      results.push({
+        uri: `spec://${name}`,
+        name,
+        description: purpose,
+        matchType: 'description',
+      });
     }
   }
 

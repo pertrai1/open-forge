@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { searchSpecsTool } from '../../src/tools/search-specs/schema.js';
-import { handleSearchSpecs } from '../../src/tools/search-specs/handler.js';
+import { searchSpecsTool } from '../../src/tools/search-specs/search-specs-tool.js';
+import { handleSearchSpecs } from '../../src/tools/search-specs/handle-search-specs.js';
 
 describe('Search Specs Tool', () => {
   describe('schema', () => {

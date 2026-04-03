@@ -1,4 +1,4 @@
-export function parseSpecURI(uri: string): string | null {
+export function parseSpecUri(uri: string): string | null {
   const match = uri.match(/^spec:\/\/([^/]+)$/);
   if (!match) {
     return null;

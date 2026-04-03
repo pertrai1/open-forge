@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createResourcesListHandler } from '../../src/handlers/resources-list.js';
+import { createResourcesListHandler } from '../../src/handlers/create-resources-list-handler.js';
 
 describe('Resources List Handler', () => {
   describe('handler', () => {

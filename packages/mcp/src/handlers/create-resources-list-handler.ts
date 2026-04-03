@@ -1,9 +1,16 @@
 import { readFile } from 'fs/promises';
-import { readSpecDirectory } from '../specs/reader.js';
-import { extractPurpose } from '../specs/purpose-extractor.js';
+import { readSpecDirectory } from '../specs/read-spec-directory.js';
+import { extractPurpose } from '../specs/extract-purpose.js';
 import { SPECS_PATH } from '../config.js';
 
-export function createResourcesListHandler(): () => Promise<{ resources: Array<{ uri: string; name: string; description: string; mimeType: string }> }> {
+export function createResourcesListHandler(): () => Promise<{
+  resources: Array<{
+    uri: string;
+    name: string;
+    description: string;
+    mimeType: string;
+  }>;
+}> {
   return async () => {
     const specNames = await readSpecDirectory();
 
@@ -20,7 +27,7 @@ export function createResourcesListHandler(): () => Promise<{ resources: Array<{
             description = purpose;
           }
         } catch (error) {
-          console.error(`Failed to read spec ${name}:`, error);
+          console.error('Failed to read spec', { name, error });
         }
 
         return {
@@ -29,7 +36,7 @@ export function createResourcesListHandler(): () => Promise<{ resources: Array<{
           description,
           mimeType: 'text/markdown',
         };
-      }),
+      })
     );
 
     return { resources };

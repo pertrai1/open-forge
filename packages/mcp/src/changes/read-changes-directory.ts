@@ -9,7 +9,7 @@ export async function readChangesDirectory(): Promise<string[]> {
       .map((entry) => entry.name);
 
     return changes;
-  } catch (error) {
+  } catch {
     return [];
   }
 }
