@@ -9,6 +9,7 @@ All five modules in this phase are pure functions operating on strings and typed
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Parse any valid ROADMAP.md (matching the template format) into a fully typed `Roadmap` object
 - Generate ROADMAP.md markdown from a `Roadmap` object that matches the canonical template format
 - Classify task complexity using deliverable metadata and dependency count as heuristic proxies
@@ -16,6 +17,7 @@ All five modules in this phase are pure functions operating on strings and typed
 - Detect parallel groups from task dependency graphs within a phase
 
 **Non-Goals:**
+
 - LLM-based complexity classification (this is a heuristic code module, not an agent call)
 - Parsing arbitrary markdown (only the ROADMAP.md format is supported)
 - Round-trip fidelity guarantees (generate produces canonical format, not necessarily identical to arbitrary input formatting)
@@ -28,6 +30,7 @@ All five modules in this phase are pure functions operating on strings and typed
 Parse ROADMAP.md using regex patterns against individual lines. The format is constrained enough that a general-purpose markdown AST library adds complexity without benefit.
 
 **Key patterns:**
+
 - Phase header: `/^## Phase (\d+): (.+)$/`
 - Goal line: `/^\*\*Goal\*\*: (.+)$/`
 - Task line: `/^- \[([ x])\] (\d+\.\d+) (.+)$/` with nested extraction of `[deps: ...]` and `[deliverable: ...]`
@@ -45,11 +48,11 @@ Parse ROADMAP.md using regex patterns against individual lines. The format is co
 
 The REQUIREMENTS.md defines complexity by line count and file count, but at classification time the source files don't exist yet (classification happens during ROADMAP generation). Use these proxy signals instead:
 
-| Signal | Trivial | Simple | Medium | Complex |
-|--------|---------|--------|--------|---------|
-| Dependencies | 0 | 1-2 | 3-4 | 5+ |
-| Deliverable file count | 1 | 1-2 | 3-5 | 6+ |
-| Description keywords | "config", "rename" | "implement", "add" | "integrate", "cross-cutting" | "architect", "redesign", "migration" |
+| Signal                 | Trivial            | Simple             | Medium                       | Complex                              |
+| ---------------------- | ------------------ | ------------------ | ---------------------------- | ------------------------------------ |
+| Dependencies           | 0                  | 1-2                | 3-4                          | 5+                                   |
+| Deliverable file count | 1                  | 1-2                | 3-5                          | 6+                                   |
+| Description keywords   | "config", "rename" | "implement", "add" | "integrate", "cross-cutting" | "architect", "redesign", "migration" |
 
 The classifier returns `TaskComplexity` and is deterministic — same input always produces same output. Callers can override the classification if needed.
 

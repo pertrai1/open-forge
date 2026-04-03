@@ -11,10 +11,7 @@ import { access, mkdir, rm, writeFile, readFile } from 'node:fs/promises';
 const execFile = promisify(execFileCb);
 
 export class CheckpointNotFoundError extends Error {
-  constructor(
-    readonly phase: number,
-    readonly label: string
-  ) {
+  constructor(readonly phase: number, readonly label: string) {
     super(`Checkpoint "${label}" not found for phase ${phase}`);
     this.name = 'CheckpointNotFoundError';
   }
@@ -28,10 +25,7 @@ export class CheckpointBudgetExceededError extends Error {
 }
 
 export class CheckpointGitError extends Error {
-  constructor(
-    readonly command: string,
-    readonly stderr: string
-  ) {
+  constructor(readonly command: string, readonly stderr: string) {
     super(`Git command failed: ${command}\n${stderr}`);
     this.name = 'CheckpointGitError';
   }

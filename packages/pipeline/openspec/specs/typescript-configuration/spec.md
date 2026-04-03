@@ -20,4 +20,3 @@ None - this is a foundational configuration file
 ### Dependencies
 
 None - standalone configuration file
-

@@ -29,7 +29,9 @@ function serialize(sentinel: DriftSentinel): string {
     `phase=${sentinel.phase}`,
     `reason=${sentinel.reason}`,
     `timestamp=${sentinel.timestamp}`,
-    `rolled_back_to=${sentinel.rolledBackTo === null ? 'null' : sentinel.rolledBackTo}`,
+    `rolled_back_to=${
+      sentinel.rolledBackTo === null ? 'null' : sentinel.rolledBackTo
+    }`,
     `attempts_log=${JSON.stringify(sentinel.attemptHashes)}`,
   ];
   return lines.join('\n') + '\n';

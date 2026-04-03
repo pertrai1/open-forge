@@ -3,6 +3,7 @@
 ## Requirement
 
 Vitest testing framework setup with configuration file, test directory structure, and a sample passing test to verify the setup works.
+
 ### Acceptance Criteria
 
 - **AC-config**: Vitest configuration file exists at vitest.config.ts
@@ -28,4 +29,3 @@ Vitest testing framework setup with configuration file, test directory structure
 ### Dependencies
 
 - Vitest ^1.0.0
-

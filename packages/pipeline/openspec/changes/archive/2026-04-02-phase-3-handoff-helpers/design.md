@@ -3,6 +3,7 @@
 Phases 0–2 established the project foundation, type system, and ROADMAP parser/generator. The codebase follows a functional style: pure functions, typed error classes, Zod at boundaries, no stateful classes. All existing modules (`roadmap/parser.ts`, `roadmap/generator.ts`, `helper/roadmap.ts`) operate on data passed as arguments and return new values.
 
 Phase 3 introduces seven modules across three layers:
+
 1. **Core managers** (`handoff/manager.ts`, `metrics/logger.ts`) — domain logic for reading/writing structured markdown files
 2. **Helper utilities** (`helper/handoff.ts`, `helper/metrics.ts`, `helper/drift.ts`, `helper/checkpoint.ts`, `helper/scanner.ts`) — thin convenience wrappers and standalone utilities
 3. **Tests** (`tests/handoff-manager.test.ts`, `tests/helper.test.ts`)
@@ -12,6 +13,7 @@ All modules consume existing types from Phase 1 (`HandoffState`, `WakeContext`, 
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Implement all seven source modules with full type safety against Phase 1 types
 - Keep all functions pure where possible (filesystem I/O isolated to explicit read/write boundaries)
 - Follow the established pattern: typed error classes, Zod validation at boundaries, `.js` extensions in imports
@@ -19,6 +21,7 @@ All modules consume existing types from Phase 1 (`HandoffState`, `WakeContext`, 
 - Shadow git checkpoints must be completely isolated from user's git history
 
 **Non-Goals:**
+
 - No markdown parsing of HANDOFF.md from raw text (unlike ROADMAP parser, HANDOFF manager works with typed `HandoffState` objects serialized as JSON, not freeform markdown — the template is for human readability, not machine parsing)
 - No network I/O or external service calls
 - No CLI commands — these are library modules only
@@ -34,21 +37,22 @@ All modules consume existing types from Phase 1 (`HandoffState`, `WakeContext`, 
 **Why**: The ROADMAP module already demonstrated that markdown parsing is complex and fragile (`parser.ts` is 180+ lines of regex). HANDOFF has richer nested structure (task logs, conventions, ADRs) that would make a markdown parser even more brittle. JSON serialization is lossless and trivial.
 
 **Alternatives considered**:
+
 - Pure markdown parsing (like ROADMAP) — rejected: too fragile for nested structures, would require 300+ lines of regex
 - YAML frontmatter — rejected: adds a dependency, no clear advantage over JSON
 - Separate `.json` sidecar file — rejected: violates the single-file `HANDOFF.md` contract from REQUIREMENTS.md
 
 **Format**: The file will have a human-readable markdown header followed by a fenced JSON block:
 
-```markdown
+````markdown
 # HANDOFF
 
 <!-- Machine-managed file. Edit the JSON block below. -->
 
-​```json
+​`json
 { ... HandoffState ... }
-​```
-```
+​`
+````
 
 ### 2. Checkpoint manager: `execFile` over `exec` for git operations
 
@@ -57,6 +61,7 @@ All modules consume existing types from Phase 1 (`HandoffState`, `WakeContext`, 
 **Why**: `execFile` doesn't spawn a shell, which avoids shell injection risks from checkpoint labels or file paths. Since we control all arguments programmatically, there's no need for shell features.
 
 **Alternatives considered**:
+
 - `exec` with shell — rejected: unnecessary attack surface
 - `simple-git` npm package — rejected: adds external dependency for ~5 git commands
 - `isomorphic-git` — rejected: heavy dependency, overkill for shadow repo operations
@@ -68,6 +73,7 @@ All modules consume existing types from Phase 1 (`HandoffState`, `WakeContext`, 
 **Why**: The scanner runs synchronously on every write to persistent files. It must be fast, deterministic, and have zero external dependencies. Pattern matching catches the documented threat model from REQUIREMENTS.md without introducing ML inference latency.
 
 **Alternatives considered**:
+
 - LLM-based content review — rejected: too slow, too expensive for every write operation
 - AST-based analysis — rejected: content is natural language, not code
 
@@ -78,6 +84,7 @@ All modules consume existing types from Phase 1 (`HandoffState`, `WakeContext`, 
 **Why**: Append-only is safe for concurrent writes (multiple agents in parallel phases). JSON-lines is trivially parseable (`split('\n').map(JSON.parse)`) without needing a streaming JSON parser.
 
 **Alternatives considered**:
+
 - Single JSON array — rejected: requires read-modify-write (race condition risk)
 - SQLite — rejected: adds dependency, overkill for append-only metrics
 - CSV — rejected: escaping issues with string fields

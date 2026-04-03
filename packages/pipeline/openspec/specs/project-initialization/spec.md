@@ -7,13 +7,13 @@ Node.js project setup with package.json, including all required dependencies (Ty
 ### Acceptance Criteria
 
 - **AC-package.json**: Package manifest exists with correct name, version, and dependencies
-- **AC-dependencies**:** All dependencies are must be semantically versioned, with exact versions numbers
-- **ac-dev-dependencies**:** All dev dependencies must be clearly separated (dev vs runtime)
-- **ac-scripts**:** Scripts are npm scripts for common operations (build, test, lint, format, typecheck)
-- **ac-config**:** TypeScript configuration file exists at tsconfig.json with correct name, version, and dependencies
-- **ac-directory-structure**:** Source directory structure matches ROADMAP.md exactly, with all directories created
-- **ac-sample-test**:** A sample test file exists in tests/setup.test.ts
-- **ac-passing-test**:**The sample test passes (verifying testing infrastructure)
+- **AC-dependencies**:\*\* All dependencies are must be semantically versioned, with exact versions numbers
+- **ac-dev-dependencies**:\*\* All dev dependencies must be clearly separated (dev vs runtime)
+- **ac-scripts**:\*\* Scripts are npm scripts for common operations (build, test, lint, format, typecheck)
+- **ac-config**:\*\* TypeScript configuration file exists at tsconfig.json with correct name, version, and dependencies
+- **ac-directory-structure**:\*\* Source directory structure matches ROADMAP.md exactly, with all directories created
+- **ac-sample-test**:\*\* A sample test file exists in tests/setup.test.ts
+- **ac-passing-test**:\*\*The sample test passes (verifying testing infrastructure)
 
 ### Out of Scope
 
@@ -82,9 +82,9 @@ Vitest testing framework setup with configuration file, test directory structure
 
 ### Acceptance Criteria
 
-- **AC-config**:** Vitest configuration file exists at vitest.config.ts
-- **AC-test-dir**:** Test directory (tests/) must exist and be configured
-- **AC-sample-test**:**a sample test file exists in tests/setup.test.ts
+- **AC-config**:\*\* Vitest configuration file exists at vitest.config.ts
+- **AC-test-dir**:\*\* Test directory (tests/) must exist and be configured
+- **AC-sample-test**:\*\*a sample test file exists in tests/setup.test.ts
 - **AC-passing-test**: **When tests run, the sample test must pass**
 - **AC-sample-test-content**: Test verifies that the is a placeholder that demonstrates basic functionality
 - **AC-coverage**: Test coverage reporting enabled
@@ -120,8 +120,8 @@ Complete source code directory structure per ROADMAP.md Package Structure sectio
 
 ### Acceptance Criteria
 
-- **AC-directory-tree**:** All directories listed in ROADMAP.md must to exist
-- **AC-gitkeep**:** Each empty directory contains a .gitkeep file to preserve it in Git
+- **AC-directory-tree**:\*\* All directories listed in ROADMAP.md must to exist
+- **AC-gitkeep**:\*\* Each empty directory contains a .gitkeep file to preserve it in Git
 - **AC-matching-structure**: Directory structure matches the specification in ROADMAP.md File Structure Reference section
 - **AC-readme**: README.md exists in root (for reference)
 - **AC-future-phases**: Directory structure supports all 12 phases of implementation
@@ -144,12 +144,12 @@ ESLint and Prettier configuration for consistent code quality and formatting acr
 
 ### Acceptance Criteria
 
-- **AC-config-files**:** ESLint (.eslintrc.js) and Prettier (.prettierrc) configuration files exist
-- **AC-typescript-rules**:** ESLint rules configured for TypeScript best practices and strict type checking
-- **AC-formatting-rules**:** Prettier rules enforce consistent code formatting
-- **AC-prettierignore**:** Prettier configuration ignores specific patterns if they conflict with ESLint
+- **AC-config-files**:\*\* ESLint (.eslintrc.js) and Prettier (.prettierrc) configuration files exist
+- **AC-typescript-rules**:\*\* ESLint rules configured for TypeScript best practices and strict type checking
+- **AC-formatting-rules**:\*\* Prettier rules enforce consistent code formatting
+- **AC-prettierignore**:\*\* Prettier configuration ignores specific patterns if they conflict with ESLint
 - **AC-integration**: ESLint and Prettier work together via eslint-config-prettier package
-- **AC-pre-commit-hook**:** Pre-commit hooks run linting and formatting checks
+- **AC-pre-commit-hook**:\*\* Pre-commit hooks run linting and formatting checks
 
 ### Out of Scope
 
@@ -174,7 +174,7 @@ Template files for ROADMAP.md, HANDOFF.md, and forge.config.json to bootstrap ne
 
 ### Acceptance Criteria
 
-- **AC-roadmap-template**:** template for ROADMAP.md exists
+- **AC-roadmap-template**:\*\* template for ROADMAP.md exists
 - **AC-handoff-template**: Template for HANDOFF.md exists
 - **AC-config-template**: Template for forge.config.json exists
 - **AC-usable-instructions**: Template files include clear usage instructions for placeholders for common sections
@@ -186,4 +186,3 @@ None - this is foundational setup
 ### Dependencies
 
 None - standalone template creation
-

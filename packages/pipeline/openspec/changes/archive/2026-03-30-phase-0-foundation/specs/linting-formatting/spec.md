@@ -14,13 +14,14 @@ ESLint and Prettier configuration for consistent code quality and formatting acr
 - **AC-pre-commit-hook**: Pre-commit hooks run linting and formatting checks
 
 ### Out of Scope
+
 None - this is foundational setup
 
 ### Dependencies
+
 - eslint ^8.0.0
 - eslint-config-prettier ^9.0.0
 - prettier ^3.0.0
 - typescript ^5.0.0
 - @typescript-eslint/parser ^6.0.0
 - @typescript-eslint/eslint-plugin ^7.2.0
-

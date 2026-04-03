@@ -15,6 +15,7 @@
 - [x] 0.3 requires 0.1
 
 ### Group C (depends on 0.4)
+
 - [x] 0.6 Create template files
 
 ## Tasks
@@ -24,15 +25,19 @@
 ✓ Task complete
 
 ### 0.2 Configure TypeScript (`tsconfig.json`) [deps: None]
+
 ✓ Task complete
 
 ### 0.4 Create project directory structure [deps: None]
+
 ✓ Task complete
 
 ### 0.5 Add linter/formatter (ESLint + Prettier) [deps: None]
+
 ✓ Task complete
 
 ### 0.6 Create template files [deps: 0.4]
+
 ✓ Task complete
 
 ### Acceptance Criteria
@@ -57,7 +62,8 @@
 - [x] `npm run lint` succeeds
 - [x] `npm run typecheck` succeeds
 - [x] `npm install` completes successfully
-}
+      }
+
 ```
 - Add dependencies (dev and runtime):
   - typescript: `^5.0.0`
@@ -114,7 +120,9 @@
       }
     }
   }
-}
+  }
+  ```
+
 ```
 
 - [x] 0.3 Set up testing framework (Vitest) [deps: 0.1]
@@ -173,3 +181,4 @@
 - [x] `npm run typecheck` succeeds
 - [x] `npm install` completes successfully
 
+```

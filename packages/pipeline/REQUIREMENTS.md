@@ -1062,41 +1062,49 @@ project/
 ### Resolved (Based on opsx-loop Patterns)
 
 1. **Tech Stack Specification** → **Hybrid Approach**
+
    - Config in `forge.config.json` for explicit settings
    - Auto-detect from `package.json`, language files, framework configs
    - User can override detection with explicit config
 
 2. **Multiple ROADMAPs** → **Single ROADMAP with Phases**
+
    - opsx-loop pattern: One ROADMAP.md with sequential phases
    - Complex projects can use phase grouping (e.g., "Phase 2A: Frontend", "Phase 2B: Backend")
    - Simplicity wins — multiple ROADMAPs add coordination complexity
 
 3. **Human-in-the-Loop** → **PIPELINE-ISSUES.md for Blockers**
+
    - No automatic pauses between phases (run until complete or blocked)
    - Agent documents blockers in `PIPELINE-ISSUES.md` with structured format
    - Human reviews issues and provides resolution
 
 4. **Incremental Requirements** → **ROADMAP Regeneration**
+
    - When new requirements arrive, regenerate ROADMAP with new phases
    - Completed phases remain marked `[x]`
    - New phases appended with appropriate dependencies
 
 5. **Template Libraries** → **Not in Scope**
+
    - Agents write real code, not templates
    - Project scaffolding (e.g., "new React app") is a Phase 0 task
    - Focus on transformation, not boilerplate generation
 
 6. **Phase Granularity** → **5-6 tasks per phase**
+
    - Enough work to be meaningful
    - Small enough to complete in one session
    - Matches opsx-loop proven pattern
 
 7. **Parallel Phase Execution** → **Supported for independent phases**
+
    - Phases with no dependencies can run in parallel sessions
    - Orchestrator coordinates via ROADMAP task status
    - Useful for large projects with independent workstreams
 
 8. **ROADMAP Versioning** → **Version alongside code**
+
    - Commit ROADMAP.md after each phase
    - Enables progress tracking over time
    - Allows rollback to known-good state

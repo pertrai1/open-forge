@@ -15,6 +15,7 @@ Phase 2 delivered ROADMAP parsing and generation, but the pipeline has no way to
 ## Capabilities
 
 ### New Capabilities
+
 - `handoff-manager`: HANDOFF.md read/write/append operations with bounded growth rules (rewrite current state, append-only task log with compression of old entries)
 - `handoff-helper`: Convenience functions for extracting active conventions and building structured wake context from HandoffState
 - `metrics-logger`: Per-invocation metrics recording to PIPELINE-METRICS.md and cost manifest aggregation

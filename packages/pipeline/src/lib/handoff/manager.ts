@@ -119,7 +119,9 @@ export async function writeHandoff(
   } catch (err) {
     throw new HandoffWriteError(
       filePath,
-      `Failed to write HANDOFF.md: ${err instanceof Error ? err.message : String(err)}`
+      `Failed to write HANDOFF.md: ${
+        err instanceof Error ? err.message : String(err)
+      }`
     );
   }
 }

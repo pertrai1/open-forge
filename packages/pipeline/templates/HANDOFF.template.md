@@ -23,12 +23,15 @@ This template provides the structure for creating a HANDOFF.md file.
 ### [Date] Task: [Task ID]
 
 **What was done**:
+
 - [Description of work completed]
 
 **Files Modified**:
+
 - [List of files created or modified]
 
 **Next Steps**:
+
 - [What needs to happen next]
 
 ---
@@ -36,6 +39,7 @@ This template provides the structure for creating a HANDOFF.md file.
 ## Active Conventions
 
 ### [Convention Name]
+
 - **Pattern**: [Description or reference]
 - **Rationale**: [Why this pattern exists]
 - **Usage**: [How to apply it]
@@ -45,6 +49,7 @@ This template provides the structure for creating a HANDOFF.md file.
 ## Architecture Decisions
 
 ### [Decision Title]
+
 - **Date**: [Date]
 - **Decision**: [What was decided]
 - **Rationale**: [Why this approach was chosen]
