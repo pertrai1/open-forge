@@ -15,6 +15,7 @@ You'll need a spec archive to work with. This server is designed for the OpenSpe
 For testing, you'll verify your server works with an MCP client. The Claude desktop app is the easiest way to test, but you can also use the MCP inspector CLI tool.
 
 **Resources to review before starting:**
+
 - [MCP Documentation](https://modelcontextprotocol.io/)
 - [TypeScript MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk)
 - [Anthropic's Code Execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp) — explains why progressive disclosure matters
@@ -26,6 +27,7 @@ In this step your goal is to create a basic MCP server that starts up and report
 Your server should initialize the MCP protocol and declare that it supports resources. It doesn't need to expose any actual resources yet — just prove that the server can start, respond to the `initialize` request, and advertise resource capability.
 
 Create a basic server entry point that:
+
 - Creates an MCP server instance named `specdex`
 - Declares version `0.1.0`
 - Registers the `resources` capability
@@ -40,6 +42,7 @@ In this step your goal is to list available specs as resources.
 Your server should read the `openspec/specs/` directory and expose each spec as an MCP resource. Each spec folder contains a `spec.md` file — these are your resource entries.
 
 Implement the `resources/list` handler to return:
+
 - A resource URI for each spec (e.g., `spec://bash-tool`)
 - A name (the spec folder name, e.g., "bash-tool")
 - A description extracted from the spec's Purpose section (first line/paragraph)
@@ -56,6 +59,7 @@ In this step your goal is to implement resource reading.
 Your server should handle `resources/read` requests to return the full content of a spec file.
 
 Implement the `resources/read` handler to:
+
 - Accept a URI like `spec://bash-tool`
 - Resolve it to the file path `../ai-coding-agent/openspec/specs/bash-tool/spec.md`
 - Return the file contents as text
@@ -70,6 +74,7 @@ In this step your goal is to add a `search_specs` tool.
 Resources are great for reading known specs, but agents need a way to discover which specs are relevant. Add a tool that lets agents search across all specs.
 
 Implement a `search_specs` tool that:
+
 - Accepts a `query` string parameter
 - Searches spec names and Purpose sections for matching text
 - Returns a list of matching specs with their URIs and brief descriptions
@@ -85,6 +90,7 @@ In this step your goal is to add a `get_requirements` tool.
 Sometimes an agent doesn't need the full spec — just the requirements section. This demonstrates how MCP tools can provide filtered views of data, saving context.
 
 Implement a `get_requirements` tool that:
+
 - Accepts a `spec_name` parameter (e.g., "bash-tool")
 - Parses the spec markdown to extract just the Requirements section
 - Returns the requirements as formatted text
@@ -101,6 +107,7 @@ In this step your goal is to add a `get_scenarios` tool.
 Similar to requirements, agents may want just the scenarios for a spec — useful for understanding test cases without reading the full document.
 
 Implement a `get_scenarios` tool that:
+
 - Accepts a `spec_name` parameter
 - Extracts all scenarios from the spec (lines starting with `#### Scenario:`)
 - Returns scenarios as a structured list with scenario names and their descriptions
@@ -115,6 +122,7 @@ In this step your goal is to expose the changes directory as a resource.
 OpenSpec archives include a `changes/` directory tracking modifications. Expose this as a resource so agents can see recent activity.
 
 Add a `changes://list` resource that:
+
 - Reads the `openspec/changes/` directory
 - Returns a listing of change files with timestamps
 - Orders changes by most recent first
@@ -147,6 +155,7 @@ In this step your goal is to package and document your server.
 Your server should be easy to install and configure in any MCP client. Create the necessary configuration and documentation.
 
 Complete the following:
+
 - Add a `package.json` with proper metadata (name, version, description, bin entry)
 - Create a `README.md` with installation instructions for Claude desktop and other MCP clients
 - Add an MCP configuration example showing how to add specdex to `claude_desktop_config.json`

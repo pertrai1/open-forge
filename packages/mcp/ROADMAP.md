@@ -9,6 +9,7 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 **Architecture**: MCP server exposing OpenSpec archives as Resources, Tools, and Prompts
 
 **Key Decisions (VASEA Clarified)**:
+
 - **Path Config**: Archive path is always `./openspec/` relative to project root (after `openspec init`)
 - **Testing**: Tests required for each phase
 - **Output Format**: Structured JSON for all tools
@@ -79,6 +80,7 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 - Group D: 2.6 (requires 2.5)
 
 **Output Format (resources/list)**:
+
 ```json
 {
   "resources": [
@@ -115,6 +117,7 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 - Group D: 3.6 (depends on 3.5)
 
 **Output Format (resources/read)**:
+
 ```json
 {
   "contents": [
@@ -128,6 +131,7 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 ```
 
 **Error Format**:
+
 ```json
 {
   "isError": true,
@@ -162,6 +166,7 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 - Group D: 4.5 (depends on 4.4)
 
 **Output Format**:
+
 ```json
 {
   "results": [
@@ -198,6 +203,7 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 - Group C: 5.4, 5.5 (sequential)
 
 **Output Format**:
+
 ```json
 {
   "specName": "bash-tool",
@@ -233,6 +239,7 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 - Group C: 6.4, 6.5 (sequential)
 
 **Output Format**:
+
 ```json
 {
   "specName": "bash-tool",
@@ -270,6 +277,7 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 - Group D: 7.5 (depends on 7.4)
 
 **Output Format (changes://list)**:
+
 ```json
 {
   "changes": [
@@ -306,6 +314,7 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 - Group D: 8.5 (depends on 8.4)
 
 **Output Format (understand_spec)**:
+
 ```json
 {
   "messages": [
@@ -466,15 +475,15 @@ openspec-mcp/
 
 ## Edge Cases to Handle
 
-| Edge Case | Handler | Response |
-|-----------|---------|----------|
-| Spec folder exists but no `spec.md` | resources/read | Error: "Spec file not found: {name}" |
-| Purpose section missing | resources/list | Description: "No description available" |
-| Changes directory empty | changes://list | Empty array: `{"changes": [], "total": 0}` |
-| Empty search query | search_specs | Error: "Query parameter required" |
-| Spec name with path traversal | resources/read | Error: "Invalid spec name" |
-| Requirements section missing | get_requirements | Empty array: `{"requirements": []}` |
-| Scenarios section missing | get_scenarios | Empty array: `{"scenarios": []}` |
+| Edge Case                           | Handler          | Response                                   |
+| ----------------------------------- | ---------------- | ------------------------------------------ |
+| Spec folder exists but no `spec.md` | resources/read   | Error: "Spec file not found: {name}"       |
+| Purpose section missing             | resources/list   | Description: "No description available"    |
+| Changes directory empty             | changes://list   | Empty array: `{"changes": [], "total": 0}` |
+| Empty search query                  | search_specs     | Error: "Query parameter required"          |
+| Spec name with path traversal       | resources/read   | Error: "Invalid spec name"                 |
+| Requirements section missing        | get_requirements | Empty array: `{"requirements": []}`        |
+| Scenarios section missing           | get_scenarios    | Empty array: `{"scenarios": []}`           |
 
 ---
 

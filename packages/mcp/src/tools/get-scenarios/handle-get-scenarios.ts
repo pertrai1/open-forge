@@ -1,9 +1,7 @@
 import { readSpecFile } from '../../specs/read-spec-file.js';
 import { extractScenarios } from '../../specs/extractors/scenarios.js';
 
-export async function handleGetScenarios(args: {
-  spec_name: string;
-}): Promise<{
+export async function handleGetScenarios(args: { spec_name: string }): Promise<{
   specName: string;
   scenarios: Array<{
     name: string;

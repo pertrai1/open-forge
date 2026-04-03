@@ -24,7 +24,9 @@ describe('Prompts', () => {
 
   describe('getPrompt', () => {
     it('should return messages for understand_spec', async () => {
-      const result = await getPrompt('understand_spec', { spec_name: 'project-foundation' });
+      const result = await getPrompt('understand_spec', {
+        spec_name: 'project-foundation',
+      });
       expect(result).toHaveProperty('messages');
       expect(Array.isArray(result.messages)).toBe(true);
     });

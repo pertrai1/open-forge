@@ -403,11 +403,13 @@ Fill out the **Summary Metrics** and **Pipeline Insights** sections in `PIPELINE
 **Insights to document**:
 
 1. **What Worked Well** (3-5 bullet points)
+
    - Patterns that succeeded
    - Approaches that were efficient
    - Surprising successes
 
 2. **What Needs Improvement** (3-5 bullet points)
+
    - Friction points
    - Ambiguities in requirements
    - Tool failures or gaps
@@ -436,6 +438,7 @@ This documentation is the primary research output — it captures what worked an
 - **One change per phase.** Do NOT create separate openspec changes for individual tasks. The proposal, specs, design, and tasks artifacts must describe the phase holistically.
 
 - **Do NOT prompt the user between tasks or phases.** The whole point is autonomous execution. Only pause if:
+
   - A phase goal is critically ambiguous and you genuinely cannot determine what to implement
   - The same quality check failure persists after 3 fix attempts across 2 consecutive phases (suggests a systemic issue)
   - A fundamental tool is broken (openspec CLI errors, git errors, missing node_modules)

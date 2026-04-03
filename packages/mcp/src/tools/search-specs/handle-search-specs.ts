@@ -1,8 +1,6 @@
 import { searchSpecs } from '../../specs/searcher.js';
 
-export async function handleSearchSpecs(args: {
-  query: string;
-}): Promise<{
+export async function handleSearchSpecs(args: { query: string }): Promise<{
   results: Array<{
     uri: string;
     name: string;

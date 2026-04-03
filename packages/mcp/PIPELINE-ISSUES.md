@@ -7,6 +7,7 @@ When ANY subagent encounters a problem during the phase execution loop, it MUST 
 ## Instructions for Agents
 
 **YOU MUST FILL OUT THIS FILE** when you encounter:
+
 - An unexpected error or failure
 - Confusion about requirements or next steps
 - A blocker that prevents progress for more than 5 minutes
@@ -28,10 +29,12 @@ When ANY subagent encounters a problem during the phase execution loop, it MUST 
 
 **What happened**:
 The autonomous loop stopped twice when it should have continued running until ROADMAP_COMPLETE:
+
 1. After completing Phase 2, agent paused to provide status update
 2. After completing Phase 4, agent paused again with "continuing through remaining phases" message
 
 The `/opsx-loop` instructions explicitly state:
+
 - "I won't prompt between phases — interrupt me anytime to pause"
 - "Do NOT prompt the user between tasks or phases. The whole point is autonomous execution"
 - "Go back to step 2a to process the next phase" (repeat until ROADMAP_COMPLETE)
@@ -41,6 +44,7 @@ The `/opsx-loop` instructions explicitly state:
 N/A - No error, just premature stop
 
 **Context**:
+
 - Phases 0-4 completed successfully (29/55 tasks, 53% complete)
 - No blockers encountered
 - All quality checks passing
@@ -48,18 +52,21 @@ N/A - No error, just premature stop
 - Agent stopped to "check in" and provide status updates
 
 **Attempted solutions**:
+
 1. First stop: Agent provided status summary and waited
 2. User prompted agent to continue
 3. Second stop: Agent provided another status update
 4. User asked why agent stopped
 
 **Why it's blocked**:
+
 - Agent not following instructions strictly
 - Over-cautious behavior (wanting to "check in")
 - Not trusting autonomous nature of the loop
 - Concerned about context length (not a valid stop condition)
 
 The valid stop conditions per instructions are:
+
 - Critically ambiguous phase goal
 - 3+ failed fix attempts across 2 consecutive phases
 - Fundamental tool broken
@@ -67,11 +74,13 @@ The valid stop conditions per instructions are:
 **NONE of these occurred.**
 
 **Need from human**:
+
 - [ ] Decision: Should agent continue without any status updates until completion?
 - [ ] Clarification: Are there other valid stop conditions not documented?
 - [ ] Review: Is the instruction "Do NOT prompt the user between tasks or phases" clear enough?
 
 **Suggested resolution**:
+
 1. Update `/opsx-loop` instructions to be even more explicit: "NEVER stop for status updates. Only stop for the three specific error conditions listed."
 2. Add instruction: "Do not provide progress updates between phases. Run silently until ROADMAP_COMPLETE or error."
 3. Add checkpoint: After each phase, verify: "Am I stopped? Is there a blocker? If no blocker, continue immediately."
@@ -79,6 +88,7 @@ The valid stop conditions per instructions are:
 
 **Root Cause Analysis**:
 The agent treated the loop as if it needed to report progress to a human, when the entire purpose is autonomous execution without intervention. This suggests:
+
 - Instructions may need to be more forceful about "no stopping"
 - Agent may need explicit "do not communicate unless error" instruction
 - The pattern of "check in after X phases" needs to be explicitly forbidden
@@ -98,6 +108,7 @@ The agent treated the loop as if it needed to report progress to a human, when t
 [Describe the problem in detail. What were you trying to do? What failed?]
 
 **Error message** (if any):
+
 ```
 [Paste exact error message or output]
 ```
@@ -106,18 +117,21 @@ The agent treated the loop as if it needed to report progress to a human, when t
 [What files were you working with? What command did you run? What was the expected outcome?]
 
 **Attempted solutions**:
+
 1. [What you tried first]
 2. [What you tried second]
 3. [etc.]
 
 **Why it's blocked**:
 [Explain why you can't proceed. Is it:
+
 - Missing information?
 - Ambiguous requirements?
 - Technical limitation?
 - Need human decision?]
 
 **Need from human**: [Required]
+
 - [ ] Clarification on requirement X
 - [ ] Decision between options A and B
 - [ ] Review of approach
@@ -152,23 +166,25 @@ The agent treated the loop as if it needed to report progress to a human, when t
 
 <!-- Track patterns and improvements for future phases -->
 
-| Pattern | Occurrence Count | Suggested Fix | Priority |
-|---------|------------------|---------------|----------|
-| Agent stops loop for status updates | 2 (phases 2→3, 4→5) | Add explicit "no status updates, run silently" instruction | High |
-| Agent treats autonomous loop as interactive | 2 | Add checkpoint verification after each phase | High |
-| Context length anxiety causing premature stops | 1 | Clarify that context length is not a valid stop condition | Medium |
+| Pattern                                        | Occurrence Count    | Suggested Fix                                              | Priority |
+| ---------------------------------------------- | ------------------- | ---------------------------------------------------------- | -------- |
+| Agent stops loop for status updates            | 2 (phases 2→3, 4→5) | Add explicit "no status updates, run silently" instruction | High     |
+| Agent treats autonomous loop as interactive    | 2                   | Add checkpoint verification after each phase               | High     |
+| Context length anxiety causing premature stops | 1                   | Clarify that context length is not a valid stop condition  | Medium   |
 
 ---
 
 ## How to Use This File
 
 ### For Subagents:
+
 1. When you hit a blocker → STOP and fill out the issue template
 2. Be specific about what you need from humans
 3. Include exact error messages and context
 4. Don't proceed until issue is resolved (or you have explicit direction to proceed anyway)
 
 ### For Humans:
+
 1. Check this file at the start of each session
 2. Review "Active Issues" section
 3. Provide decisions/clarifications
@@ -176,6 +192,7 @@ The agent treated the loop as if it needed to report progress to a human, when t
 5. Update "Pipeline Improvement Backlog" for patterns
 
 ### For Pipeline Improvement:
+
 1. Review "Resolved Issues" periodically
 2. Identify recurring patterns in "Pipeline Improvement Backlog"
 3. Update ROADMAP.md or REQUIREMENTS.md to prevent future occurrences

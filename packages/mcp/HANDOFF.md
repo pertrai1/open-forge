@@ -96,7 +96,10 @@ import { OPENSPEC_PATH } from './config.js';
 ```typescript
 // Return structured errors for MCP tools
 if (!specName) {
-  return { isError: true, content: [{ type: 'text', text: 'Error: spec_name required' }] };
+  return {
+    isError: true,
+    content: [{ type: 'text', text: 'Error: spec_name required' }],
+  };
 }
 ```
 

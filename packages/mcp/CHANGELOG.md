@@ -41,4 +41,3 @@
 - Completed 6 task(s) in phase 0
 
 All notable changes to this project will be documented in this file.
-

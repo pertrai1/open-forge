@@ -33,6 +33,7 @@ scripts/                # roadmap-helper.sh, roadmap-loop.sh
 ## Constraints
 
 ### DO NOT
+
 - Suppress type errors (`as any`, `@ts-ignore`, `@ts-expect-error`)
 - Catch and swallow errors silently
 - Commit without explicit request
@@ -41,6 +42,7 @@ scripts/                # roadmap-helper.sh, roadmap-loop.sh
 - Work on scenarios without a failing test proving the need
 
 ### MUST
+
 - Write unit tests BEFORE implementing any scenario
 - Use `.js` extension in imports for ESM: `import { x } from './module.js'`
 - Group imports: built-ins → external → internal
@@ -48,19 +50,24 @@ scripts/                # roadmap-helper.sh, roadmap-loop.sh
 - Resolve paths relative to `./openspec/` in project root
 
 ### Test-First Workflow
+
 Each phase has small, atomic, logically grouped items. For each scenario:
+
 1. Write a failing unit test that defines expected behavior
 2. Run test to confirm it fails for the right reason
 3. Implement minimal code to make test pass
 4. Refactor if needed (test still passes)
 
 ### When Blocked
+
 If stuck for >5 minutes or after 3 failed fix attempts:
+
 1. **STOP** — don't silently work around issues
 2. Fill out `PIPELINE-ISSUES.md` with exact errors, context, and what you need
 3. Wait for human resolution before proceeding
 
 ### Documentation During Execution
+
 - **Per-phase**: Fill out phase section in `PIPELINE-LOG.md` (timestamps, what worked, challenges, fix attempts)
 - **At completion**: Fill out Summary Metrics and Pipeline Insights in `PIPELINE-LOG.md`
 - This data is critical for improving the autonomous pipeline
@@ -68,15 +75,20 @@ If stuck for >5 minutes or after 3 failed fix attempts:
 ## Patterns
 
 ### Path Resolution
+
 ```typescript
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const PROJECT_ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..'
+);
 export const OPENSPEC_PATH = path.join(PROJECT_ROOT, 'openspec');
 ```
 
 ### MCP Tool Output
+
 ```typescript
 // Success
 { results: [...], query: "bash", total: 1 }
@@ -87,13 +99,13 @@ export const OPENSPEC_PATH = path.join(PROJECT_ROOT, 'openspec');
 
 ## Edge Cases
 
-| Case | Response |
-|------|----------|
-| Spec folder without `spec.md` | Error: "Spec file not found: {name}" |
-| Missing Purpose section | Description: "No description available" |
-| Empty changes directory | `{"changes": [], "total": 0}` |
-| Empty search query | Error: "Query parameter required" |
-| Path traversal in spec name | Error: "Invalid spec name" |
+| Case                          | Response                                |
+| ----------------------------- | --------------------------------------- |
+| Spec folder without `spec.md` | Error: "Spec file not found: {name}"    |
+| Missing Purpose section       | Description: "No description available" |
+| Empty changes directory       | `{"changes": [], "total": 0}`           |
+| Empty search query            | Error: "Query parameter required"       |
+| Path traversal in spec name   | Error: "Invalid spec name"              |
 
 ## Key Decisions
 

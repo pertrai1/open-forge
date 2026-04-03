@@ -10,7 +10,9 @@ export function extractScenarios(markdown: string): Scenario[] {
     return [];
   }
 
-  const scenariosSection = markdown.match(/## Scenarios\n([\s\S]*?)(?=\n## |$)/);
+  const scenariosSection = markdown.match(
+    /## Scenarios\n([\s\S]*?)(?=\n## |$)/
+  );
   if (!scenariosSection) {
     return [];
   }

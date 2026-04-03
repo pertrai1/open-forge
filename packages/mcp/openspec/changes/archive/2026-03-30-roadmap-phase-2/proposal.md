@@ -26,9 +26,11 @@ The MCP server is running (Phase 1) but has no resources to expose. OpenSpec arc
 ## Impact
 
 **Affected Code:**
+
 - New modules: config.ts, specs/reader.ts, specs/purpose-extractor.ts, handlers/resources-list.ts
 - Updated: server.ts (handler registration)
 
 **Enables:**
+
 - Phase 3: Resources - Read Spec (can now list specs to read)
 - Phase 4: Search Specs (can search across listed specs)

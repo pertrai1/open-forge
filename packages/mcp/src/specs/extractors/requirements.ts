@@ -9,13 +9,17 @@ export function extractRequirements(markdown: string): Requirement[] {
     return [];
   }
 
-  const requirementsSection = markdown.match(/## Requirements\n([\s\S]*?)(?=\n## |$)/);
+  const requirementsSection = markdown.match(
+    /## Requirements\n([\s\S]*?)(?=\n## |$)/
+  );
   if (!requirementsSection) {
     return [];
   }
 
   const requirementsText = requirementsSection[1];
-  const requirementBlocks = requirementsText.split(/### Requirement:/).filter(Boolean);
+  const requirementBlocks = requirementsText
+    .split(/### Requirement:/)
+    .filter(Boolean);
 
   const requirements: Requirement[] = [];
 
