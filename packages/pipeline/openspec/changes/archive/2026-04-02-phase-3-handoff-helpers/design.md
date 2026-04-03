@@ -44,7 +44,7 @@ All modules consume existing types from Phase 1 (`HandoffState`, `WakeContext`, 
 
 **Format**: The file will have a human-readable markdown header followed by a fenced JSON block:
 
-````markdown
+```markdown
 # HANDOFF
 
 <!-- Machine-managed file. Edit the JSON block below. -->
@@ -52,7 +52,7 @@ All modules consume existing types from Phase 1 (`HandoffState`, `WakeContext`, 
 ​`json
 { ... HandoffState ... }
 ​`
-````
+```
 
 ### 2. Checkpoint manager: `execFile` over `exec` for git operations
 

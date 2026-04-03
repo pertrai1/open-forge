@@ -10,8 +10,8 @@
 
 ## Who Needs This
 
-| Persona | Need |
-|---------|------|
+| Persona   | Need             |
+| --------- | ---------------- |
 | {persona} | {what they need} |
 | {persona} | {what they need} |
 
@@ -53,11 +53,11 @@ interface Config {
 
 ## Quality Targets
 
-| Metric | Target |
-|--------|--------|
-| Latency | < {X}ms p99 |
-| Throughput | {X} ops/sec |
-| Bundle size | < {X}KB |
+| Metric      | Target      |
+| ----------- | ----------- |
+| Latency     | < {X}ms p99 |
+| Throughput  | {X} ops/sec |
+| Bundle size | < {X}KB     |
 
 ---
 
@@ -76,4 +76,4 @@ interface Config {
 
 ---
 
-*Created: {YYYY-MM-DD}*
+_Created: {YYYY-MM-DD}_

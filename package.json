@@ -2,9 +2,13 @@
   "name": "open-forge",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "prepare": "husky"
+  },
   "private": true,
   "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
     "@eslint/js": "^9.8.0",
     "@nx/eslint": "22.6.2",
     "@nx/eslint-plugin": "22.6.2",
@@ -20,8 +24,10 @@
     "@vitest/ui": "4.0.9",
     "eslint": "~8.57.0",
     "eslint-plugin-llm-core": "^0.6.0",
+    "husky": "^9.1.7",
     "jiti": "2.4.2",
     "jsonc-eslint-parser": "^2.1.0",
+    "lint-staged": "^16.4.0",
     "nx": "22.6.2",
     "prettier": "^2.6.2",
     "tslib": "^2.3.0",
@@ -29,6 +35,19 @@
     "typescript-eslint": "^8.40.0",
     "vite": "^8.0.0",
     "vitest": "4.0.9"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,jsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "workspaces": [
     "packages/*"

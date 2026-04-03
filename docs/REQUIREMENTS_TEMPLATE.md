@@ -2,15 +2,17 @@
 
 ## 1. Problem Statement
 
-> One paragraph describing the problem this package/tool solves. Focus on the *pain*, not the solution.
+> One paragraph describing the problem this package/tool solves. Focus on the _pain_, not the solution.
 
 **Template:**
+
 ```
-{context} currently lacks {capability}. Without {this}, users cannot {outcome}. 
+{context} currently lacks {capability}. Without {this}, users cannot {outcome}.
 This results in {negative_consequence}. We need {solution_type} that {key_benefit}.
 ```
 
 **Example:**
+
 > The open-forge-pipeline orchestrates multi-stage agent workflows but lacks visibility into what agents are doing. Without telemetry, the pipeline cannot detect when agents are stuck, enforce budget constraints, or provide feedback. We need a telemetry package that captures events and evaluates constraints.
 
 ---
@@ -19,13 +21,14 @@ This results in {negative_consequence}. We need {solution_type} that {key_benefi
 
 > List who will use this and what they need. Keep it to 2-4 personas.
 
-| Persona | Needs |
-|---------|-------|
+| Persona         | Needs                             |
+| --------------- | --------------------------------- |
 | **{Persona 1}** | {what they need from this system} |
 | **{Persona 2}** | {what they need from this system} |
 | **{Persona 3}** | {what they need from this system} |
 
 **Example personas for a developer tool:**
+
 - **End User** — Uses the feature directly, needs it to work reliably
 - **Integrator** — Embeds this in a larger system, needs clear APIs
 - **Operator** — Runs it in production, needs observability and debuggability
@@ -39,26 +42,28 @@ This results in {negative_consequence}. We need {solution_type} that {key_benefi
 
 ### 3.1 {Category 1}
 
-| ID | Requirement | Priority |
-|----|-------------|----------|
-| F-001 | System MUST {specific behavior} | P0 |
-| F-002 | System MUST {specific behavior} | P0 |
-| F-003 | System SHOULD {specific behavior} | P1 |
-| F-004 | System MAY {specific behavior} | P2 |
+| ID    | Requirement                       | Priority |
+| ----- | --------------------------------- | -------- |
+| F-001 | System MUST {specific behavior}   | P0       |
+| F-002 | System MUST {specific behavior}   | P0       |
+| F-003 | System SHOULD {specific behavior} | P1       |
+| F-004 | System MAY {specific behavior}    | P2       |
 
 ### 3.2 {Category 2}
 
-| ID | Requirement | Priority |
-|----|-------------|----------|
-| F-010 | System MUST {specific behavior} | P0 |
-| F-011 | System MUST {specific behavior} | P0 |
+| ID    | Requirement                     | Priority |
+| ----- | ------------------------------- | -------- |
+| F-010 | System MUST {specific behavior} | P0       |
+| F-011 | System MUST {specific behavior} | P0       |
 
 **Priority definitions:**
+
 - **P0** — Must have for MVP, blocks release
 - **P1** — Should have, important but not blocking
 - **P2** — Nice to have, can defer
 
 **Requirement verbs:**
+
 - **MUST** — Required, non-negotiable
 - **MUST NOT** — Forbidden
 - **SHOULD** — Recommended, but exceptions allowed
@@ -73,40 +78,40 @@ This results in {negative_consequence}. We need {solution_type} that {key_benefi
 
 ### 4.1 Performance
 
-| ID | Requirement |
-|----|-------------|
-| NF-001 | {Operation} MUST complete in < {X}ms (p99) |
-| NF-002 | System MUST support {X} concurrent {operations} |
+| ID     | Requirement                                          |
+| ------ | ---------------------------------------------------- |
+| NF-001 | {Operation} MUST complete in < {X}ms (p99)           |
+| NF-002 | System MUST support {X} concurrent {operations}      |
 | NF-003 | Memory usage MUST NOT exceed {X}MB under normal load |
 
 ### 4.2 Reliability
 
-| ID | Requirement |
-|----|-------------|
+| ID     | Requirement                        |
+| ------ | ---------------------------------- |
 | NF-010 | System MUST {reliability behavior} |
-| NF-011 | System MUST NOT {failure mode} |
+| NF-011 | System MUST NOT {failure mode}     |
 
 ### 4.3 Security (if applicable)
 
-| ID | Requirement |
-|----|-------------|
-| NF-020 | System MUST {security behavior} |
+| ID     | Requirement                             |
+| ------ | --------------------------------------- |
+| NF-020 | System MUST {security behavior}         |
 | NF-021 | System MUST NOT {security anti-pattern} |
 
 ### 4.4 Compatibility
 
-| ID | Requirement |
-|----|-------------|
+| ID     | Requirement                                |
+| ------ | ------------------------------------------ |
 | NF-030 | MUST be compatible with {platform/version} |
-| NF-031 | MUST support {runtime/environment} |
+| NF-031 | MUST support {runtime/environment}         |
 
 ### 4.5 Developer Experience
 
-| ID | Requirement |
-|----|-------------|
+| ID     | Requirement                            |
+| ------ | -------------------------------------- |
 | NF-040 | MUST be usable with zero configuration |
-| NF-041 | MUST have type definitions included |
-| NF-042 | MUST have documentation with examples |
+| NF-041 | MUST have type definitions included    |
+| NF-042 | MUST have documentation with examples  |
 
 ---
 
@@ -137,7 +142,7 @@ interface {EntityName} {
 interface {ServiceName} {
   // {description of this method}
   {methodName}({param}: {ParamType}): Promise<{ReturnType}>;
-  
+
   // {description of this method}
   {methodName}({param}: {ParamType}): {ReturnType};
 }
@@ -146,7 +151,7 @@ interface {ServiceName} {
 // interface UserStore {
 //   // Fetch a user by ID
 //   get(id: string): Promise<User | null>;
-//   
+//
 //   // Create a new user
 //   create(data: CreateUserData): Promise<User>;
 // }
@@ -173,8 +178,8 @@ interface {ServiceName}Config {
 
 > What opinions does this package ship with? Reduce decision fatigue for users.
 
-| Default | Value | Rationale |
-|---------|-------|-----------|
+| Default     | Value           | Rationale          |
+| ----------- | --------------- | ------------------ |
 | {Setting 1} | {default value} | {why this default} |
 | {Setting 2} | {default value} | {why this default} |
 | {Setting 3} | {default value} | {why this default} |
@@ -215,8 +220,8 @@ interface {ServiceName}Config {
 
 > How do we verify this is complete? Make it testable.
 
-| Criteria | How to Verify |
-|----------|---------------|
+| Criteria      | How to Verify           |
+| ------------- | ----------------------- |
 | {Criterion 1} | {test or demonstration} |
 | {Criterion 2} | {test or demonstration} |
 | {Criterion 3} | {test or demonstration} |
@@ -234,10 +239,10 @@ interface {ServiceName}Config {
 
 > Explicitly state what this will NOT do. Prevents scope creep.
 
-| Item | Reason | Could be v2? |
-|------|--------|--------------|
-| {Feature} | {why not now} | {yes/no} |
-| {Feature} | {why not now} | {yes/no} |
+| Item      | Reason        | Could be v2? |
+| --------- | ------------- | ------------ |
+| {Feature} | {why not now} | {yes/no}     |
+| {Feature} | {why not now} | {yes/no}     |
 
 **Example:**
 | Item | Reason | Could be v2? |
@@ -251,12 +256,15 @@ interface {ServiceName}Config {
 ## 10. Dependencies
 
 **Production:**
+
 - {dependency} — {why needed, or "None"}
 
 **Development:**
+
 - {dev dependency} — {why needed}
 
 **Example:**
+
 ```
 Production:
 - None (zero required dependencies)
@@ -283,12 +291,12 @@ Development:
 
 > Things we don't know yet. Remove as they're resolved.
 
-| Question | Decision Needed By | Status |
-|----------|-------------------|--------|
-| {Question?} | {phase/timeline} | {open/resolved} |
+| Question    | Decision Needed By | Status          |
+| ----------- | ------------------ | --------------- |
+| {Question?} | {phase/timeline}   | {open/resolved} |
 
 ---
 
-*Requirements version: 1.0.0*
-*Created: {YYYY-MM-DD}*
-*Author: {name or "Pipeline"}*
+_Requirements version: 1.0.0_
+_Created: {YYYY-MM-DD}_
+_Author: {name or "Pipeline"}_
