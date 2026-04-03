@@ -51,7 +51,10 @@ export {
   CheckpointBudgetExceededError,
   CheckpointGitError,
 } from './lib/helper/checkpoint.js';
-export type { CheckpointTarget, CheckpointDiffOptions } from './lib/helper/checkpoint.js';
+export type {
+  CheckpointTarget,
+  CheckpointDiffOptions,
+} from './lib/helper/checkpoint.js';
 
 // Helper — Drift sentinel
 export {
@@ -78,17 +81,15 @@ export {
 } from './lib/helper/handoff.js';
 
 // Helper — Metrics utilities
-export {
-  recordToolResult,
-  calculateTotals,
-} from './lib/helper/metrics.js';
+export { recordToolResult, calculateTotals } from './lib/helper/metrics.js';
 
 // Helper — Injection scanner
-export {
-  scanForInjection,
-  sanitizeUnicode,
+export { scanForInjection, sanitizeUnicode } from './lib/helper/scanner.js';
+export type {
+  ScanFindingType,
+  ScanFinding,
+  ScanResult,
 } from './lib/helper/scanner.js';
-export type { ScanFindingType, ScanFinding, ScanResult } from './lib/helper/scanner.js';
 
 // Metrics
 export {
@@ -129,7 +130,12 @@ export type {
 } from './lib/quality/types.js';
 
 // Roadmap
-export { parseRoadmap, parsePhase, parseTask, RoadmapParseError } from './lib/roadmap/parser.js';
+export {
+  parseRoadmap,
+  parsePhase,
+  parseTask,
+  RoadmapParseError,
+} from './lib/roadmap/parser.js';
 export { generateRoadmap } from './lib/roadmap/generator.js';
 export { detectParallelGroups } from './lib/roadmap/parallel.js';
 export type {

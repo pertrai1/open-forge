@@ -47,7 +47,9 @@ export function detectParallelGroups(
         .filter((t) => !assigned.has(t.id))
         .map((t) => t.id);
       throw new Error(
-        `Circular dependency detected: tasks [${unassigned.join(', ')}] have unsatisfiable dependencies`
+        `Circular dependency detected: tasks [${unassigned.join(
+          ', '
+        )}] have unsatisfiable dependencies`
       );
     }
 
