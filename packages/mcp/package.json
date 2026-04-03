@@ -1,0 +1,42 @@
+{
+  "name": "@open-forge/mcp",
+  "version": "0.1.0",
+  "description": "MCP server implementation for OpenSpec archives",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "bin": {
+    "openspec-mcp": "dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "openspec",
+    "specifications",
+    "ai",
+    "llm",
+    "claude",
+    "anthropic",
+    "documentation",
+    "progressive-disclosure"
+  ],
+  "author": "Rob Simpson <rsimpson2@me.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pertrai1/open-forge",
+    "directory": "packages/mcp"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}
