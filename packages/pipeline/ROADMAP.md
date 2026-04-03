@@ -82,14 +82,14 @@ This roadmap breaks down the REQUIREMENTS.md into atomic, self-contained tasks t
 
 ### Tasks
 
-- [ ] 3.1 Implement HANDOFF manager [deps: 1.2] [deliverable: `src/lib/handoff/manager.ts` - readHandoff(), writeHandoff(), appendTaskLog()]
-- [ ] 3.2 Implement HANDOFF helper [deps: 3.1] [deliverable: `src/lib/helper/handoff.ts` - getActiveConventions(), getWakeContext()]
-- [ ] 3.3 Implement metrics logger [deps: 1.5] [deliverable: `src/lib/metrics/logger.ts` - logInvocation(), getCostManifest()]
-- [ ] 3.4 Implement metrics helper [deps: 3.3] [deliverable: `src/lib/helper/metrics.ts` - recordToolResult(), calculateTotals()]
-- [ ] 3.5 Implement drift sentinel manager [deps: 0.4] [deliverable: `src/lib/helper/drift.ts` - writeDriftSentinel(), clearDriftSentinel(), checkDriftSentinel()]
-- [ ] 3.6 Implement checkpoint manager [deps: 0.4] [deliverable: `src/lib/helper/checkpoint.ts` - createCheckpoint(), rollbackToCheckpoint(), deleteCheckpoints(), listCheckpoints(), getCheckpointDiff()]
-- [ ] 3.7 Implement memory injection scanner [deps: 0.4] [deliverable: `src/lib/helper/scanner.ts` - scanForInjection(), sanitizeUnicode()]
-- [ ] 3.8 Write tests for HANDOFF module [deps: 3.1-3.7] [deliverable: `tests/handoff-manager.test.ts`, `tests/helper.test.ts`]
+- [x] 3.1 Implement HANDOFF manager [deps: 1.2] [deliverable: `src/lib/handoff/manager.ts` - readHandoff(), writeHandoff(), appendTaskLog()]
+- [x] 3.2 Implement HANDOFF helper [deps: 3.1] [deliverable: `src/lib/helper/handoff.ts` - getActiveConventions(), getWakeContext()]
+- [x] 3.3 Implement metrics logger [deps: 1.5] [deliverable: `src/lib/metrics/logger.ts` - logInvocation(), getCostManifest()]
+- [x] 3.4 Implement metrics helper [deps: 3.3] [deliverable: `src/lib/helper/metrics.ts` - recordToolResult(), calculateTotals()]
+- [x] 3.5 Implement drift sentinel manager [deps: 0.4] [deliverable: `src/lib/helper/drift.ts` - writeDriftSentinel(), clearDriftSentinel(), checkDriftSentinel()]
+- [x] 3.6 Implement checkpoint manager [deps: 0.4] [deliverable: `src/lib/helper/checkpoint.ts` - createCheckpoint(), rollbackToCheckpoint(), deleteCheckpoints(), listCheckpoints(), getCheckpointDiff()]
+- [x] 3.7 Implement memory injection scanner [deps: 0.4] [deliverable: `src/lib/helper/scanner.ts` - scanForInjection(), sanitizeUnicode()]
+- [x] 3.8 Write tests for HANDOFF module [deps: 3.1-3.7] [deliverable: `tests/handoff-manager.test.ts`, `tests/helper.test.ts`]
 
 **Parallel Groups**:
 
