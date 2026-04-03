@@ -1,6 +1,8 @@
 # Open Forge
 
-A TypeScript monorepo for open-forge packages.
+An agent-first harness engineering system for fully autonomous software development. Open Forge is not a developer tool with AI features — it is an autonomous system where agents are the primary actors. You describe what you want built, and the system plans, implements, tests, reviews, and ships working code with no human in the loop.
+
+The system self-corrects through quality gates, enforces cost and safety constraints via telemetry, and closes the feedback loop with statistical evaluation of agent outputs — enabling autonomous decisions about model changes, prompt tuning, and regression detection.
 
 ## Packages
 
