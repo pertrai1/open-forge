@@ -1,61 +1,84 @@
 ---
 name: 'Forge Loop'
-description: Autonomously execute ROADMAP phases for a package using forge-helper.sh and openspec
+description: Autonomously execute ROADMAP phases — auto-detects next work from the unified ROADMAP
 category: Workflow
 tags: [workflow, automation, roadmap]
 ---
 
-Drive the ROADMAP automation loop for a package in the open-forge monorepo. Iterate through phases, creating **one openspec change per phase** that covers all tasks. The agent specs, tests, implements, and archives each phase as a cohesive unit.
+Drive the ROADMAP automation loop for the open-forge monorepo. Auto-detects which package and phase to work on next based on the unified ROADMAP wave sequencing. Creates one openspec change per phase covering all tasks as a cohesive unit.
 
-**Input**: `$ARGUMENTS` — required format: `--package <name>` plus optional phase controls:
+**Input**: `$ARGUMENTS` — all optional:
 
-- `--package telemetry` — target package (REQUIRED)
-- `--phase 2` — process only phase 2
-- `--phase 3-5` — process phases 3 through 5
+- _(no args)_ — auto-detect next work from root ROADMAP.md
+- `--package telemetry` — target a specific package (auto-detect phase)
+- `--package telemetry --phase 2` — fully explicit
 - `single-phase` — process exactly one phase and exit
 
 Examples:
 
-- `/forge-loop --package telemetry` — all pending phases
-- `/forge-loop --package telemetry --phase 1` — only phase 1
-- `/forge-loop --package evaluations single-phase` — one phase and stop
-
-**Prerequisites**
-
-Before starting, verify:
-
-```bash
-# FIRST: Ensure we are NOT on a protected branch (main, master)
-bash scripts/forge-helper.sh check-branch
-# If this fails, create a feature branch:
-#   git checkout -b feat/<pkg>-wave-<N>
-
-ls -la scripts/forge-helper.sh
-openspec --version
-bash scripts/forge-helper.sh status --package <pkg>
-```
-
-If any fails, inform the user and stop. **Do NOT proceed on main or master.**
+- `/forge-loop` — auto-detect, run all pending phases in wave order
+- `/forge-loop single-phase` — auto-detect, run one phase and stop
+- `/forge-loop --package telemetry` — all pending telemetry phases
+- `/forge-loop --package telemetry --phase 1` — only telemetry phase 1
 
 ---
 
-## 1. Restore session context
+## 0. Determine what to work on
+
+If `--package` was NOT provided, auto-detect from the root ROADMAP:
+
+```bash
+bash scripts/forge-helper.sh next-work
+```
+
+Output: `<package>|<phase>|<phase_title>|<wave>|<wave_title>`
+
+If `ALL_COMPLETE`, announce completion and stop.
+
+Parse the output to set `<pkg>` and the starting phase. Announce:
+
+```
+Auto-detected: Wave <wave> (<wave_title>) → <pkg> Phase <phase>: <phase_title>
+```
+
+If `--package` was provided but not `--phase`, use `next-phase` to find it:
+
+```bash
+bash scripts/forge-helper.sh next-phase --package <pkg>
+```
+
+---
+
+## 1. Set up environment
+
+Ensure we are on a feature branch (creates one if on main/master):
+
+```bash
+bash scripts/forge-helper.sh ensure-branch --package <pkg> --phase <phase>
+```
+
+Verify tools:
+
+```bash
+ls -la scripts/forge-helper.sh
+openspec --version
+```
+
+Restore session context:
 
 ```bash
 cat HANDOFF.md 2>/dev/null || bash scripts/forge-helper.sh init-handoff
 ```
 
-If `HANDOFF.md` exists, read it fully. Decisions there are final — do not re-litigate. If it does not exist, create it with `init-handoff`.
+If `HANDOFF.md` exists, read it fully. Decisions there are final — do not re-litigate.
 
 Also read `AGENTS.md` for mandatory workflow (TYPES → RED → GREEN → REFACTOR → GATES → COMMIT) and forbidden patterns.
 
-Show current progress:
+Show progress:
 
 ```bash
 bash scripts/forge-helper.sh status --package <pkg>
 ```
-
-Announce: "Starting forge loop for `<pkg>` phase(s) X-Y."
 
 ---
 
@@ -241,7 +264,7 @@ Update `HANDOFF.md` Next Phase Context for future work.
 
 The loop is idempotent and resumable:
 
-- `next-phase` finds the first phase with unchecked tasks
+- `next-work` / `next-phase` finds the next pending work
 - `phase-tasks` returns only remaining tasks
 - Existing openspec changes are reused
 - Tasks marked `[x]` are skipped
