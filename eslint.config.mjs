@@ -4,6 +4,8 @@ import nx from '@nx/eslint-plugin';
 const require = createRequire(import.meta.url);
 const llmCore = require('eslint-plugin-llm-core');
 
+const MAX_CYCLOMATIC_COMPLEXITY = 10;
+
 export default [
   ...nx.configs['flat/base'],
   ...nx.configs['flat/typescript'],
@@ -45,8 +47,12 @@ export default [
           ],
         },
       ],
+      '@typescript-eslint/no-inferrable-types': [
+        'error',
+        { ignoreParameters: true },
+      ],
       'no-nested-ternary': 'error',
-      complexity: ['error', 10],
+      complexity: ['error', MAX_CYCLOMATIC_COMPLEXITY],
     },
   },
 ];

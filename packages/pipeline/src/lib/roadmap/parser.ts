@@ -35,7 +35,7 @@ const PARALLEL_GROUP_PATTERN = /^- (Group [A-Z\d]+): (.+)$/;
  * Parse a single ROADMAP task line into a RoadmapTask.
  * Throws RoadmapParseError if the line is malformed.
  */
-export function parseTask(line: string, lineNumber = 0): RoadmapTask {
+export function parseTask(line: string, lineNumber: number = 0): RoadmapTask {
   const taskMatch = TASK_PATTERN.exec(line);
   if (!taskMatch) {
     throw new RoadmapParseError(lineNumber, 'Invalid task line format', line);
