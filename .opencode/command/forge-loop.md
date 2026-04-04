@@ -19,20 +19,18 @@ Examples:
 
 **Prerequisites**
 
-Before starting, verify:
+Before starting, verify and set up:
 
 ```bash
-# FIRST: Ensure we are NOT on a protected branch (main, master)
-bash scripts/forge-helper.sh check-branch
-# If this fails, create a feature branch:
-#   git checkout -b feat/<pkg>-wave-<N>
+# FIRST: Ensure we are on a feature branch (creates one if on main/master)
+bash scripts/forge-helper.sh ensure-branch --package <pkg> --phase <N>
 
 ls -la scripts/forge-helper.sh
 openspec --version
 bash scripts/forge-helper.sh status --package <pkg>
 ```
 
-If any fails, inform the user and stop. **Do NOT proceed on main or master.**
+If openspec or the helper is missing, inform the user and stop.
 
 ---
 

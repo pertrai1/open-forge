@@ -94,6 +94,55 @@ cmd_check_branch() {
 }
 
 # ---------------------------------------------------------------------------
+# Subcommand: ensure-branch --package <name> [--phase N]
+#
+# If on a protected branch, creates and switches to a feature branch.
+# If already on a feature branch, prints it and continues.
+# Branch naming: feat/<package>-wave-<phase> or feat/<package>-dev
+# ---------------------------------------------------------------------------
+
+cmd_ensure_branch() {
+  parse_package_flag "$@"
+  set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
+
+  local phase=""
+  while (( $# > 0 )); do
+    case "$1" in
+      --phase) phase="$2"; shift 2 ;;
+      *) shift ;;
+    esac
+  done
+
+  local pkg="${PACKAGE:-forge}"
+
+  local current_branch
+  current_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")"
+
+  local is_protected=false
+  for protected in $PROTECTED_BRANCHES; do
+    if [[ "$current_branch" == "$protected" ]]; then
+      is_protected=true
+      break
+    fi
+  done
+
+  if [[ "$is_protected" == true ]]; then
+    local branch_name
+    if [[ -n "$phase" ]]; then
+      branch_name="feat/${pkg}-phase-${phase}"
+    else
+      branch_name="feat/${pkg}-dev"
+    fi
+
+    log "On protected branch '${current_branch}' -- creating '${branch_name}'"
+    git checkout -b "$branch_name"
+    log "Switched to branch: ${branch_name}"
+  else
+    log "On branch: ${current_branch}"
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # Helpers: resolve ROADMAP file path
 # ---------------------------------------------------------------------------
 
@@ -749,6 +798,7 @@ main() {
     check-drift-sentinel)  cmd_check_drift_sentinel "$@" ;;
     check)                 cmd_check "$@" ;;
     check-branch)          cmd_check_branch "$@" ;;
+    ensure-branch)         cmd_ensure_branch "$@" ;;
     status)                cmd_status "$@" ;;
     --help|-h)             show_usage ;;
     *)                     fail "Unknown subcommand: $subcmd. Run with --help for usage." ;;
