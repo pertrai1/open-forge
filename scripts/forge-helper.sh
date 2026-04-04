@@ -229,7 +229,7 @@ cmd_mark_done() {
   fi
 
   # Toggle [ ] to [x]
-  sed -i'' -E "s/^(\s*-\s*)\[ \](\s*${task_id}\b)/\1[x]\2/" "$roadmap"
+  sed -i '' -E "s/^(\s*-\s*)\[ \](\s*${task_id}\b)/\1[x]\2/" "$roadmap"
   echo "updated"
 }
 
@@ -507,6 +507,19 @@ cmd_update_handoff() {
   date_stamp="$(date +%Y-%m-%d)"
   local pkg_label="${PACKAGE:-root}"
 
+  # Update Current State table in-place (sed -i '' for macOS compat, # delimiter)
+  sed -i '' "s#Last Completed Phase.*#Last Completed Phase** | ${pkg_label} phase ${phase} |#" "$handoff_file"
+  sed -i '' "s#Last Session.*#Last Session** | ${date_stamp} |#" "$handoff_file"
+  sed -i '' "s#Active Package.*#Active Package** | ${pkg_label} |#" "$handoff_file"
+
+  # Update ROADMAP Status based on whether there are remaining tasks
+  if [[ "$completed" == "$total" && "$total" -gt 0 ]]; then
+    sed -i '' "s#ROADMAP Status.*#ROADMAP Status** | Phase ${phase} complete |#" "$handoff_file"
+  else
+    sed -i '' "s#ROADMAP Status.*#ROADMAP Status** | In progress |#" "$handoff_file"
+  fi
+
+  # Append changelog entry
   local entry="| ${date_stamp} | -- | ${pkg_label} | ${phase} | ${phase_title} -- ${completed}/${total} tasks |"
   echo "$entry" >> "$handoff_file"
 
