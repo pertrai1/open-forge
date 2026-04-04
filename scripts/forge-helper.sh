@@ -647,7 +647,7 @@ _detect_wave_for_package() {
       break
     fi
     [[ -n "$current_wave" ]] || continue
-    if echo "$line" | grep -qE "^\|.*\`${pkg}\`.*Phase ${phase}"; then
+    if echo "$line" | grep -qE "^\|.*\`${pkg}\`.*Phase ${phase}([^0-9]|$)"; then
       echo "$current_wave"
       return
     fi
@@ -798,18 +798,23 @@ cmd_update_handoff() {
   sed -i '' '/^| (none yet)/d' "$handoff_file"
 
   local cw_row="| ${wave_label} | ${pkg_label} | Phase ${phase} | ${phase_title} |"
-  awk -v row="$cw_row" '
-    /^## Completed Work/ { in_cw=1 }
-    in_cw && /^\|/ { last_table_line=NR }
-    in_cw && /^---$/ { in_cw=0 }
-    { lines[NR]=$0 }
-    END {
-      for (i=1; i<=NR; i++) {
-        print lines[i]
-        if (i == last_table_line) print row
+
+  if grep -qF "| ${pkg_label} | Phase ${phase} |" "$handoff_file"; then
+    log "Completed Work already contains ${pkg_label} Phase ${phase}, skipping duplicate"
+  else
+    awk -v row="$cw_row" '
+      /^## Completed Work/ { in_cw=1 }
+      in_cw && /^\|/ { last_table_line=NR }
+      in_cw && /^---$/ { in_cw=0 }
+      { lines[NR]=$0 }
+      END {
+        for (i=1; i<=NR; i++) {
+          print lines[i]
+          if (i == last_table_line) print row
+        }
       }
-    }
-  ' "$handoff_file" > "${handoff_file}.tmp" && mv "${handoff_file}.tmp" "$handoff_file"
+    ' "$handoff_file" > "${handoff_file}.tmp" && mv "${handoff_file}.tmp" "$handoff_file"
+  fi
 
   # -----------------------------------------------------------------------
   # 3. Auto-advance Next Phase Context
@@ -962,24 +967,23 @@ cmd_validate_roadmap() {
         continue
       fi
 
-      local path
-      path=$(echo "$line" | sed -E 's/.*\[deliverable:[[:space:]]*`([^`]+)`.*/\1/')
-      [[ -n "$path" ]] || continue
+      local task_id
+      task_id=$(echo "$line" | sed -E 's/^[[:space:]]*-[[:space:]]*\[x\][[:space:]]*([0-9]+\.[0-9]+).*/\1/')
 
-      if echo "$path" | grep -qE ','; then
-        skipped=$((skipped + 1))
-        continue
-      fi
+      local paths
+      paths=$(echo "$line" | grep -oE '\[deliverable:[^]]*\]' | grep -oE '`[^`]+`' | tr -d '`')
+      [[ -n "$paths" ]] || continue
 
-      checked=$((checked + 1))
+      while IFS= read -r path; do
+        [[ -n "$path" ]] || continue
+        checked=$((checked + 1))
 
-      local target="${pkg_dir}/${path}"
-      if [[ ! -f "$target" ]] && [[ ! -d "$target" ]]; then
-        local task_id
-        task_id=$(echo "$line" | sed -E 's/^\s*-\s*\[x\]\s*([0-9]+\.[0-9]+).*/\1/')
-        warn "Missing deliverable: ${target} (task ${task_id})"
-        errors=$((errors + 1))
-      fi
+        local target="${pkg_dir}/${path}"
+        if [[ ! -f "$target" ]] && [[ ! -d "$target" ]]; then
+          warn "Missing deliverable: ${target} (task ${task_id})"
+          errors=$((errors + 1))
+        fi
+      done <<< "$paths"
     fi
   done < "$roadmap"
 
