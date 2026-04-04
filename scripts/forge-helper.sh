@@ -462,6 +462,7 @@ cmd_phase_commit() {
 # ---------------------------------------------------------------------------
 
 cmd_phase_update_docs() {
+  assert_feature_branch
   parse_package_flag "$@"
   set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
 
@@ -603,6 +604,7 @@ cmd_show_handoff() {
 # ---------------------------------------------------------------------------
 
 cmd_write_drift_sentinel() {
+  assert_feature_branch
   parse_package_flag "$@"
   set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
 
@@ -622,6 +624,7 @@ cmd_write_drift_sentinel() {
 }
 
 cmd_clear_drift_sentinel() {
+  assert_feature_branch
   parse_package_flag "$@"
   set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
 
