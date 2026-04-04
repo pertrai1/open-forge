@@ -12,3 +12,7 @@ export type {
   TelemetryConfig,
   OpenForgeTelemetry,
 } from './types.js';
+
+export type { StorageBackend } from './storage/StorageBackend.js';
+export { MemoryStorageBackend } from './storage/MemoryStorageBackend.js';
+export { FileStorageBackend } from './storage/FileStorageBackend.js';

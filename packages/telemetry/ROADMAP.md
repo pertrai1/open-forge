@@ -30,9 +30,9 @@ This roadmap breaks down the [telemetry REQUIREMENTS](../../docs/open-forge-tele
 
 ### Tasks
 
-- [ ] 1.1 Define storage interface [deps: 0.2] [deliverable: `src/storage/interface.ts` — StorageBackend with append(), query(), count()]
-- [ ] 1.2 Implement in-memory storage [deps: 1.1] [deliverable: `src/storage/memory.ts` — for testing and lightweight use]
-- [ ] 1.3 Implement file-based storage [deps: 1.1] [deliverable: `src/storage/file.ts` — JSONL append-only file, default zero-config backend]
+- [ ] 1.1 Define storage interface [deps: 0.2] [deliverable: `src/storage/StorageBackend.ts` — StorageBackend with append(), query(), count()]
+- [ ] 1.2 Implement in-memory storage [deps: 1.1] [deliverable: `src/storage/MemoryStorageBackend.ts` — for testing and lightweight use]
+- [ ] 1.3 Implement file-based storage [deps: 1.1] [deliverable: `src/storage/FileStorageBackend.ts` — JSONL append-only file, default zero-config backend]
 - [ ] 1.4 Write storage tests [deps: 1.2, 1.3] [deliverable: `tests/storage.test.ts`]
 
 **Parallel Groups**:

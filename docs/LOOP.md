@@ -36,8 +36,10 @@ The agent works autonomously through pending phases. Interrupt at any time; rest
 │  7. Implement tasks, mark each done                       │
 │  8. forge-helper.sh check --package <pkg>                 │
 │  9. forge-helper.sh phase-commit <N> --package <pkg>      │
-│ 10. openspec archive "<pkg>-phase-N" -y                   │
-│ 11. Update HANDOFF.md                                     │
+│ 10. /opsx-verify (confirm implementation matches specs)   │
+│ 11. /opsx-sync (merge delta specs to main specs)          │
+│ 12. openspec archive "<pkg>-phase-N"                      │
+│ 13. Update HANDOFF.md                                     │
 │                                                           │
 │  Loop to next phase                                       │
 └──────────────────────────────────────────────────────────┘
@@ -140,13 +142,23 @@ If checks fail:
 bash scripts/forge-helper.sh phase-commit N --package <pkg> "<title>"
 ```
 
-### 8. Archive
+### 8. Verify
+
+Run `/opsx-verify` against the change to confirm implementation matches artifacts (completeness, correctness, coherence). Fix any CRITICAL issues before proceeding.
+
+### 9. Sync specs
+
+Run `/opsx-sync` against the change to merge delta specs into main specs. If no delta specs exist, this is a no-op.
+
+### 10. Archive
 
 ```bash
-openspec archive "$CHANGE" -y
+openspec archive "$CHANGE"
 ```
 
-### 9. Update handoff
+The archive command includes its own sync assessment — review and confirm.
+
+### 11. Update handoff
 
 ```bash
 bash scripts/forge-helper.sh update-handoff N "<title>" --package <pkg> <done> <total>
