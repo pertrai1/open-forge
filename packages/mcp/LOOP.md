@@ -1,3 +1,5 @@
+> **DEPRECATED** — This file is specific to the MCP package's original loop setup. The canonical forge loop documentation lives at [`/docs/LOOP.md`](../../docs/LOOP.md) and the command at [`/.claude/commands/forge-loop.md`](../../.claude/commands/forge-loop.md).
+
 # Automation Loop
 
 The ROADMAP is completed by an **LLM agent** running inside OpenCode, not by a

@@ -188,15 +188,23 @@ Document in `PIPELINE-ISSUES.md` and continue to next step.
 bash scripts/forge-helper.sh phase-commit <phase> --package <pkg> "<title>"
 ```
 
-### 2h. Archive
+### 2h. Verify
+
+Run `/opsx-verify` against the change to confirm implementation matches artifacts (completeness, correctness, coherence). Fix any CRITICAL issues before proceeding.
+
+### 2i. Sync specs
+
+Run `/opsx-sync` against the change to merge delta specs into main specs. If no delta specs exist, this is a no-op.
+
+### 2j. Archive
 
 ```bash
-openspec archive "<change_name>" -y
+openspec archive "<change_name>"
 ```
 
-Warn but continue if archive fails.
+The archive command includes its own sync assessment at Step 4 — review and confirm. Warn but continue if archive fails.
 
-### 2i. Update handoff
+### 2k. Update handoff
 
 ```bash
 bash scripts/forge-helper.sh update-handoff <phase> "<title>" --package <pkg> <done> <total>
@@ -212,7 +220,7 @@ Append new key decisions to `HANDOFF.md`:
 - **Impact**: How it affects future phases
 ```
 
-### 2j. Show summary and loop
+### 2l. Show summary and loop
 
 ```bash
 bash scripts/forge-helper.sh status --package <pkg>
