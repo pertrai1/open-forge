@@ -64,6 +64,14 @@ npx nx run-many -t build,test,lint  # Run gates on all projects
 | Empty `catch` blocks                | Swallows errors silently                 |
 | Throwing without typed error        | Hides failure modes from callers         |
 
+## Skills (Mandatory)
+
+**You MUST load and follow the relevant skill before performing any task it covers. These are not optional guidelines.**
+
+| Skill         | When                                 | File                                                                 |
+| ------------- | ------------------------------------ | -------------------------------------------------------------------- |
+| Test Reviewer | Before writing or reviewing any test | [`.agents/skills/test-reviewer.md`](.agents/skills/test-reviewer.md) |
+
 ---
 
 <!-- nx configuration start-->
