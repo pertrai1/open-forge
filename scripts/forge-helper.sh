@@ -53,6 +53,47 @@ warn() { printf '[forge-helper] WARN: %s\n' "$*" >&2; }
 fail() { printf '[forge-helper] ERROR: %s\n' "$*" >&2; exit 1; }
 
 # ---------------------------------------------------------------------------
+# Protected branches — refuse mutating operations on these
+# ---------------------------------------------------------------------------
+
+PROTECTED_BRANCHES="main master"
+
+assert_feature_branch() {
+  local current_branch
+  current_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")"
+
+  for protected in $PROTECTED_BRANCHES; do
+    if [[ "$current_branch" == "$protected" ]]; then
+      fail "Refusing to run on protected branch '${current_branch}'. Create a feature branch first:
+  git checkout -b feat/<package>-wave-<N>"
+    fi
+  done
+}
+
+# ---------------------------------------------------------------------------
+# Subcommand: check-branch
+#
+# Verifies the current branch is not protected. Prints current branch name.
+# Exits 0 if on a feature branch, exits 1 if on a protected branch.
+# ---------------------------------------------------------------------------
+
+cmd_check_branch() {
+  local current_branch
+  current_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")"
+
+  for protected in $PROTECTED_BRANCHES; do
+    if [[ "$current_branch" == "$protected" ]]; then
+      warn "On protected branch '${current_branch}'. Create a feature branch first:"
+      warn "  git checkout -b feat/<package>-wave-<N>"
+      return 1
+    fi
+  done
+
+  log "On branch: ${current_branch}"
+  return 0
+}
+
+# ---------------------------------------------------------------------------
 # Helpers: resolve ROADMAP file path
 # ---------------------------------------------------------------------------
 
@@ -206,6 +247,7 @@ cmd_phase_change_name() {
 # ---------------------------------------------------------------------------
 
 cmd_mark_done() {
+  assert_feature_branch
   parse_package_flag "$@"
   set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
 
@@ -390,6 +432,7 @@ cmd_status() {
 # ---------------------------------------------------------------------------
 
 cmd_phase_commit() {
+  assert_feature_branch
   parse_package_flag "$@"
   set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
 
@@ -419,6 +462,7 @@ cmd_phase_commit() {
 # ---------------------------------------------------------------------------
 
 cmd_phase_update_docs() {
+  assert_feature_branch
   parse_package_flag "$@"
   set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
 
@@ -465,6 +509,7 @@ cmd_phase_update_docs() {
 # ---------------------------------------------------------------------------
 
 cmd_init_handoff() {
+  assert_feature_branch
   local handoff_file="HANDOFF.md"
 
   if [[ -f "$handoff_file" ]]; then
@@ -490,6 +535,7 @@ cmd_init_handoff() {
 }
 
 cmd_update_handoff() {
+  assert_feature_branch
   parse_package_flag "$@"
   set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
 
@@ -558,6 +604,7 @@ cmd_show_handoff() {
 # ---------------------------------------------------------------------------
 
 cmd_write_drift_sentinel() {
+  assert_feature_branch
   parse_package_flag "$@"
   set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
 
@@ -577,6 +624,7 @@ cmd_write_drift_sentinel() {
 }
 
 cmd_clear_drift_sentinel() {
+  assert_feature_branch
   parse_package_flag "$@"
   set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
 
@@ -700,6 +748,7 @@ main() {
     clear-drift-sentinel)  cmd_clear_drift_sentinel "$@" ;;
     check-drift-sentinel)  cmd_check_drift_sentinel "$@" ;;
     check)                 cmd_check "$@" ;;
+    check-branch)          cmd_check_branch "$@" ;;
     status)                cmd_status "$@" ;;
     --help|-h)             show_usage ;;
     *)                     fail "Unknown subcommand: $subcmd. Run with --help for usage." ;;
