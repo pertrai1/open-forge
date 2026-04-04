@@ -94,6 +94,125 @@ cmd_check_branch() {
 }
 
 # ---------------------------------------------------------------------------
+# Subcommand: next-work
+#
+# Reads the root ROADMAP.md to find the next actionable work item.
+# Walks waves in order, finds the first wave with "Not started" items,
+# picks the first package in that wave, then finds its next pending phase.
+#
+# Output: <package>|<phase>|<phase_title>|<wave>|<wave_title>
+# If all done: ALL_COMPLETE
+# ---------------------------------------------------------------------------
+
+cmd_next_work() {
+  local root_roadmap="ROADMAP.md"
+  [[ -f "$root_roadmap" ]] || fail "Root ROADMAP.md not found"
+
+  local current_wave="" current_wave_title=""
+  local found=false
+
+  while IFS= read -r line; do
+    # Detect wave headers: "## Wave N: Title"
+    if echo "$line" | grep -qE '^## Wave [0-9]+:'; then
+      current_wave=$(echo "$line" | sed -E 's/^## Wave ([0-9]+):.*/\1/')
+      current_wave_title=$(echo "$line" | sed -E 's/^## Wave [0-9]+: //')
+      continue
+    fi
+
+    [[ -n "$current_wave" ]] || continue
+
+    # Look for table rows with "Not started" status
+    if echo "$line" | grep -qE '^\|.*Not started'; then
+      local pkg
+      pkg=$(echo "$line" | awk -F'|' '{gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2); print $2}' | sed 's/`//g')
+
+      [[ -n "$pkg" ]] || continue
+
+      local pkg_roadmap="packages/${pkg}/ROADMAP.md"
+      [[ -f "$pkg_roadmap" ]] || continue
+
+      # Find next pending phase in this package
+      local phase_info
+      phase_info=$(_next_phase_for "$pkg_roadmap")
+
+      if [[ -n "$phase_info" && "$phase_info" != "ROADMAP_COMPLETE" ]]; then
+        local phase phase_title
+        phase=$(echo "$phase_info" | cut -d'|' -f1)
+        phase_title=$(echo "$phase_info" | cut -d'|' -f2)
+        echo "${pkg}|${phase}|${phase_title}|${current_wave}|${current_wave_title}"
+        found=true
+        break
+      fi
+    fi
+  done < "$root_roadmap"
+
+  [[ "$found" == true ]] || echo "ALL_COMPLETE"
+}
+
+# Internal: find next pending phase in a roadmap file
+_next_phase_for() {
+  local roadmap="$1"
+  for phase in $(seq 0 99); do
+    local pending total
+    pending=$(grep -cE "^\s*-\s*\[ \]\s*${phase}\.[0-9]" "$roadmap" 2>/dev/null || true)
+    total=$(grep -cE "^\s*-\s*\[[ xX]\]\s*${phase}\.[0-9]" "$roadmap" 2>/dev/null || true)
+    [[ "$total" -gt 0 ]] || continue
+    [[ "$pending" -gt 0 ]] || continue
+    local title
+    title=$(grep -E "^##\s+Phase\s+${phase}\b" "$roadmap" | head -1 | sed -E 's/^##[[:space:]]*//' || echo "Phase ${phase}")
+    echo "${phase}|${title}|${pending}|${total}"
+    return 0
+  done
+  echo "ROADMAP_COMPLETE"
+}
+
+# ---------------------------------------------------------------------------
+# Subcommand: ensure-branch [--package <name>] [--phase N]
+#
+# If on a protected branch, creates and switches to a feature branch.
+# If already on a feature branch, prints it and continues.
+# ---------------------------------------------------------------------------
+
+cmd_ensure_branch() {
+  parse_package_flag "$@"
+  set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
+
+  local phase=""
+  while (( $# > 0 )); do
+    case "$1" in
+      --phase) phase="$2"; shift 2 ;;
+      *) shift ;;
+    esac
+  done
+
+  local pkg="${PACKAGE:-forge}"
+  local current_branch
+  current_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")"
+
+  local is_protected=false
+  for protected in $PROTECTED_BRANCHES; do
+    if [[ "$current_branch" == "$protected" ]]; then
+      is_protected=true
+      break
+    fi
+  done
+
+  if [[ "$is_protected" == true ]]; then
+    local branch_name
+    if [[ -n "$phase" ]]; then
+      branch_name="feat/${pkg}-phase-${phase}"
+    else
+      branch_name="feat/${pkg}-dev"
+    fi
+    log "On protected branch '${current_branch}' -- creating '${branch_name}'"
+    git checkout -b "$branch_name"
+    log "Switched to branch: ${branch_name}"
+  else
+    log "On branch: ${current_branch}"
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # Helpers: resolve ROADMAP file path
 # ---------------------------------------------------------------------------
 
@@ -749,6 +868,8 @@ main() {
     check-drift-sentinel)  cmd_check_drift_sentinel "$@" ;;
     check)                 cmd_check "$@" ;;
     check-branch)          cmd_check_branch "$@" ;;
+    ensure-branch)         cmd_ensure_branch "$@" ;;
+    next-work)             cmd_next_work "$@" ;;
     status)                cmd_status "$@" ;;
     --help|-h)             show_usage ;;
     *)                     fail "Unknown subcommand: $subcmd. Run with --help for usage." ;;
