@@ -6,7 +6,7 @@ For detailed task breakdowns, see the per-package ROADMAPs:
 
 - [`packages/pipeline/ROADMAP.md`](packages/pipeline/ROADMAP.md) — Phases 0–3 complete, 4–12 remaining
 - [`packages/mcp/ROADMAP.md`](packages/mcp/ROADMAP.md) — Phases 0–9 complete, Phase 10 optional
-- [`packages/telemetry/ROADMAP.md`](packages/telemetry/ROADMAP.md) — Phase 0 complete, 1–5 remaining
+- [`packages/telemetry/ROADMAP.md`](packages/telemetry/ROADMAP.md) — Phases 0–1 complete, 2–5 remaining
 - [`packages/evaluations/ROADMAP.md`](packages/evaluations/ROADMAP.md) — Phase 0 complete, 1–7 remaining
 
 ---
@@ -27,7 +27,7 @@ Within each wave, the listed package phases reference the detailed tasks in the 
 
 | Package     | Phase                    | Work                                                        | Status      |
 | ----------- | ------------------------ | ----------------------------------------------------------- | ----------- |
-| `telemetry` | Phase 1: Storage         | Pluggable storage backends (memory, file)                   | Not started |
+| `telemetry` | Phase 1: Storage         | Pluggable storage backends (memory, file)                   | Complete    |
 | `telemetry` | Phase 2: Telemetry Core  | `emit()`, `query()`, `getPipelineSummary()`                 | Not started |
 | `telemetry` | Phase 3: Constraints     | Constraint evaluator, default constraints, builder utils    | Not started |
 | `telemetry` | Phase 4: Integration API | `createTelemetry()`, `onStageEvent()`, `serializeContext()` | Not started |
@@ -194,9 +194,9 @@ Wave 1: Telemetry Implementation
 | ------------- | --------------------------------------------- | ------------------------------------------------------------------- |
 | `mcp`         | Phases 0–9 (functional)                       | Phase 10 extensions (optional, unblocked)                           |
 | `pipeline`    | Phases 0–3 (types, roadmap, handoff, helpers) | Phase 4 (orchestrator) — **blocked on Wave 1** for telemetry wiring |
-| `telemetry`   | Phase 0 (types only)                          | Phase 1 (storage) — **ready to start**                              |
+| `telemetry`   | Phase 0–1 (types, storage layer)              | Phase 2 (telemetry core) — **ready to start**                       |
 | `evaluations` | Phase 0 (types only)                          | Phase 1 (datasets) — **ready to start**                             |
 
-**Immediate priority**: Telemetry Phases 1–4 (Wave 1). This is the critical path — everything else is blocked on or benefits from working telemetry.
+**Immediate priority**: Telemetry Phases 2–4 (remainder of Wave 1). This is the critical path — everything else is blocked on or benefits from working telemetry.
 
 **Maximum parallelism opportunity**: After Wave 1 completes, Wave 2 offers the most parallelism — pipeline Phase 4 and evaluations Phases 1–4 can all run simultaneously.

@@ -24,16 +24,16 @@ This roadmap breaks down the [telemetry REQUIREMENTS](../../docs/open-forge-tele
 
 ---
 
-## Phase 1: Storage Layer
+## Phase 1: Storage Layer (COMPLETE)
 
 **Goal**: Implement pluggable storage backends starting with the zero-config default.
 
 ### Tasks
 
-- [ ] 1.1 Define storage interface [deps: 0.2] [deliverable: `src/storage/StorageBackend.ts` — StorageBackend with append(), query(), count()]
-- [ ] 1.2 Implement in-memory storage [deps: 1.1] [deliverable: `src/storage/MemoryStorageBackend.ts` — for testing and lightweight use]
-- [ ] 1.3 Implement file-based storage [deps: 1.1] [deliverable: `src/storage/FileStorageBackend.ts` — JSONL append-only file, default zero-config backend]
-- [ ] 1.4 Write storage tests [deps: 1.2, 1.3] [deliverable: `tests/storage.test.ts`]
+- [x] 1.1 Define storage interface [deps: 0.2] [deliverable: `src/storage/StorageBackend.ts` — StorageBackend with append(), query(), count()]
+- [x] 1.2 Implement in-memory storage [deps: 1.1] [deliverable: `src/storage/MemoryStorageBackend.ts` — for testing and lightweight use]
+- [x] 1.3 Implement file-based storage [deps: 1.1] [deliverable: `src/storage/FileStorageBackend.ts` — JSONL append-only file, default zero-config backend]
+- [x] 1.4 Write storage tests [deps: 1.2, 1.3] [deliverable: `tests/storage.test.ts`]
 
 **Parallel Groups**:
 
