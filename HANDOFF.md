@@ -10,9 +10,9 @@ Persistent context bridge for autonomous ROADMAP execution across sessions. Each
 | ------------------------ | --------------------------- |
 | **Active Wave**          | Wave 1: Core Infrastructure |
 | **Active Package**       | telemetry                   |
-| **Last Completed Phase** | (none)                      |
-| **Last Session**         | **DATE**                    |
-| **ROADMAP Status**       | Starting                    |
+| **Last Completed Phase** | telemetry phase 1           |
+| **Last Session**         | 2026-04-03                  |
+| **ROADMAP Status**       | Phase 1 complete            |
 
 ---
 
@@ -84,6 +84,7 @@ Implement pluggable storage backends (memory + file-based) for telemetry events.
 
 ## Changelog
 
-| Date       | Wave | Package | Phase | Notes              |
-| ---------- | ---- | ------- | ----- | ------------------ |
-| 2026-04-03 | --   | --      | --    | Created HANDOFF.md |
+| Date       | Wave | Package   | Phase | Notes                      |
+| ---------- | ---- | --------- | ----- | -------------------------- |
+| 2026-04-03 | --   | --        | --    | Created HANDOFF.md         |
+| 2026-04-03 | --   | telemetry | 1     | Storage Layer -- 4/4 tasks |
