@@ -22,12 +22,17 @@ Examples:
 Before starting, verify:
 
 ```bash
+# FIRST: Ensure we are NOT on a protected branch (main, master)
+bash scripts/forge-helper.sh check-branch
+# If this fails, create a feature branch:
+#   git checkout -b feat/<pkg>-wave-<N>
+
 ls -la scripts/forge-helper.sh
 openspec --version
 bash scripts/forge-helper.sh status --package <pkg>
 ```
 
-If any fails, inform the user and stop.
+If any fails, inform the user and stop. **Do NOT proceed on main or master.**
 
 ---
 
