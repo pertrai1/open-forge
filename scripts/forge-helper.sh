@@ -40,6 +40,9 @@ set -euo pipefail
 #   clear-drift-sentinel <phase> [--package <name>]
 #   check-drift-sentinel <phase> [--package <name>]
 #
+# Subcommands (validation):
+#   validate-roadmap [--package <name>]
+#
 # Subcommands (general):
 #   status [--phase N] [--package <name>]
 # ---------------------------------------------------------------------------
@@ -627,6 +630,107 @@ cmd_phase_update_docs() {
 # Session handoff
 # ---------------------------------------------------------------------------
 
+# Detect which wave a package+phase belongs to by scanning root ROADMAP.md
+_detect_wave_for_package() {
+  local pkg="$1" phase="$2"
+  local root_roadmap="ROADMAP.md"
+  [[ -f "$root_roadmap" ]] || { echo "--"; return; }
+
+  local current_wave="" saw_wave=false
+  while IFS= read -r line; do
+    if echo "$line" | grep -qE '^## Wave [0-9]+:'; then
+      current_wave=$(echo "$line" | sed -E 's/^## (Wave [0-9]+):.*/\1/')
+      saw_wave=true
+      continue
+    fi
+    if [[ "$saw_wave" == true ]] && echo "$line" | grep -qE '^## ' && ! echo "$line" | grep -qE '^## Wave'; then
+      break
+    fi
+    [[ -n "$current_wave" ]] || continue
+    if echo "$line" | grep -qE "^\|.*\`${pkg}\`.*Phase ${phase}"; then
+      echo "$current_wave"
+      return
+    fi
+  done < "$root_roadmap"
+  echo "--"
+}
+
+# Rewrite the "## Next Phase Context" section with the next incomplete phase
+_advance_next_phase_context() {
+  local handoff_file="$1" pkg_label="$2"
+
+  local next_info
+  if [[ "$pkg_label" == "root" ]]; then
+    next_info=$(_next_phase_for "ROADMAP.md")
+  else
+    local pkg_roadmap="packages/${pkg_label}/ROADMAP.md"
+    [[ -f "$pkg_roadmap" ]] || return 0
+    next_info=$(_next_phase_for "$pkg_roadmap")
+  fi
+
+  [[ -n "$next_info" ]] || return 0
+
+  local npc_start npc_end
+  npc_start=$(grep -n '^## Next Phase Context' "$handoff_file" | head -1 | cut -d: -f1)
+  [[ -n "$npc_start" ]] || return 0
+  npc_end=$(tail -n +"$npc_start" "$handoff_file" | grep -n '^---$' | head -1 | cut -d: -f1)
+  [[ -n "$npc_end" ]] || return 0
+  npc_end=$(( npc_start + npc_end - 1 ))
+
+  if [[ "$next_info" == "ROADMAP_COMPLETE" ]]; then
+    local replacement
+    replacement="## Next Phase Context
+
+### Target
+
+All phases complete for @open-forge/${pkg_label}.
+
+### Goal
+
+Package roadmap is complete. Proceed to the next package via \`next-work\`.
+
+### Critical Context
+
+- Run \`bash scripts/forge-helper.sh next-work\` to find the next actionable item across all packages."
+  else
+    local next_phase next_title next_pending next_total
+    next_phase=$(echo "$next_info" | cut -d'|' -f1)
+    next_title=$(echo "$next_info" | cut -d'|' -f2)
+    next_pending=$(echo "$next_info" | cut -d'|' -f3)
+    next_total=$(echo "$next_info" | cut -d'|' -f4)
+
+    local replacement
+    replacement="## Next Phase Context
+
+### Target
+
+Wave: @open-forge/${pkg_label} ${next_title}
+
+### Goal
+
+${next_pending} of ${next_total} tasks remaining.
+
+### Critical Context
+
+- Run \`bash scripts/forge-helper.sh phase-tasks --phase ${next_phase} --package ${pkg_label}\` to see pending tasks
+- Follow TDD: TYPES → RED → GREEN → REFACTOR → GATES → COMMIT"
+  fi
+
+  sed -i '' "${npc_start},${npc_end}d" "$handoff_file"
+  local insert_line=$(( npc_start - 1 ))
+
+  local tmpfile
+  tmpfile=$(mktemp)
+  {
+    head -n "$insert_line" "$handoff_file"
+    echo "$replacement"
+    echo ""
+    echo "---"
+    tail -n +"$(( insert_line + 1 ))" "$handoff_file"
+  } > "$tmpfile"
+  mv "$tmpfile" "$handoff_file"
+}
+
 cmd_init_handoff() {
   assert_feature_branch
   local handoff_file="HANDOFF.md"
@@ -672,20 +776,50 @@ cmd_update_handoff() {
   date_stamp="$(date +%Y-%m-%d)"
   local pkg_label="${PACKAGE:-root}"
 
-  # Update Current State table in-place (sed -i '' for macOS compat, # delimiter)
+  # -----------------------------------------------------------------------
+  # 1. Update Current State table
+  # -----------------------------------------------------------------------
   sed -i '' "s#Last Completed Phase.*#Last Completed Phase** | ${pkg_label} phase ${phase} |#" "$handoff_file"
   sed -i '' "s#Last Session.*#Last Session** | ${date_stamp} |#" "$handoff_file"
   sed -i '' "s#Active Package.*#Active Package** | ${pkg_label} |#" "$handoff_file"
 
-  # Update ROADMAP Status based on whether there are remaining tasks
   if [[ "$completed" == "$total" && "$total" -gt 0 ]]; then
     sed -i '' "s#ROADMAP Status.*#ROADMAP Status** | Phase ${phase} complete |#" "$handoff_file"
   else
     sed -i '' "s#ROADMAP Status.*#ROADMAP Status** | In progress |#" "$handoff_file"
   fi
 
-  # Append changelog entry
-  local entry="| ${date_stamp} | -- | ${pkg_label} | ${phase} | ${phase_title} -- ${completed}/${total} tasks |"
+  # -----------------------------------------------------------------------
+  # 2. Populate Completed Work table
+  # -----------------------------------------------------------------------
+  local wave_label
+  wave_label="$(_detect_wave_for_package "$pkg_label" "$phase")"
+
+  sed -i '' '/^| (none yet)/d' "$handoff_file"
+
+  local cw_row="| ${wave_label} | ${pkg_label} | Phase ${phase} | ${phase_title} |"
+  awk -v row="$cw_row" '
+    /^## Completed Work/ { in_cw=1 }
+    in_cw && /^\|/ { last_table_line=NR }
+    in_cw && /^---$/ { in_cw=0 }
+    { lines[NR]=$0 }
+    END {
+      for (i=1; i<=NR; i++) {
+        print lines[i]
+        if (i == last_table_line) print row
+      }
+    }
+  ' "$handoff_file" > "${handoff_file}.tmp" && mv "${handoff_file}.tmp" "$handoff_file"
+
+  # -----------------------------------------------------------------------
+  # 3. Auto-advance Next Phase Context
+  # -----------------------------------------------------------------------
+  _advance_next_phase_context "$handoff_file" "$pkg_label"
+
+  # -----------------------------------------------------------------------
+  # 4. Append changelog entry
+  # -----------------------------------------------------------------------
+  local entry="| ${date_stamp} | ${wave_label} | ${pkg_label} | ${phase} | ${phase_title} -- ${completed}/${total} tasks |"
   echo "$entry" >> "$handoff_file"
 
   log "Updated HANDOFF.md with ${pkg_label} phase ${phase} completion"
@@ -803,6 +937,65 @@ cmd_check_drift_sentinel() {
 }
 
 # ---------------------------------------------------------------------------
+# Validation
+# ---------------------------------------------------------------------------
+
+cmd_validate_roadmap() {
+  parse_package_flag "$@"
+  set -- "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
+
+  local roadmap pkg_dir
+  roadmap="$(resolve_roadmap "$PACKAGE")"
+  [[ -f "$roadmap" ]] || fail "Roadmap file not found: $roadmap"
+
+  if [[ -n "$PACKAGE" ]]; then
+    pkg_dir="packages/${PACKAGE}"
+  else
+    pkg_dir="."
+  fi
+
+  local errors=0 checked=0 skipped=0
+  while IFS= read -r line; do
+    if echo "$line" | grep -qE '^\s*-\s*\[x\]' && echo "$line" | grep -qE '\[deliverable:'; then
+      if ! echo "$line" | grep -qE '\[deliverable:[[:space:]]*`'; then
+        skipped=$((skipped + 1))
+        continue
+      fi
+
+      local path
+      path=$(echo "$line" | sed -E 's/.*\[deliverable:[[:space:]]*`([^`]+)`.*/\1/')
+      [[ -n "$path" ]] || continue
+
+      if echo "$path" | grep -qE ','; then
+        skipped=$((skipped + 1))
+        continue
+      fi
+
+      checked=$((checked + 1))
+
+      local target="${pkg_dir}/${path}"
+      if [[ ! -f "$target" ]] && [[ ! -d "$target" ]]; then
+        local task_id
+        task_id=$(echo "$line" | sed -E 's/^\s*-\s*\[x\]\s*([0-9]+\.[0-9]+).*/\1/')
+        warn "Missing deliverable: ${target} (task ${task_id})"
+        errors=$((errors + 1))
+      fi
+    fi
+  done < "$roadmap"
+
+  if [[ "$checked" -eq 0 ]]; then
+    log "No completed tasks with deliverables found in ${roadmap} (${skipped} skipped — non-path deliverables)"
+    return 0
+  fi
+
+  if [[ "$errors" -gt 0 ]]; then
+    fail "${errors} deliverable path(s) missing out of ${checked} checked (${skipped} skipped)"
+  fi
+
+  log "All ${checked} deliverable path(s) valid in ${roadmap} (${skipped} skipped)"
+}
+
+# ---------------------------------------------------------------------------
 # Dispatch
 # ---------------------------------------------------------------------------
 
@@ -835,6 +1028,9 @@ show_usage() {
   echo "  write-drift-sentinel <phase> <reason>     Signal agent is stuck on phase"
   echo "  clear-drift-sentinel <phase>              Clear sentinel when phase advances"
   echo "  check-drift-sentinel <phase>              Check sentinel; exits 0=stuck, 1=clear"
+  echo ""
+  echo "Validation:"
+  echo "  validate-roadmap                          Check deliverable paths exist on disk"
   echo ""
   echo "General:"
   echo "  status [--phase N]                        Show per-phase progress summary"
@@ -870,6 +1066,7 @@ main() {
     check-branch)          cmd_check_branch "$@" ;;
     ensure-branch)         cmd_ensure_branch "$@" ;;
     next-work)             cmd_next_work "$@" ;;
+    validate-roadmap)      cmd_validate_roadmap "$@" ;;
     status)                cmd_status "$@" ;;
     --help|-h)             show_usage ;;
     *)                     fail "Unknown subcommand: $subcmd. Run with --help for usage." ;;
