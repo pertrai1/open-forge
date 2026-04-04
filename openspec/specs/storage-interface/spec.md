@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change telemetry-phase-1. Update Purpose after archive.
+Defines the `StorageBackend` contract (`append`, `query`, `count`) that all telemetry storage implementations must satisfy. Decouples telemetry business logic from persistence — consumers choose a concrete backend at composition time.
 
 ## Requirements
 

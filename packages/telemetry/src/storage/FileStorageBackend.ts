@@ -2,16 +2,21 @@ import { appendFile, readFile, mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import type { PipelineEvent, EventFilter } from '../types.js';
 import type { StorageBackend } from './StorageBackend.js';
+import { matchesFilter } from './matchesFilter.js';
 
 export class FileStorageBackend implements StorageBackend {
   private readonly filePath: string;
+  private dirCreated = false;
 
   constructor(filePath: string) {
     this.filePath = filePath;
   }
 
   async append(event: PipelineEvent): Promise<void> {
-    await mkdir(dirname(this.filePath), { recursive: true });
+    if (!this.dirCreated) {
+      await mkdir(dirname(this.filePath), { recursive: true });
+      this.dirCreated = true;
+    }
     await appendFile(this.filePath, JSON.stringify(event) + '\n', 'utf-8');
   }
 
@@ -45,16 +50,6 @@ export class FileStorageBackend implements StorageBackend {
         }
       });
   }
-}
-
-function matchesFilter(event: PipelineEvent, filter: EventFilter): boolean {
-  if (event.pipelineId !== filter.pipelineId) return false;
-  if (filter.stage !== undefined && event.stage !== filter.stage) return false;
-  if (filter.action !== undefined && event.action !== filter.action)
-    return false;
-  if (filter.from !== undefined && event.timestamp < filter.from) return false;
-  if (filter.to !== undefined && event.timestamp > filter.to) return false;
-  return true;
 }
 
 function isNodeError(err: unknown): err is NodeJS.ErrnoException {

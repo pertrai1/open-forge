@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change telemetry-phase-1. Update Purpose after archive.
+In-memory implementation of the `StorageBackend` interface for testing and lightweight ephemeral use cases. Events are stored in a plain array and do not persist beyond the lifetime of the instance.
 
 ## Requirements
 

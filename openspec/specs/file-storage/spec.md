@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change telemetry-phase-1. Update Purpose after archive.
+JSONL append-only file implementation of the `StorageBackend` interface. Serves as the default zero-config production backend — persists pipeline events as newline-delimited JSON with no external dependencies.
 
 ## Requirements
 
@@ -13,7 +13,8 @@ The `FileStorageBackend` class SHALL implement the `StorageBackend` interface, p
 #### Scenario: Create file storage with path
 
 - **WHEN** a `FileStorageBackend` is instantiated with a file path
-- **THEN** it SHALL create the file (and parent directories) if they do not exist
+- **THEN** it SHALL store the path for later use
+- **AND** it SHALL NOT create the file or parent directories until the first `append()` call
 
 ### Requirement: File storage append writes JSONL
 
@@ -47,9 +48,9 @@ Events stored by `FileStorageBackend` SHALL be readable by a new instance pointi
 - **WHEN** events are appended, the instance is discarded, and a new instance is created with the same path
 - **THEN** the new instance SHALL return the previously stored events via `query()`
 
-### Requirement: File storage count avoids full deserialization
+### Requirement: File storage count returns correct results
 
-The `FileStorageBackend.count()` method SHALL count matching events efficiently without requiring all events to be held in memory simultaneously.
+The `FileStorageBackend.count()` method SHALL return the correct count of matching events. It SHOULD avoid full deserialization where practical, but MAY load all events for simplicity in early implementations.
 
 #### Scenario: Count returns correct number
 

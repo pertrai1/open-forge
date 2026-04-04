@@ -23,7 +23,7 @@ The telemetry package currently exports only type definitions (Phase 0). Every d
 
 ## Impact
 
-- **New files**: `src/storage/interface.ts`, `src/storage/memory.ts`, `src/storage/file.ts`, `tests/storage.test.ts`
+- **New files**: `src/storage/StorageBackend.ts`, `src/storage/MemoryStorageBackend.ts`, `src/storage/FileStorageBackend.ts`, `src/storage/matchesFilter.ts`, `tests/storage.test.ts`
 - **Modified files**: `src/index.ts` (export storage implementations)
 - **APIs**: New `StorageBackend` interface and two concrete implementations
 - **Dependencies**: Zero runtime dependencies (Node.js `fs` and `path` for file backend only)
