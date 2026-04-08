@@ -88,9 +88,9 @@ describe('readDriftSentinel', () => {
     try {
       await readDriftSentinel(filePath);
       expect.fail('should have thrown');
-    } catch (err) {
-      expect(err).toBeInstanceOf(DriftSentinelError);
-      expect((err as DriftSentinelError).filePath).toBe(filePath);
+    } catch (error) {
+      expect(error).toBeInstanceOf(DriftSentinelError);
+      expect((error as DriftSentinelError).filePath).toBe(filePath);
     }
   });
 });

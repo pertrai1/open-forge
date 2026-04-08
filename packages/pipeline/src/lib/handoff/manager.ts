@@ -132,11 +132,11 @@ export async function writeHandoff(
 
   try {
     await writeFile(filePath, markdown, 'utf-8');
-  } catch (err) {
+  } catch (error) {
     throw new HandoffWriteError(
       filePath,
       `Failed to write HANDOFF.md: ${
-        err instanceof Error ? err.message : String(err)
+        error instanceof Error ? error.message : String(error)
       }`
     );
   }
