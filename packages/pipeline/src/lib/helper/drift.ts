@@ -151,18 +151,18 @@ export async function readDriftSentinel(
   let content: string;
   try {
     content = await readFile(filePath, 'utf-8');
-  } catch (err: unknown) {
+  } catch (error: unknown) {
     if (
-      err instanceof Error &&
-      'code' in err &&
-      (err as NodeJS.ErrnoException).code === 'ENOENT'
+      error instanceof Error &&
+      'code' in error &&
+      (error as NodeJS.ErrnoException).code === 'ENOENT'
     ) {
       throw new DriftSentinelError(
         filePath,
         `Drift sentinel file not found: ${filePath}`
       );
     }
-    throw err;
+    throw error;
   }
   return parse(content, filePath);
 }
@@ -174,15 +174,15 @@ export async function checkDriftSentinel(filePath: string): Promise<boolean> {
   try {
     await access(filePath);
     return true;
-  } catch (err: unknown) {
+  } catch (error: unknown) {
     if (
-      err instanceof Error &&
-      'code' in err &&
-      (err as NodeJS.ErrnoException).code === 'ENOENT'
+      error instanceof Error &&
+      'code' in error &&
+      (error as NodeJS.ErrnoException).code === 'ENOENT'
     ) {
       return false;
     }
-    throw err;
+    throw error;
   }
 }
 
@@ -192,14 +192,14 @@ export async function checkDriftSentinel(filePath: string): Promise<boolean> {
 export async function clearDriftSentinel(filePath: string): Promise<void> {
   try {
     await unlink(filePath);
-  } catch (err: unknown) {
+  } catch (error: unknown) {
     if (
-      err instanceof Error &&
-      'code' in err &&
-      (err as NodeJS.ErrnoException).code === 'ENOENT'
+      error instanceof Error &&
+      'code' in error &&
+      (error as NodeJS.ErrnoException).code === 'ENOENT'
     ) {
       return;
     }
-    throw err;
+    throw error;
   }
 }

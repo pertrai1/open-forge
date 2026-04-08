@@ -34,9 +34,9 @@ export class FileStorageBackend implements StorageBackend {
     let content: string;
     try {
       content = await readFile(this.filePath, 'utf-8');
-    } catch (err: unknown) {
-      if (isNodeError(err) && err.code === 'ENOENT') return [];
-      throw err;
+    } catch (error: unknown) {
+      if (isNodeError(error) && error.code === 'ENOENT') return [];
+      throw error;
     }
 
     return content

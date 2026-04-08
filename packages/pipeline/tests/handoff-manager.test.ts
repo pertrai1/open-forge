@@ -127,9 +127,9 @@ describe('readHandoff errors', () => {
     try {
       await readHandoff(filePath);
       expect.fail('should have thrown');
-    } catch (err) {
-      expect(err).toBeInstanceOf(HandoffReadError);
-      expect((err as HandoffReadError).filePath).toBe(filePath);
+    } catch (error) {
+      expect(error).toBeInstanceOf(HandoffReadError);
+      expect((error as HandoffReadError).filePath).toBe(filePath);
     }
   });
 
