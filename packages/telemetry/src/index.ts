@@ -16,3 +16,4 @@ export type {
 export type { StorageBackend } from './storage/StorageBackend.js';
 export { MemoryStorageBackend } from './storage/MemoryStorageBackend.js';
 export { FileStorageBackend } from './storage/FileStorageBackend.js';
+export { TelemetryImpl } from './TelemetryImpl.js';
