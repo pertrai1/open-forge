@@ -20,12 +20,12 @@ The differentiator is not the agents. It's the harness: constraints that prevent
 
 > **Early development.** The architecture is defined and core packages are scaffolded, but most implementations are in progress. Contributions and feedback are welcome — expect breaking changes.
 
-| Package                   | Status                                                                                                          |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `@open-forge/pipeline`    | Core types, roadmap generation, handoff management, and helper utilities implemented. Orchestrator in progress. |
-| `@open-forge/mcp`         | Functional — MCP server with spec tools, prompts, and change tracking.                                          |
-| `@open-forge/telemetry`   | Type definitions exported. Implementations (event emitting, constraint evaluation) not yet started.             |
-| `@open-forge/evaluations` | Type definitions exported. Implementations planned — blocked on telemetry for §3.6/§3.7 integration.            |
+| Package                   | Status                                                                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `@open-forge/pipeline`    | Core types, roadmap generation, handoff management, and helper utilities implemented. Orchestrator in progress.                 |
+| `@open-forge/mcp`         | Functional — MCP server with spec tools, prompts, and change tracking.                                                          |
+| `@open-forge/telemetry`   | Types, storage backends, and telemetry core (emit, query, pipeline summary) implemented. Constraint evaluation not yet started. |
+| `@open-forge/evaluations` | Type definitions exported. Implementations planned — blocked on telemetry for §3.6/§3.7 integration.                            |
 
 ## Packages
 

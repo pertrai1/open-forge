@@ -45,16 +45,16 @@ This roadmap breaks down the [telemetry REQUIREMENTS](../../docs/open-forge-tele
 
 ---
 
-## Phase 2: Telemetry Core
+## Phase 2: Telemetry Core (COMPLETE)
 
 **Goal**: Implement event emission and querying — the `Telemetry` interface.
 
 ### Tasks
 
-- [ ] 2.1 Implement `emit()` [deps: 1.2] [deliverable: `src/telemetry.ts` — validates event, writes to storage, async-safe]
-- [ ] 2.2 Implement `query()` [deps: 2.1] [deliverable: `src/telemetry.ts` — filter by pipelineId, stage, action, time range]
-- [ ] 2.3 Implement `getPipelineSummary()` [deps: 2.2] [deliverable: `src/telemetry.ts` — aggregate events into PipelineSummary]
-- [ ] 2.4 Write telemetry tests [deps: 2.1, 2.2, 2.3] [deliverable: `tests/telemetry.test.ts`]
+- [x] 2.1 Implement `emit()` [deps: 1.2] [deliverable: `src/TelemetryImpl.ts` — validates event, writes to storage, async-safe]
+- [x] 2.2 Implement `query()` [deps: 2.1] [deliverable: `src/TelemetryImpl.ts` — filter by pipelineId, stage, action, time range]
+- [x] 2.3 Implement `getPipelineSummary()` [deps: 2.2] [deliverable: `src/TelemetryImpl.ts` — aggregate events into PipelineSummary]
+- [x] 2.4 Write telemetry tests [deps: 2.1, 2.2, 2.3] [deliverable: `tests/telemetry.test.ts` — 39 tests]
 
 **Parallel Groups**:
 
@@ -129,9 +129,9 @@ This roadmap breaks down the [telemetry REQUIREMENTS](../../docs/open-forge-tele
 ```
 Phase 0 (Foundation) ✅
     │
-    └──→ Phase 1 (Storage)
+    └──→ Phase 1 (Storage) ✅
               │
-              └──→ Phase 2 (Telemetry Core)
+              └──→ Phase 2 (Telemetry Core) ✅
                         │
                         └──→ Phase 3 (Constraints)
                                   │
