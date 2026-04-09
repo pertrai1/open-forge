@@ -60,6 +60,13 @@ describe('TelemetryImpl — emit() validation', () => {
     await expect(telemetry.emit(event)).rejects.toThrow();
   });
 
+  it('should throw on missing phase', async () => {
+    const event = makeEvent({
+      phase: undefined as unknown as number,
+    });
+    await expect(telemetry.emit(event)).rejects.toThrow();
+  });
+
   it('should not persist event when validation fails', async () => {
     const badEvent = makeEvent({ pipelineId: '' });
     await expect(telemetry.emit(badEvent)).rejects.toThrow();

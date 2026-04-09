@@ -4,7 +4,7 @@ The telemetry package has completed Phase 0 (types) and Phase 1 (storage backend
 
 The `Telemetry` implementation is the composition layer: it accepts a `StorageBackend` at construction, validates events before persisting, delegates queries to storage, and computes `PipelineSummary` by aggregating stored events. No new types are needed — all interfaces already exist.
 
-This is a single-module change (`src/telemetry.ts`) with no external dependencies.
+This is a single-module change (`src/TelemetryImpl.ts`) with no external dependencies.
 
 ## Goals / Non-Goals
 
@@ -75,13 +75,13 @@ Query ALL events for the pipeline (filter by `pipelineId` only), then aggregate 
 
 ### 6. Single class, single file
 
-All three methods live in one `TelemetryImpl` class in `src/telemetry.ts`.
+All three methods live in one `TelemetryImpl` class in `src/TelemetryImpl.ts`.
 
 **Rationale**: The class is small (3 methods + constructor + validation helper). No need to split until complexity warrants it. Follows the pattern of `MemoryStorageBackend` — one class per file.
 
-### 7. Validation helper as a private method, not a separate module
+### 7. Validation helper as a module-level function, not a separate module
 
-A private `validateEvent()` method on the class checks required fields. Not extracted to a separate utility.
+A module-level `validateEvent()` function checks required fields. Not extracted to a separate utility.
 
 **Rationale**: Validation logic is ~10 lines and specific to `TelemetryImpl`. If it grows or needs reuse (e.g., in the factory), extract then. YAGNI.
 

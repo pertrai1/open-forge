@@ -4,7 +4,7 @@ Phase 0 (types) and Phase 1 (storage) are complete, but the `Telemetry` interfac
 
 ## What Changes
 
-- Add `src/telemetry.ts` implementing the `Telemetry` interface (`emit`, `query`, `getPipelineSummary`)
+- Add `src/TelemetryImpl.ts` implementing the `Telemetry` interface (`emit`, `query`, `getPipelineSummary`)
 - `emit()` validates incoming events, delegates to a `StorageBackend`, and handles async errors without crashing the pipeline (NF-011)
 - `query()` accepts an `EventFilter` and delegates filtering to the storage backend
 - `getPipelineSummary()` aggregates stored events for a pipeline into a `PipelineSummary` (total duration, token usage, completed stages, retry count, status)
@@ -25,7 +25,7 @@ _(No existing specs are modified — this is additive on top of the storage laye
 
 ## Impact
 
-- **Code**: New file `src/telemetry.ts`, new test file `tests/telemetry.test.ts`, updated exports in `src/index.ts`
+- **Code**: New file `src/TelemetryImpl.ts`, new test file `tests/telemetry.test.ts`, updated exports in `src/index.ts`
 - **Dependencies**: Depends on `StorageBackend` interface and existing implementations (MemoryStorageBackend, FileStorageBackend). No new runtime dependencies.
 - **API**: Adds concrete `TelemetryImpl` class implementing the already-defined `Telemetry` interface. No breaking changes — the interface was defined but unimplemented.
 - **Downstream**: Unblocks Phase 3 (Constraint Evaluator) and Phase 4 (Integration API / `createTelemetry` factory).

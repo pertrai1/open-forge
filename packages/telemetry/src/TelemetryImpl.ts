@@ -39,6 +39,9 @@ function validateEvent(event: PipelineEvent): void {
   if (event.stage === undefined) {
     throw new Error('PipelineEvent.stage is required');
   }
+  if (event.phase === undefined) {
+    throw new Error('PipelineEvent.phase is required');
+  }
   if (event.action === undefined) {
     throw new Error('PipelineEvent.action is required');
   }
@@ -106,7 +109,7 @@ function accumulateEvent(state: AggregationState, event: PipelineEvent): void {
     state.stagesCompleted.push(event.stage);
   }
 
-  if (event.timestamp > state.latestTimestamp) {
+  if (event.timestamp >= state.latestTimestamp) {
     state.latestTimestamp = event.timestamp;
     state.currentStage = event.stage;
   }
